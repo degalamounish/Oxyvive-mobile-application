@@ -1,0 +1,67 @@
+<Profile>:
+    MDFloatLayout:
+        md_bg_color: rgba(246, 250, 255, 255)
+        ProfileCard
+            size_hint_y: .65
+            pos_hint: {"center_y": .7}
+            elevation: 3
+            md_bg_color: 1, 1, 1, 1
+            radius: [0, 0, 20, 20]
+            MDIconButton:
+                icon: "arrow-left"
+                pos_hint: {"center_y": .91}
+                user_font_size: "20sp"
+                theme_text_color: "Custom"
+                text_color: rgba(34, 34, 34, 255)
+                on_release: root.profile_back()
+            MDIconButton:
+                icon: "dots-vertical"
+                pos_hint: {"center_x": .93, "center_y": .91}
+                user_font_size: "20sp"
+                theme_text_color: "Custom"
+                text_color: rgba(34, 34, 34, 255)
+            MDLabel:
+                text: "My Profile"
+                font_name: "Roboto-Bold"
+                font_size: "20sp"
+                pos_hint: {"center_x": .56, "center_y": .82}
+                color: rgba(34, 34, 34, 255)
+            MDFloatLayout:
+                orientation:'vertical'
+
+                MDLabel:
+                    id: username
+                    text: "Username : username"
+                    font_name: "Roboto"
+                    pos_hint: {"center_x": .66,"center_y": 1.09}
+                    color: rgba(34, 34, 34, 255)
+                MDLabel:
+                    id: email
+                    text: "Email : clientemail@gmail.com"
+                    font_name: "Roboto"
+                    pos_hint: {"center_x": .66,"center_y": .97}
+                    color: rgba(34, 34, 34, 255)
+                MDLabel:
+                    id: phone
+                    text: "Phone no : 912*******"
+                    font_name: "Roboto"
+                    pos_hint: {"center_x": .66,"center_y": .85}
+                    color: rgba(34, 34, 34, 255)
+                MDLabel:
+                    id: pincode
+                    text: "Pincode : 56****"
+                    font_name: "Roboto"
+                    pos_hint: {"center_x": .66,"center_y": .73}
+                    color: rgba(34, 34, 34, 255)
+            MDFloatLayout:
+                md_bg_color: rgba(178, 178, 178, 255)
+                size_hint: .62, .002
+                pos_hint: {"center_x": .47, "center_y": .45}
+            MDFloatLayout:
+                md_bg_color: rgba(178, 178, 178, 255)
+                size_hint: .62, .002
+                pos_hint: {"center_x": .47, "center_y": .318}
+            MDFloatLayout:
+                md_bg_color: rgba(178, 178, 178, 255)
+                size_hint: .62, .002
+                pos_hint: {"center_x": .47, "center_y": .208}

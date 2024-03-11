@@ -1,0 +1,176 @@
+<OxyGymService>
+    BoxLayout:
+        orientation: 'vertical'
+
+        MDIconButton:
+            icon: "arrow-left"
+            pos_hint: {"center_y": .95}
+            user_font_size: "30sp"
+            theme_text_color: "Custom"
+            text_color: rgba(26, 24, 58, 255)
+            on_release: root.reset_field()
+        MDLabel:
+            text: "OxiGym"
+            font_name: "Roboto-Bold"
+            pos_hint: {"center_y": .95}
+            size_hint_y:.05
+            font_size: "18sp"
+            halign:'center'
+        ScrollView:
+            GridLayout:
+                id: grid
+                cols: 1
+                padding: dp(10)
+                spacing: dp(20)
+                size_hint_y: None
+                height: self.minimum_height
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: self.minimum_height
+                    MDTextField:
+                        id:extra_info
+                        hint_text: "Oxi-Gym Name"
+            #                        required: True
+                        font_name: "Roboto"
+                        font_size: "14sp"
+                        pos_hint:{'center_x':.5}
+                        size_hint:.7,None
+                        write_tab: False
+                        multiline: False
+                        color_mode: 'custom'
+                        line_color_focus: 0, 0, 0, 1
+                        text_color_focus:0,0,0,1
+                        hint_text_color:0,0,0,1
+                        hint_text_color_focus:0,0,0,.5
+
+                    MDTextField:
+                        id:extra_info2
+                        hint_text: "Established Year"
+            #                        required: True
+                        font_name: "Roboto"
+                        font_size: "14sp"
+                        pos_hint:{'center_x':.5}
+                        size_hint:.7,None
+                        write_tab: False
+                        multiline: False
+                        color_mode: 'custom'
+                        line_color_focus: 0, 0, 0, 1
+                        text_color_focus:0,0,0,1
+                        hint_text_color:0,0,0,1
+                        hint_text_color_focus:0,0,0,.4
+                        on_focus: if self.focus: root.show_date_picker(self)
+
+                    MDTextField:
+                        id: State
+                        hint_text: "State"
+                        pos_hint: {'center_x': 0.5}
+                        font_size: "14sp"
+                        size_hint:.7,None
+                        cursor_width: "2sp"
+                        write_tab: False
+                        theme_text_color: "Custom"
+                        color_mode: 'custom'
+                        line_color_focus: 0, 0, 0, 1
+                        text_color_focus:0,0,0,1
+                        hint_text_color:0,0,0,1
+                        hint_text_color_focus:0,0,0,.5
+
+                    MDTextField:
+                        id: District
+                        hint_text: "District"
+                        pos_hint: {'center_x': 0.5}
+                        font_size: "14sp"
+                        size_hint:.7,None
+                        cursor_width: "2sp"
+                        write_tab: False
+                        theme_text_color: "Custom"
+                        color_mode: 'custom'
+                        line_color_focus: 0, 0, 0, 1
+                        text_color_focus:0,0,0,1
+                        hint_text_color:0,0,0,1
+                        hint_text_color_focus:0,0,0,.5
+
+                    MDTextField:
+                        id:pincode
+                        hint_text: "PIN Code"
+            #                        required: True
+                        font_name: "Roboto"
+                        font_size: "14sp"
+                        pos_hint:{'center_x':.5}
+                        size_hint:.7,None
+                        height: "30dp"
+                        multiline: False
+                        write_tab: False
+                        color_mode: 'custom'
+                        input_type: "number"
+                        line_color_focus: 0, 0, 0, 1
+                        text_color_focus:0,0,0,1
+                        hint_text_color:0,0,0,1
+                        hint_text_color_focus:0,0,0,.5
+
+                    MDTextField:
+                        id:address
+                        hint_text: "Address"
+            #                        required: True
+                        font_name: "Roboto"
+                        font_size: "14sp"
+                        pos_hint:{'center_x':.5}
+                        size_hint:.7,None
+                        multiline: False
+                        write_tab: False
+                        color_mode: 'custom'
+                        line_color_focus: 0, 0, 0, 1
+                        text_color_focus:0,0,0,1
+                        hint_text_color:0,0,0,1
+                        hint_text_color_focus:0,0,0,.5
+                    MDTextField:
+                        id:capsule
+                        hint_text: "Number of capsules"
+                        font_name: "Roboto"
+                        font_size: "14sp"
+                        pos_hint:{'center_x':.5}
+                        size_hint:.7,None
+                        height: "30dp"
+                        multiline: False
+                        write_tab: False
+                        color_mode: 'custom'
+                        input_type: "number"
+                        line_color_focus: 0, 0, 0, 1
+                        text_color_focus:0,0,0,1
+                        hint_text_color:0,0,0,1
+                        hint_text_color_focus:0,0,0,.5
+                        input_filter:'int'
+
+
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: self.minimum_height
+            padding: dp(20)
+            spacing: dp(10)
+            # next button
+            MDFlatButton:
+                id: next_button
+                disabled: False
+                size_hint: None, None
+                size: dp(90), dp(35) # Adjusted size
+                halign: "left"
+                pos_hint: {'right': 1, 'y': 0}
+                on_release:root.validate_content()
+                BoxLayout:
+                    orientation: 'horizontal'
+                    spacing: 0
+                    MDLabel:
+                        text: "Next"
+                        font_name: "Roboto-Bold"
+                        halign: "center"
+                        text_color: 1, 0, 0, 1
+                        theme_text_color: "Custom"
+                    MDIcon:
+                        icon: "arrow-right-bold"
+                        halign: "center"
+                        theme_text_color: "Custom"
+                        text_color: 1, 0, 0, 1
+                        size_hint_x: None
+                        width: dp(24)

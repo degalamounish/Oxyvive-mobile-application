@@ -1,0 +1,57 @@
+<Location>:
+    MDNavigationLayout:
+        ScreenManager:
+            Screen:
+                MDBoxLayout:
+                    orientation: 'vertical'
+
+                    MDTopAppBar:
+                        title: "Available Services"
+                        font_name: "Roboto"
+                        md_bg_color: 1, 0, 0, 1
+                        left_action_items: [["arrow-left", lambda x: root.on_back_button()]]
+
+                    MDFloatLayout:
+                        MDCard:
+                            orientation: 'vertical'
+                            size_hint: None, None
+                            size: "260dp", "60dp"
+                            elevation: 0.5
+                            md_bg_color: 1, 1, 1, 1
+                            pos_hint:{'center_x': 0.5,'center_y': 0.7}
+                            IconRightWidget:
+                                icon: "crosshairs-gps"
+                                pos_hint:{'center_x': 0.9,'center_y': 0.6}
+                                on_release: root.get_location()
+                            MDBoxLayout:
+                                pos_hint: {'center_x': 0.55}
+                                background_color:(1,1,1,1)
+                                MDTextField:
+                                    id: pincode
+                                    hint_text: "Enter Pincode"
+                                    font_name:"Roboto"
+                                    helper_text:''
+                                    helper_text_mode:  'on_error'
+                                    required: True
+                                    multiline: False
+                                    write_tab: False
+                                    input_type: "number"
+                                    size_hint_x: None
+                                    width: dp(190)
+                                    hint_text_color:(1,1,1,1)
+                        Button:
+                            id: login_button
+                            text: "Submit"
+                            size_hint: .56, .065
+                            pos_hint: {"center_x": .5, "center_y": .44}
+                            background_color: 0, 0, 0, 0
+                            font_name:"Roboto"
+                            on_release:
+                                root.fetch_pincode()
+                            canvas.before:
+                                Color:
+                                    rgb: rgba(255, 0, 0, 255)
+                                RoundedRectangle:
+                                    size: self.size
+                                    pos: self.pos
+                                    radius: [5]

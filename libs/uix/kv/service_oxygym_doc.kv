@@ -1,0 +1,181 @@
+<OxyGymServiceDoc>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        MDIconButton:
+            icon: "arrow-left"
+            pos_hint: {"center_y": .95}
+            user_font_size: "30sp"
+            size_hint_y:.15
+            theme_text_color: "Custom"
+            text_color: rgba(26, 24, 58, 255)
+            on_release: root.doc_reset_field()
+        ScrollView:
+            GridLayout:
+                id: grid
+                cols: 1
+                padding: dp(10)
+                spacing: dp(20)
+                size_hint_y: None
+                height: self.minimum_height
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    spacing: dp(10)
+                    height: self.minimum_height
+                    MDLabel:
+                        text:'Upload Required Documents'
+                        pos_hint: {"center_x": .5}
+                        halign:'center'
+                        font_size: "16sp"
+                        font_name: "Roboto-Bold"
+                        size_hint:.7,None
+                        height: "30dp"
+                    MDLabel:
+                        text:"Documents should be in PDF format and should be less than 2MB in size."
+                        pos_hint: {"center_x": .5}
+                        halign:'center'
+                        font_size: "10sp"
+                        font_name: "Roboto"
+                        size_hint:.7,None
+                        color:1, 0, 0, 1
+                        height: "30dp"
+                    MDLabel:
+                        id: Doc_1
+                        text: "1.Gym License"
+                        font_name: "Roboto"
+                        font_size: "14sp"
+                        pos_hint: {"center_x": .5}
+                        size_hint:.7,None
+                        height: "30dp"
+                    BoxLayout:
+                        orientation:'horizontal'
+                        pos_hint:{'center_x':.5}
+                        size_hint:.7,None
+                        color_mode:'custom'
+                        height: "35dp"
+                        canvas.before:
+                            Color:
+                                rgba: 1, 1, 1, 1  # White background color
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
+                            Color:
+                                rgba: 1, 0, 0, 1  # Red border color
+                            Line:
+                                rectangle: self.x, self.y, self.width, self.height
+
+                        MDRectangleFlatIconButton:
+                            id:upload1
+                            icon:'cloud-upload'
+                            text:'Upload'
+                            font_name: "Roboto-Bold"
+                            font_size: "14sp"
+                            pos_hint:{'center_x':.6,'center_y':.5}
+                            size_hint:1,1
+                            color_mode: 'custom'
+                            text_color:1, 1, 1, 1
+                            line_color:0,0,0,0
+                            md_bg_color:1,0,0,1
+                            icon_color:1,1,1,1
+                            radius:[0]
+                            on_release: root.file_manager_open('file_path')
+                        MDLabel:
+                            id: file_path
+                            text: "None selected "
+                            halign:'center'
+                            font_name: "Roboto"
+                            font_size: "14sp"
+                            size_hint:1,1
+                            color: 0.5, 0.5, 0.5, 1
+                            color_mode: 'custom'
+                            pos_hint: {"center_x": .5,'center_y':.5}
+
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        font_name: "Roboto"
+                        pos_hint:{'center_x':.5}
+                        size_hint:.7,None
+                        height: "20dp"
+                        height: "10dp"
+                    MDLabel:
+                        id: Doc_2
+                        text: "2.Building Permit and Licenses"
+                        font_name: "Roboto"
+                        font_size: "14sp"
+                        size_hint:.7,None
+                        height: "30dp"
+                        pos_hint: {"center_x": .5,'center_y':.5}
+                    BoxLayout:
+                        orientation:'horizontal'
+                        pos_hint:{'center_x':.5}
+                        size_hint:.7,None
+                        color_mode:'custom'
+                        height: "35dp"
+                        canvas.before:
+                            Color:
+                                rgba: 1, 1, 1, 1  # White color
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
+                            Color:
+                                rgba: 1, 0, 0, 1 # Red color
+                            Line:
+                                rectangle: self.x, self.y, self.width, self.height
+
+                        MDRectangleFlatIconButton:
+                            id:upload2
+                            icon:'cloud-upload'
+                            text:'Upload'
+                            font_name: "Roboto-Bold"
+                            font_size: "14sp"
+                            pos_hint:{'center_x':.6,'center_y':.5}
+                            size_hint:1,1
+                            color_mode: 'custom'
+                            text_color:1, 1, 1, 1
+                            line_color:0,0,0,0
+                            md_bg_color:1, 0, 0, 1
+                            icon_color:1,1,1,1
+                            radius:[0]
+                            on_release: root.file_manager_open('file_path2')
+                        MDLabel:
+                            id: file_path2
+                            text: "None selected "
+                            halign:'center'
+                            font_name: "Roboto"
+                            font_size: "14sp"
+                            size_hint:1,1
+                            color: 0.5, 0.5, 0.5, 1
+                            color_mode: 'custom'
+                            pos_hint: {"center_x": .5,'center_y':.5}
+                    MDLabel:
+                        id:hint_label
+                        text:''
+                        halign:'center'
+                        pos_hint: {"center_x": .5,'center_y':.5}
+                        font_name: "Roboto"
+                        font_size: "12sp"
+                        size_hint:.7,None
+                        height: "35dp"
+                        color:1,0,0,1
+
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: dp(60)
+            padding: dp(10)
+            spacing: dp(10)
+            MDRoundFlatButton:
+                disabled: False
+                size_hint: .5, None
+                height:dp(40) # Adjusted size
+                pos_hint:{'center_x':.5,'center_y':.5}
+                md_bg_color: 1, 0, 0, 1
+                elevation: 10
+                text: "SUBMIT"
+                font_name: "Roboto-Bold"
+                halign: "center"
+                text_color: 1, 1, 1, 1
+                line_color:0,0,0,0
+                theme_text_color: "Custom"
+                on_release:root.submit('service_oxygym')

@@ -1,0 +1,82 @@
+<ServicesList>:
+    name:'list_content'
+    MDIconButton:
+        icon: "arrow-left"
+        pos_hint: {"center_y": .95}
+        user_font_size: "30sp"
+        size_hint_y:.15
+        theme_text_color: "Custom"
+        text_color: rgba(26, 24, 58, 255)
+        on_release: root.on_back_button()
+    MDLabel:
+        text: "Organization List "
+        font_name: "Roboto-Bold"
+        pos_hint: {"center_y": .9}
+        size_hint_y:.1
+        font_size: "20sp"
+        halign:'center'
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        size_hint_x:.9
+        pos_hint:{'center_x':.5,'center_y':.8}
+        height: dp(60)
+        spacing:dp(5)
+        MDRoundFlatButton:
+            disabled: False
+            size_hint: .4, None
+            height:dp(40) # Adjusted size
+            pos_hint:{'center_x':.5,'center_y':.5}
+#            md_bg_color: 1, 0, 0, 1
+            elevation: 10
+            text: "Oxiclinic"
+            font_name: "Roboto-Bold"
+            halign: "center"
+            text_color: 1, 0, 0, 1
+            theme_text_color: "Custom"
+            on_release: root.load_data('oxiclinic')
+        MDRoundFlatButton:
+            disabled: False
+            size_hint: .4, None
+            height:dp(40) # Adjusted size
+            pos_hint:{'center_x':.5,'center_y':.5}
+#            md_bg_color: 1, 0, 0, 1
+            elevation: 10
+            text: "Oxiwheel"
+            font_name: "Roboto-Bold"
+            halign: "center"
+            text_color: 1, 0, 0, 1
+            theme_text_color: "Custom"
+            on_release: root.load_data('oxiwheel')
+        MDRoundFlatButton:
+            disabled: False
+            size_hint: .4, None
+            height:dp(40) # Adjusted size
+            pos_hint:{'center_x':.5,'center_y':.5}
+#            md_bg_color: 1, 0, 0, 1
+            elevation: 10
+            text: "Oxigym"
+            font_name: "Roboto-Bold"
+            halign: "center"
+            text_color: 1, 0, 0, 1
+            theme_text_color: "Custom"
+            on_release: root.load_data('oxigym')
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint_y: None
+        height: dp(60)
+        padding: dp(10)
+        spacing: dp(10)
+        MDFlatButton:
+            disabled: False
+            size_hint: .4, None
+            height:dp(40) # Adjusted size
+            pos_hint:{'center_x':.5,'center_y':.5}
+            md_bg_color: 1, 0, 0, 1
+            elevation: 10
+            text: "CONFIRM"
+            font_name: "Roboto-Bold"
+            halign: "center"
+            text_color: 1, 1, 1, 1
+            theme_text_color: "Custom"
+            on_release: root.manager.pop()

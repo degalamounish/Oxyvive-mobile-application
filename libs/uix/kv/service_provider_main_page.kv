@@ -1,0 +1,639 @@
+<ServiceProviderMain>:
+    name: "service_provider_main_page"
+
+    MDNavigationLayout:
+        ScreenManager:
+            Screen:
+                BoxLayout:
+                    orientation: 'vertical'
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                    MDTopAppBar:
+                        id:topbar
+                        title: "Service Provider"
+                        font_name: "Roboto-Bold"
+                        md_bg_color: 1, 0, 0, 1
+                        left_action_items: [["menu", lambda x: nav_drawer.set_state()]]
+                        right_action_items: [["dots-vertical", lambda x: root.service_button(x)]]
+                        elevation: 2
+
+                    ScrollView:
+                        GridLayout:
+                            id: grid
+                            cols: 1
+                            padding: dp(10)
+                            spacing: dp(20)
+                            size_hint_y: None
+                            height: self.minimum_height
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}  # Center the entire content
+                            BoxLayout:
+                                orientation: 'vertical'
+                                size_hint_y: None
+                                height: dp(40)
+                                md_bg_color: 1, 1, 1, 1
+
+                                MDCard:
+                                    orientation: 'vertical'
+                                    size_hint: None, None
+                                    size: "290dp", "40dp"
+                                    elevation: 2
+                                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+                                    GridLayout:
+                                        cols: 2
+                                        padding: dp(10)
+                                        spacing: dp(5)
+                                        size_hint_y: None
+                                        height: dp(40)
+                                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+                                        MDLabel:
+                                            text: 'Empty Slots'
+                                            halign: 'center'
+                                            font_name: 'Roboto'
+                                            theme_text_color: 'Custom'
+                                            text_color: 0, 0, 0, 1
+                                            size_hint_x: 0.5
+                                            size_hint_y: None
+                                            height: dp(20)
+                                            pos_hint: {'center_x': 0.5}
+
+                                        MDLabel:
+                                            id: empty_slots
+                                            text: '0'
+                                            halign: 'center'
+                                            font_name: 'Roboto'
+                                            theme_text_color: 'Custom'
+                                            text_color: 0, 0, 0, 1
+                                            size_hint_x: 0.5
+                                            size_hint_y: None
+                                            height: dp(20)
+                                            pos_hint: {'center_x': 0.5}
+                            BoxLayout:
+                                orientation: 'vertical'
+                                size_hint_y: None
+                                height: dp(200)
+                                md_bg_color: 1, 1, 1, 1
+                                MDCard:
+                                    orientation: 'vertical'
+                                    size_hint: None, None
+                                    size: "290dp", "200dp"
+                                    elevation: 2
+                                    md_bg_color: 1, 1, 1, 1
+                                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                                    GridLayout:
+                                        id: inner_grid
+                                        cols: 1
+                                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                                        BoxLayout:
+                                            size_hint_y: None
+                                            height: dp(50)
+                                            padding: "5dp"
+                                            spacing: "5dp"
+                                            pos_hint: {'center_x': 0.5}
+                                            canvas.before:
+                                                Color:
+                                                    rgba: 1, 0, 0, 1
+                                                Rectangle:
+                                                    pos: self.pos
+                                                    size: self.size
+                                            BoxLayout:
+                                                size_hint: None, None
+                                                size: dp(50), dp(50)
+                                                pos_hint: {'center_x': 0.5}
+                                                canvas:
+                                                    Color:
+                                                        rgb: 1, 1, 1
+                                                    Ellipse:
+                                                        pos: self.pos
+                                                        size: 50, 50
+                                                        source: 'images/hospital.png'
+                                                        angle_start: 0
+                                                        angle_end: 360
+
+                                            BoxLayout:
+                                                orientation: 'vertical'
+                                                padding: "5dp"
+                                                spacing: "10dp"
+                                                pos_hint: {'center_x': 0.5}
+
+                                                MDLabel:
+                                                    id: pat_username
+                                                    text: "username"
+                                                    font_name: "Roboto"
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+                                                    pos_hint: {'center_x': 0.5, 'center_y': 0.3}
+
+                                                MDLabel:
+                                                    id: pat_email
+                                                    text: "clientemail@gmail.com"
+                                                    theme_text_color: 'Custom'
+                                                    text_color: 1, 1, 1, 1
+                                                    font_name: "Roboto"
+                                                    font_size: '12sp'
+                                                    pos_hint: {'center_x': 0.5, 'center_y': 0.1}
+
+        MDNavigationDrawer:
+            id: nav_drawer
+            orientation: 'vertical'
+            size_hint_x:dp(290)
+            size_hint_max_x: "290dp"
+            padding: "0dp"
+            spacing: "5dp"
+
+            MDCard:
+                orientation: 'vertical'
+                size_hint: None, None
+                size: "290dp", "100dp"
+                elevation: 2
+                md_bg_color: 1, 1, 1, 1
+
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(90)
+                    padding: "15dp"
+
+                    BoxLayout:
+                        size_hint: None, None
+                        size: dp(90), dp(90)
+                        canvas:
+                            Color:
+                                rgb: 1, 1, 1
+                            Ellipse:
+                                pos: self.pos
+                                size: 90, 90
+                                source: 'images/hospital.png'
+                                angle_start: 0
+                                angle_end: 360
+                    BoxLayout:
+                        orientation: 'vertical'
+                        padding: "5dp"
+                        spacing: "5dp"
+
+                        MDLabel:
+                            id: srv_username
+                            text: "username"
+                            font_name: "Roboto"
+                            theme_text_color: "Secondary"
+                            pos_hint: {'center_x': 0.5,'center_y': 0.2}
+
+                        MDLabel:
+                            id: srv_email
+                            text: "clientemail@gmail.com"
+                            theme_text_color: "Hint"
+                            font_name: "Roboto"
+                            font_size:'12sp'
+                            pos_hint: {'center_x': 0.5,'center_y': 0.1}
+
+            BoxLayout:
+                orientation: 'vertical'
+                ScrollView:
+                    BoxLayout:
+                        orientation: 'vertical'
+                        GridLayout:
+                            cols:1
+                            padding:dp(20)
+                            spacing:dp(10)
+                            MDBoxLayout:
+                                size_hint_y:None
+                                height:dp(40)
+
+                                MDIconButton:
+                                    icon: 'account-circle'
+                                    on_release:
+                                        root.manager.transition.direction = "left"
+                                        root.manager.current = "service_profile"
+                                    pos_hint:{'center_x':.3,'center_y':.7}
+                                MDTextButton:
+                                    text: 'Profile'
+                                    on_release:
+                                        root.manager.transition.direction = "left"
+                                        root.manager.current = "service_profile"
+                                    font_name: "Roboto"
+                                    pos_hint:{'center_x':.3,'center_y':.7}
+                            MDBoxLayout:
+                                size_hint_y:None
+                                height:dp(40)
+                                MDIconButton:
+                                    icon: 'bell-outline'
+                                    on_release:
+                                        root.manager.transition.direction = "left"
+                                        root.manager.current = "service_notification"
+                                    pos_hint:{'center_x':.3,'center_y':.7}
+                                MDTextButton:
+                                    text: 'Notification'
+                                    on_release:
+                                        root.manager.transition.direction = "left"
+                                        root.manager.current = "service_notification"
+                                    font_name: "Roboto"
+                                    pos_hint:{'center_x':.3,'center_y':.7}
+                            MDBoxLayout:
+                                size_hint_y:None
+                                height:dp(40)
+                                MDIconButton:
+                                    icon: 'book-account-outline'
+                                    on_release:
+                                        root.manager.transition.direction = "left"
+                                        root.manager.current = "service_slot_adding"
+                                    pos_hint:{'center_x':.3,'center_y':.7}
+                                MDTextButton:
+                                    text: 'Slots'
+                                    on_release:
+                                        root.manager.transition.direction = "left"
+                                        root.manager.current = "service_slot_adding"
+                                    halign: 'center'
+                                    font_name: "Roboto"
+                                    pos_hint:{'center_x':.3,'center_y':.7}
+
+                        GridLayout:
+                            cols:1
+                            padding:dp(40)
+                            spacing:dp(20)
+                        GridLayout:
+                            cols:1
+                            padding:dp(20)
+                            spacing:dp(10)
+                            MDBoxLayout:
+                                size_hint_y:None
+                                height:dp(40)
+                                MDIconButton:
+                                    icon: 'headphones'
+                                    on_release:
+                                        root.manager.transition.direction = "left"
+                                        root.manager.current = "service_support"
+                                    pos_hint:{'center_x':.3,'center_y':.7}
+                                MDTextButton:
+                                    text: 'Support'
+                                    on_release:
+                                        root.manager.transition.direction = "left"
+                                        root.manager.current = "service_support"
+                                    font_name: "Roboto"
+                                    pos_hint:{'center_x':.5,'center_y':.7}
+                            MDBoxLayout:
+                                size_hint_y:None
+                                height:dp(40)
+                                MDIconButton:
+                                    icon: 'logout'
+                                    on_release: root.sign_out_button_action()
+                                    pos_hint:{'center_x':.5,'center_y':.7}
+                                MDTextButton:
+                                    text: 'Sign Out'
+                                    on_release: root.sign_out_button_action()
+                                    pos_hint:{'center_x':.5,'center_y':.7}
+                                    font_name: "Roboto"
+
+
+#----------------------------Service-Profile---------------------------------------------------------------
+<ServiceProfile>
+    name:'service_profile'
+    MDFloatLayout:
+        md_bg_color: rgba(246, 250, 255, 255)
+        ProfileCard:
+            size_hint_y: .65
+            pos_hint: {"center_y": .7}
+            elevation: 3
+            md_bg_color: 1, 1, 1, 1
+            radius: [0, 0, 20, 20]
+            MDIconButton:
+                icon: "arrow-left"
+                pos_hint: {"center_y": .91}
+                user_font_size: "20sp"
+                theme_text_color: "Custom"
+                text_color: rgba(34, 34, 34, 255)
+                on_release:
+                    root.manager.transition.direction = "right"
+                    root.manager.current = "service_provider_main_page"
+            MDIconButton:
+                icon: "dots-vertical"
+                pos_hint: {"center_x": .93, "center_y": .91}
+                user_font_size: "20sp"
+                theme_text_color: "Custom"
+                text_color: rgba(34, 34, 34, 255)
+            MDLabel:
+                text: "My Profile"
+                font_name: "Roboto-Bold"
+                font_size: "20sp"
+                pos_hint: {"center_x": .56, "center_y": .82}
+                color: rgba(34, 34, 34, 255)
+            MDFloatLayout:
+                orientation:'vertical'
+    #                pos_hint: {"center_x": .5, "center_y": .72}
+#                canvas:
+#                    Color:
+#                        rgb: 1, 1, 1
+#                    Ellipse:
+#                        pos: 140, 500
+#                        size: 110 , 110
+#                        source: 'images/hospital.png'
+#                        angle_start: 0
+#                        angle_end: 360
+                MDLabel:
+                    id: username
+                    text: "username"
+                    font_name: "Roboto"
+                    pos_hint: {"center_x": .66,"center_y": 1.09}
+                    color: rgba(34, 34, 34, 255)
+                MDLabel:
+                    id: email
+                    text: "clientemail@gmail.com"
+                    font_name: "Roboto"
+                    pos_hint: {"center_x": .66,"center_y": .97}
+                    color: rgba(34, 34, 34, 255)
+                MDLabel:
+                    id: phone
+                    text: "912*******"
+                    font_name: "Roboto"
+                    pos_hint: {"center_x": .66,"center_y": .85}
+                    color: rgba(34, 34, 34, 255)
+                MDLabel:
+                    id: pincode
+                    text: "56****"
+                    font_name: "Roboto"
+                    pos_hint: {"center_x": .66,"center_y": .73}
+                    color: rgba(34, 34, 34, 255)
+            MDFloatLayout:
+                md_bg_color: rgba(178, 178, 178, 255)
+                size_hint: .62, .002
+                pos_hint: {"center_x": .47, "center_y": .45}
+            MDFloatLayout:
+                md_bg_color: rgba(178, 178, 178, 255)
+                size_hint: .62, .002
+                pos_hint: {"center_x": .47, "center_y": .318}
+            MDFloatLayout:
+                md_bg_color: rgba(178, 178, 178, 255)
+                size_hint: .62, .002
+                pos_hint: {"center_x": .47, "center_y": .208}
+
+
+#----------------------Service-Notification-Page-----------------------
+
+<ServiceNotification>
+    name:'service_notification'
+    MDFloatLayout:
+        md_bg_color: rgba(246, 250, 255, 255)
+        MDIconButton:
+            icon: "arrow-left"
+            pos_hint: {"center_y": .94}
+            user_font_size: "20sp"
+            theme_text_color: "Custom"
+            text_color: rgba(34, 34, 34, 255)
+            on_release:
+                root.manager.transition.direction = "right"
+                root.manager.current = "service_provider_main_page"
+        MDIconButton:
+            icon: "dots-vertical"
+            pos_hint: {"center_x": .93, "center_y": .94}
+            user_font_size: "20sp"
+            theme_text_color: "Custom"
+            text_color: rgba(34, 34, 34, 255)
+
+        MDLabel:
+            text: "Notification"
+            font_name: "Roboto-Bold"
+            font_size: "20sp"
+            pos_hint: {"center_x": .56, "center_y": .88}
+            color: rgba(34, 34, 34, 255)
+        MDLabel:
+            text: "No current notifications"
+            font_size: "25sp"
+            halign:'center'
+            font_name: "Roboto"
+            pos_hint: {"center_x": .5, "center_y": .5}
+            color: rgba(94, 94, 94, 255)
+
+#-------------------------Service-Slot-Adding-Page----------------------------
+<ServiceSlotAdding>
+    name:'service_slot_adding'
+    MDIconButton:
+        icon: "arrow-left"
+        pos_hint: {"center_y": .94}
+        user_font_size: "20sp"
+        theme_text_color: "Custom"
+        text_color: rgba(34, 34, 34, 255)
+        on_release:
+            root.manager.transition.direction = "right"
+            root.manager.current = "service_provider_main_page"
+    MDIconButton:
+        icon: "dots-vertical"
+        pos_hint: {"center_x": .93, "center_y": .94}
+        user_font_size: "20sp"
+        theme_text_color: "Custom"
+        text_color: rgba(34, 34, 34, 255)
+
+    MDBoxLayout:
+        orientation: 'vertical'
+        size_hint_y: None
+        height: self.minimum_height
+#            MDTextField:
+#                id:slot_no
+#                hint_text: "Slot No"
+#        #                        required: True
+#                font_name: "Roboto"
+#                font_size: "14sp"
+#                pos_hint:{'center_x':.5}
+#                size_hint:.9,None
+#                height: "30dp"
+#                multiline: False
+#                color_mode: 'custom'
+#                line_color_focus: 0, 0, 0, 1
+#                text_color_focus:0,0,0,1
+#                hint_text_color:0,0,0,1
+#                hint_text_color_focus:0,0,0,.5
+#            MDTextField:
+#                id:add_date
+#                hint_text: "Date"
+#        #                        required: True
+#                font_name: "Roboto"
+#                font_size: "14sp"
+#                pos_hint:{'center_x':.5}
+#                size_hint:.9,None
+#                height: "30dp"
+#                multiline: False
+#                color_mode: 'custom'
+#                line_color_focus: 0, 0, 0, 1
+#                text_color_focus:0,0,0,1
+#                hint_text_color:0,0,0,1
+#                hint_text_color_focus:0,0,0,.5
+#                on_focus: root.show_date_picker(self)
+#            MDLabel:
+#                text:'Upload Slot Photos :'
+#                size_hint_y:.1
+#                font_size: "16sp"
+#            MDBoxLayout:
+#                orientation: 'horizontal'
+#                size_hint_y: None
+#                height: self.minimum_height
+#                padding:dp(20)
+#                spacing:dp(20)
+#
+#                MDFlatButton:
+#                    text: "Select File"
+#                    size_hint:None,None
+#                    height:dp(20)
+#                    width:dp(30)
+#                    on_release: root.file_manager_open()
+#                    pos_hint: {"center_x":.3,'center_y':.5}
+#                    background_color: 0, 0, 0, 0
+#                    font_name: "Roboto-Bold"
+#                    font_size: "12sp"
+#                    background_color: 0, 0, 0, 0
+#                    color: rgba(1, 1, 1, 255)
+#                    canvas.before:
+#                        Color:
+#                            rgb: rgba(255, 0, 0, 255)
+#                        Line:
+#                            width: 1.2
+#                            rounded_rectangle: self.x, self.y, self.width, self.height, 5, 5, 5, 5, 100
+#                MDFlatButton:
+#                    id: upload
+#                    text: "UPLOAD"
+#                    size_hint:None,None
+#                    height:dp(20)
+#                    width:dp(30)
+#                    pos_hint: {"center_x":.8,'center_y':.5}
+#                    background_color: 0, 0, 0, 0
+#                    font_name: "Roboto-Bold"
+#                    font_size: "12sp"
+#                    background_color: 0, 0, 0, 0
+#                    color: rgba(1, 1, 1, 255)
+#                    on_release: root.upload_file()
+#                    canvas.before:
+#                        Color:
+#                            rgb: rgba(255, 0, 0, 255)
+#                        Line:
+#                            width: 1.2
+#                            rounded_rectangle: self.x, self.y, self.width, self.height, 5, 5, 5, 5, 100
+#
+#            MDLabel:
+#                id: file_path
+#                text: "None selected"  # Initial text when no file is selected
+#        #                            font_name: "Roboto"
+#                italic: True
+#                color: 0.5, 0.5, 0.5, 1
+#                pos_hint: {"center_x": .5,'center_y':.4}
+#                size_hint_y: None
+#                height: "30dp"
+#
+#
+#            Button:
+#                id: solt_permission
+#                text: "GET PERMISSION"
+#                size_hint: .7,None
+#                height:dp(40)
+#                pos_hint: {"center_x": .5, "center_y": .34}
+#                background_color: 0, 0, 0, 0
+#                font_name: "Roboto-Bold"
+#                on_release:
+#                    root.solt_permission(self)
+#                canvas.before:
+#                    Color:
+#                        rgb: rgba(255, 0, 0, 255)
+#                    RoundedRectangle:
+#                        size: self.size
+#                        pos: self.pos
+#                        radius: [5]
+#----------------------------service-support-------------------------------------
+<ServiceSupport>
+    name:'service_support'
+    MDIconButton:
+        icon: "arrow-left"
+        pos_hint: {"center_y": .96}
+        user_font_size: "20sp"
+        theme_text_color: "Custom"
+        text_color: rgba(35, 35, 35, 255)
+        on_release:
+            root.manager.transition.direction = "right"
+            root.manager.current = "service_provider_main_page"
+
+    MDIconButton:
+        icon: "dots-vertical"
+        pos_hint: {"center_x": 0.9, "center_y": 0.96}
+        user_font_size: "20sp"
+        theme_text_color: "Custom"
+        text_color: rgba(35, 35, 35, 255)
+
+    MDLabel:
+        text: "Support"
+        font_name: "Roboto-Bold"
+        font_size: "20sp"
+        pos_hint: {"center_x": .55, "center_y":0.90}
+        color: rgba(35, 35, 35, 255)
+
+    OneLineIconListItem:
+        text: "Contact customer care"
+        pos_hint: {"center_x":0.55, "center_y":0.8}
+        on_release: app.show_customer_support_dialog()
+        IconLeftWidget:
+            icon: "face-agent"
+
+    OneLineIconListItem:
+        text: "Contact on-call Doctor"
+        pos_hint: {"center_x":0.55, "center_y":0.70}
+        on_release: app.show_doctor_dialog()
+        IconLeftWidget:
+            icon: "doctor"
+
+    MDLabel:
+        text: "Raise a ticket"
+        font_name: "Roboto-Bold"
+        font_size: "15sp"
+        pos_hint: {"center_x": .55, "center_y": .60}
+        color: rgba(35, 35, 35, 255)
+
+    TextInput:
+        id: issue_title
+        hint_text: "Issue Title"
+        font_name: "Roboto"
+        size_hint_y: 0.1
+        helper_text:'Required'
+        helper_text_mode:  'on_error'
+        required: True
+        pos_hint: {"center_x": .55, "center_y": .5}
+        background_color: 1, 1, 1, 0
+        foreground_color: rgba(0, 0, 59, 255)
+        cursor_color: rgba(35, 35, 35, 255)
+        font_size: "14sp"
+        cursor_width: "2sp"
+        multiline: False
+        write_tab: True
+        on_text_validate: app.clear_text_input()
+
+    TextInput:
+        id: issue_description
+        hint_text: "Issue description"
+        font_name: "Roboto"
+        size_hint_y: .1
+        helper_text:'Required'
+        helper_text_mode:  'on_error'
+        required: False
+        pos_hint: {"center_x": .55, "center_y": .4}
+        background_color: 1, 1, 1, 0
+        foreground_color: rgba(0, 0, 59, 255)
+        cursor_color: rgba(35, 35, 35, 255)
+        font_size: "14sp"
+        cursor_width: "2sp"
+        multiline: True
+        write_tab: True
+        on_text_validate: app.clear_text_input()
+
+    Button:
+        id: submit_ticket
+        text: "Submit Ticket"
+        size_hint: .5, .05
+        pos_hint: {"center_x": .3, "center_y": .2}
+        background_color: 0, 0, 0, 0
+        font_name: "Roboto-Bold"
+        canvas.before:
+            Color:
+                rgb: rgba(255, 0, 0, 255)
+            RoundedRectangle:
+                size: self.size
+                pos: self.pos
+                radius: [5]
+        on_release:
+            app.submit_ticket()
+            app.show_ticket_popup()
+
+
+<MDDialog>:
+    size_hint: 0.8, 0.3

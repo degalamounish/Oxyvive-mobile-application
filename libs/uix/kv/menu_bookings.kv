@@ -1,0 +1,29 @@
+<Booking>:
+    MDFloatLayout:
+        md_bg_color: rgba(246, 250, 255, 255)
+        MDIconButton:
+            icon: "arrow-left"
+            pos_hint: {"center_y": .94}
+            user_font_size: "20sp"
+            theme_text_color: "Custom"
+            text_color: rgba(34, 34, 34, 255)
+            on_release: root.booking_back()
+        MDIconButton:
+            icon: "dots-vertical"
+            pos_hint: {"center_x": .93, "center_y": .94}
+            user_font_size: "20sp"
+            theme_text_color: "Custom"
+            text_color: rgba(34, 34, 34, 255)
+        MDLabel:
+            text: "My Bookings"
+            font_name: "Roboto-Bold"
+            font_size: "20sp"
+            pos_hint: {"center_x": .56, "center_y": .88}
+            color: rgba(34, 34, 34, 255)
+        MDLabel:
+            text: "No Bookings right now"
+            font_size: "25sp"
+            halign:'center'
+            font_name: "Roboto"
+            pos_hint: {"center_x": .5, "center_y": .5}
+            color: rgba(94, 94, 94, 255)

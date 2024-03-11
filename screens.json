@@ -1,0 +1,122 @@
+{
+    "main_sc": {
+        "import": "from libs.uix.baseclass.main_sc import MainScreen",
+        "object": "MainScreen()",
+        "kv": "libs/uix/kv/main_sc.kv"
+    },
+    "login": {
+        "import": "from libs.uix.baseclass.login import Login",
+        "object": "Login()",
+        "kv": "libs/uix/kv/login.kv"
+    },
+    "signup": {
+        "import": "from libs.uix.baseclass.signup import Signup",
+        "object": "Signup()",
+        "kv": "libs/uix/kv/signup.kv"
+    },
+    "forgot_password": {
+        "import": "from libs.uix.baseclass.forgot_password import ForgotPassword",
+        "object": "ForgotPassword()",
+        "kv": "libs/uix/kv/forgot_password.kv"
+    },
+    "location": {
+        "import": "from libs.uix.baseclass.location import Location",
+        "object": "Location()",
+        "kv": "libs/uix/kv/location.kv"
+    },
+    "client_services": {
+        "import": "from libs.uix.baseclass.client_services import Client_services",
+        "object": "Client_services()",
+        "kv": "libs/uix/kv/client_services.kv"
+    },
+    "menu_profile": {
+        "import": "from libs.uix.baseclass.menu_profile import Profile",
+        "object": "Profile()",
+        "kv": "libs/uix/kv/menu_profile.kv"
+    },
+    "menu_bookings": {
+        "import": "from libs.uix.baseclass.menu_bookings import Booking",
+        "object": "Booking()",
+        "kv": "libs/uix/kv/menu_bookings.kv"
+    },
+    "menu_reports": {
+        "import": "from libs.uix.baseclass.menu_reports import Report",
+        "object": "Report()",
+        "kv": "libs/uix/kv/menu_reports.kv"
+    },
+    "menu_notification": {
+        "import": "from libs.uix.baseclass.menu_notification import Notification",
+        "object": "Notification()",
+        "kv": "libs/uix/kv/menu_notification.kv"
+    },
+    "menu_support": {
+        "import": "from libs.uix.baseclass.menu_support import SupportPage",
+        "object": "SupportPage()",
+        "kv": "libs/uix/kv/menu_support.kv"
+    },
+    "hospital_booking": {
+        "import": "from libs.uix.baseclass.hospital_booking import BookingInfo",
+        "object": "BookingInfo()",
+        "kv": "libs/uix/kv/hospital_booking.kv"
+    },
+    "slot_booking": {
+        "import": "from libs.uix.baseclass.slot_booking import Slot_Booking",
+        "object": "Slot_Booking()",
+        "kv": "libs/uix/kv/slot_booking.kv"
+    },
+    "payment_page": {
+        "import": "from libs.uix.baseclass.payment_page import Payment",
+        "object": "Payment()",
+        "kv": "libs/uix/kv/payment_page.kv"
+    },
+    "service_register_form1": {
+        "import": "from libs.uix.baseclass.service_register_form1 import ServiceRegisterForm1",
+        "object": "ServiceRegisterForm1()",
+        "kv": "libs/uix/kv/service_register_form1.kv"
+    },
+    "service_register_form2": {
+        "import": "from libs.uix.baseclass.service_register_form2 import ServiceRegisterForm2",
+        "object": "ServiceRegisterForm2()",
+        "kv": "libs/uix/kv/service_register_form2.kv"
+    },
+    "service_hospital": {
+        "import": "from libs.uix.baseclass.service_hospital import HospitalService",
+        "object": "HospitalService()",
+        "kv": "libs/uix/kv/service_hospital.kv"
+    },
+    "service_hospital_doc": {
+        "import": "from libs.uix.baseclass.service_hospital_doc import HospitalServiceDoc",
+        "object": "HospitalServiceDoc()",
+        "kv": "libs/uix/kv/service_hospital_doc.kv"
+    },
+    "service_mobile_hospital": {
+        "import": "from libs.uix.baseclass.service_mobile_hospital import MobileCareService",
+        "object": "MobileCareService()",
+        "kv": "libs/uix/kv/service_mobile_hospital.kv"
+    },
+    "service_mobile_hospital_doc": {
+        "import": "from libs.uix.baseclass.service_mobile_hospital_doc import MobileCareServiceDoc",
+        "object": "MobileCareServiceDoc()",
+        "kv": "libs/uix/kv/service_mobile_hospital_doc.kv"
+    },
+    "service_oxygym": {
+        "import": "from libs.uix.baseclass.service_oxygym import OxyGymService",
+        "object": "OxyGymService()",
+        "kv": "libs/uix/kv/service_oxygym.kv"
+    },
+    "service_oxygym_doc": {
+        "import": "from libs.uix.baseclass.service_oxygym_doc import OxyGymServiceDoc",
+        "object": "OxyGymServiceDoc()",
+        "kv": "libs/uix/kv/service_oxygym_doc.kv"
+    },
+    "services_list": {
+        "import": "from libs.uix.baseclass.services_list import ServicesList",
+        "object": "ServicesList()",
+        "kv": "libs/uix/kv/services_list.kv"
+    },
+    "Screen_name": {
+        "import": "",
+        "object": "()",
+        "kv": ""
+    }
+}

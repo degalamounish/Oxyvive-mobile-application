@@ -1,0 +1,303 @@
+<ServiceRegisterForm2>:
+    BoxLayout:
+        orientation: 'vertical'
+        Widget:
+            size_hint_y:.01
+        MDIconButton:
+            icon: "arrow-left"
+            pos_hint: {"center_y": .95}
+            user_font_size: "30sp"
+            theme_text_color: "Custom"
+            text_color: rgba(26, 24, 58, 255)
+            on_release: root.on_back_button()
+
+        ScrollView:
+            GridLayout:
+                id: grid
+                cols: 1
+                padding: dp(10)
+                spacing: dp(20)
+                size_hint_y: None
+                height: self.minimum_height
+
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: self.minimum_height
+
+                    MDLabel:
+                        text: "Select Service Provider Types"
+                        font_name: "Roboto"
+                        theme_text_color: "Custom"
+                        text_color: 0, 0, 0, 1
+                        pos_hint: {"center_y": .8}
+                        font_style: "H6"
+                        font_size: "18sp"
+                        halign: "center"
+                        valign: "middle"
+                        size_hint_y: None
+                        height: dp(30)
+                        canvas.before:
+                            Color:
+                                rgba: 1, 0, 0, 1
+                            Line:
+                                points: self.x, self.y, self.x + self.width, self.y
+                                width: 1.5
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: self.minimum_height
+                    padding: dp(10)
+                    spacing: dp(10)
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        font_name: "Roboto"
+                        pos_hint:{'center_x':.5}
+                        spacing:dp(10)
+                        size_hint:0.9,None
+                        height: "30dp"
+
+                        MDFlatButton:
+                            id: add_hospital_button
+                            size_hint: None, None
+                            pos_hint: { 'center_y': .5}
+                            halign: "center"
+                            valign: "center"
+                            spacing:0
+                            padding:0
+                            disabled: False
+                            on_release: root.manager.push("service_hospital")
+                            BoxLayout:
+                                orientation: 'horizontal'
+                                spacing:0
+                                padding:0
+                                MDIcon:
+                                    id: plus_icon_h
+                                    icon: "plus"
+                                    theme_text_color: "Custom"
+                                    text_color: 1, 0, 0, 1
+                                    size_hint_x: None
+                                    width: dp(24)
+                                MDLabel:
+                                    id: add_text_h
+                                    text: "Add"
+                                    font_name: "Roboto"
+                                    font_size:'16sp'
+                                    text_color: 1, 0, 0, 1
+                                    theme_text_color: "Custom"
+
+                        MDLabel:
+                            text: 'Oxy-Clinic'
+                            font_size:'16sp'
+                            font_name: "Roboto"
+#                            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                            halign: "center"
+#                            valign: "middle"
+
+
+
+                        MDCard:
+                            orientation: 'horizontal'
+                            size_hint: (None,None)
+                            width : "50dp"
+                            height : "30dp"
+                            halign: "center"
+                            valign: "middle"
+                            elevation: 0.5
+                            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                            BoxLayout:
+                                orientation: 'vertical'
+#                                size_hint: (0.5, 1)
+                                padding: dp(2)
+                                MDLabel:
+                                    id:hospitals_added
+                                    text: '0'
+                                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                                    halign: "center"
+                                    font_size:'16sp'
+                                    theme_text_color: "Custom"
+                                    text_color: 1, 0, 0, 1
+                                    font_name: "Roboto"
+
+                    Widget:  # Spacer widget for gap
+                        size_hint_y: None
+                        height: dp(20)
+
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        font_name: "Roboto"
+                        pos_hint:{'center_x':.5}
+                        spacing:dp(10)
+                        size_hint:0.9,None
+                        height: "30dp"
+
+                        MDFlatButton:
+                            id: add_mobile_hospital_button
+                            size_hint: None, None
+                            pos_hint: { 'center_y': .5}
+                            spacing:0
+                            padding:0
+                            disabled: False
+                            on_release: root.manager.push("service_mobile_hospital")
+                            BoxLayout:
+                                orientation: 'horizontal'
+                                spacing:0
+                                padding:0
+                                MDIcon:
+                                    id: plus_icon_w
+                                    icon: "plus"
+                                    theme_text_color: "Custom"
+                                    text_color: 1, 0, 0, 1
+                                    size_hint_x: None
+                                    width: dp(24)
+                                MDLabel:
+                                    id: add_text_w
+                                    text: "Add"
+                                    font_name: "Roboto"
+                                    font_size:'16sp'
+                                    text_color: 1, 0, 0, 1
+                                    theme_text_color: "Custom"
+
+                        MDLabel:
+                            text: 'Oxy-Wheel'
+                            font_size:'16sp'
+                            font_name: "Roboto"
+                            halign: "center"
+                            valign: "middle"
+
+
+                        MDCard:
+                            orientation: 'horizontal'
+                            size_hint: (None,None)
+                            width : "50dp"
+                            height : "30dp"
+#                            size : "10dp","10dp"
+                            elevation: 0.5
+                            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+                            BoxLayout:
+                                orientation: 'vertical'
+#                                size_hint: (0.5, 1)
+                                padding: dp(2)
+                                MDLabel:
+                                    id:wheels_added
+                                    text: '0'
+                                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                                    halign: "center"
+                                    font_size:'16sp'
+                                    theme_text_color: "Custom"
+                                    text_color: 1, 0, 0, 1
+                                    font_name: "Roboto"
+
+                    Widget:  # Spacer widget for gap
+                        size_hint_y: None
+                        height: dp(20)
+
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        font_name: "Roboto"
+                        pos_hint:{'center_x':.5}
+                        spacing:dp(10)
+                        size_hint:0.9,None
+                        height: "30dp"
+
+                        MDFlatButton:
+                            id: add_oxigym_button
+                            size_hint: None, None
+                            pos_hint: { 'center_y': .5}
+                            spacing:0
+                            padding:0
+                            disabled: False
+                            on_release: root.manager.push("service_oxygym")
+                            BoxLayout:
+                                orientation: 'horizontal'
+                                spacing:0
+                                padding:0
+                                MDIcon:
+                                    id: plus_icon_g
+                                    icon: "plus"
+                                    theme_text_color: "Custom"
+                                    text_color: 1, 0, 0, 1
+                                    size_hint_x: None
+                                    width: dp(24)
+                                MDLabel:
+                                    id: add_text_g
+                                    text: "Add"
+                                    font_name: "Roboto"
+                                    font_size:'16sp'
+                                    text_color: 1, 0, 0, 1
+                                    theme_text_color: "Custom"
+
+                        MDLabel:
+                            text: 'Oxy-Gym'
+                            font_size:'16sp'
+                            font_name: "Roboto"
+                            halign: "center"
+                            valign: "middle"
+
+
+                        MDCard:
+                            orientation: 'horizontal'
+                            size_hint: (None,None)
+                            width : "50dp"
+                            height : "30dp"
+                            elevation: 0.5
+                            pos_hint: {"center_x": 1, "center_y": 0.5}
+                            BoxLayout:
+                                orientation: 'vertical'
+#                                size_hint: (0.5, 1)
+                                padding: dp(2)
+                                MDLabel:
+                                    id:gyms_added
+                                    text: '0'
+                                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                                    halign: "center"
+                                    font_size:'16sp'
+                                    theme_text_color: "Custom"
+                                    text_color: 1, 0, 0, 1
+                                    font_name: "Roboto"
+
+
+                    MDRectangleFlatIconButton:
+                        icon:'table'
+                        text:'Preview'
+                        disabled: False
+                        size_hint: None, None
+                        size: dp(90), dp(35) # Adjusted size
+                        halign: "left"
+                        pos_hint: {'right': 1, 'y': 1}
+                        md_bg_color: 0, 0, 0, 0
+                        text_color:1,0,0,1
+                        icon_color:1,0,0,1
+                        fill_color_focus:1,1,1,1
+                        line_color:0,0,0,0
+                        on_release:root.manager.push('services_list')
+
+
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: dp(60)
+            padding: dp(10)
+            spacing: dp(10)
+            MDRoundFlatButton:
+                disabled: False
+                size_hint: .5, None
+                height:dp(40) # Adjusted size
+                pos_hint:{'center_x':.5,'center_y':.5}
+                md_bg_color: 1, 0, 0, 1
+                elevation: 10
+                text: "REGISTER"
+                font_name: "Roboto-Bold"
+                halign: "center"
+                text_color: 1, 1, 1, 1
+                line_color:0,0,0,0
+                theme_text_color: "Custom"
+                on_release: root.register()
+
+<HorizontalLineWidget>:
+    canvas:
+        Color:
+            rgba: 0.5, 0.5, 0.5, 1  # Set the color of the line (Blue in this example)
+        Line:
+            points: self.x, self.center_y, self.right, self.center_y  # Define the coordinates of the line

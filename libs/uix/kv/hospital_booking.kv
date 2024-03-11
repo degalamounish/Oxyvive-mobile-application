@@ -1,0 +1,130 @@
+<BookingInfo>:
+    MDNavigationLayout:
+        ScreenManager:
+            Screen:
+                BoxLayout:
+                    orientation: 'vertical'
+
+                    MDTopAppBar:
+                        md_bg_color: 1, 0, 0, 1
+                        left_action_items: [["arrow-left", lambda x: root.on_back_button()]]
+                    ScrollView:
+                        GridLayout:
+                            cols: 1
+                            spacing: dp(10)
+                            padding: dp(10)
+                            size_hint_y: None
+                            height: self.minimum_height
+
+                            MDLabel:
+                                id: organization_name
+                                text: "Hospital Name"
+                                font_name: "Roboto"
+                                theme_text_color: "Custom"
+                                text_color: 0, 0, 0, 1
+                                font_style: "H6"
+                                font_size: "24sp"
+                                halign: "center"
+                                valign: "middle"
+                                size_hint_y: None
+                                height: dp(40)
+
+                                canvas.before:
+                                    Color:
+                                        rgba: 0.5, 0.5, 0.5, 1
+                                    Line:
+                                        points: self.x, self.y, self.x + self.width, self.y
+                                        width: 3
+                            MDBoxLayout:
+                                orientation: 'horizontal'
+                                size_hint_y: None
+                                height: dp(30)
+
+                                MDIcon:
+                                    icon: "doctor"
+                                    theme_text_color: "Custom"
+                                    text_color: 1, 0, 0, 1  # Red color for the location icon
+                                    size_hint_x: None
+                                    width: dp(24)
+
+                                MDLabel:
+                                    text: "Doctor Name:"
+                                    font_name: "Roboto"
+                                    theme_text_color: "Custom"
+                                    text_color: 0, 0, 0, 1
+
+
+                            MDBoxLayout:
+                                orientation: 'horizontal'
+                                size_hint_y: None
+                                height: dp(30)
+
+                                MDIcon:
+                                    icon: "phone"
+                                    theme_text_color: "Custom"
+                                    text_color: 1, 0, 0, 1
+                                    size_hint_x: None
+                                    width: dp(24)
+
+                                MDLabel:
+                                    text: "Number"
+                                    font_name: "Roboto"
+                                    theme_text_color: "Custom"
+                                    text_color: 0, 0, 0, 1
+
+                            MDBoxLayout:
+                                orientation: 'horizontal'
+                                size_hint_y: None
+                                height: dp(30)
+
+
+                                MDIcon:
+                                    icon: "clock"
+                                    theme_text_color: "Custom"
+                                    text_color: 1, 0, 0, 1
+                                    size_hint_x: None
+                                    width: dp(24)
+                                MDLabel:
+                                    text: "9am to 9pm "
+                                    font_name: "Roboto"
+                                    theme_text_color: "Custom"
+                                    text_color: 0, 0, 0, 1
+
+
+
+                            MDBoxLayout:
+                                orientation: 'horizontal'
+                                size_hint_y: None
+                                height: dp(30)
+
+                                MDIcon:
+                                    icon: "map-marker"
+                                    theme_text_color: "Custom"
+                                    text_color: 1, 0, 0, 1
+                                    size_hint_x: None
+                                    width: dp(24)
+
+                                MDLabel:
+                                    id: organization_address
+                                    text: "Hospital Adresss:"
+                                    font_name: "Roboto"
+                                    theme_text_color: "Custom"
+                                    text_color: 0, 0, 0, 1
+                    Button:
+                        id: book_slot
+                        text: "Book Slot"
+                        size_hint_y:.1
+                        background_color: 0, 0, 0, 0
+                        font_name: "Roboto"
+                        bold: True
+                        on_release: root.manager.push("slot_booking")
+                        canvas.before:
+                            Color:
+                                rgb: rgba(255, 0, 0, 255)
+                            RoundedRectangle:
+                                size: self.size
+                                pos: self.pos
+                                radius: [0]
+
+
+

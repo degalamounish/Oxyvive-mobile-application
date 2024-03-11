@@ -1,0 +1,296 @@
+<CButton>:
+    size_hint: None, None
+    size: dp(90), dp(40) # Adjusted size
+    halign: "left"
+    pos_hint: {'x': 0, 'top': 1}
+#    pos_hint: {'right': 1, 'y': 0}
+    md_bg_color: 1, 1, 1, 1
+    elevation: 0
+    color_mode: "custom"
+    line_color: 0,0,0,0.1
+    on_release: root.Slot_Timing(slot_timing.text)
+    MDLabel:
+        id: slot_timing
+        text: root.label_text
+        font_name: "Roboto"
+        halign: "center"
+        font_size: sp(14)
+        color: 0.5, 0.5, 0.5, 1
+        theme_text_color: "Custom"
+
+#<Alert_Label>:
+#    text: "Oops! No more slots available for Today"
+#    font_name: "Roboto"
+#    size_hint_x: 1
+#    halign: "center"
+#    valign: "top"
+#    bold: True
+#    color: 1, 0, 0, 1
+#    pos_hint: {"top": 1, "center_x": 0.5}
+
+
+<Slot_Booking>:
+    previous_button: None
+    BoxLayout:
+        orientation: 'vertical'
+
+        MDIconButton:
+            icon: "arrow-left"
+            pos_hint: {"center_y": .91}
+            user_font_size: "20sp"
+            theme_text_color: "Custom"
+            text_color: rgba(71, 92, 119, 255)
+            on_release:
+                root.on_back_button(self)
+
+        ScrollView:
+            GridLayout:
+                cols: 1
+                spacing: dp(10)
+                padding: dp(10)
+                size_hint_y: None
+                height: self.minimum_height
+                BoxLayout:
+                    orientation: 'vertical'
+                    spacing: 0
+                    size_hint_y: None
+                    height: dp(100)
+
+                    MDCard:
+                        orientation: 'vertical'
+                        size_hint: None, None
+                        size: "280dp", "100dp"
+                        size_hint: (1, 1)
+                        elevation: 1
+                        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+                        MDLabel:
+                            text: "Book a Slot"
+                            font_name: "Roboto"
+                            size_hint_x: 1
+                            halign: "center"
+                            valign: "top"
+                            bold: True
+                            color: 1, 0, 0, 1
+                            pos_hint: {"top": 1, "center_x": 0.5}
+                            canvas:
+                                Color:
+                                    rgba: 0, 0, 0, 1  # Red color with RGBA values
+                                Line:
+                                    points: [self.x, self.y - 2, self.x + self.width, self.y - 2]
+                                    width: 1
+                        BoxLayout:
+                            orientation: 'vertical'
+                            spacing: 0
+                            size_hint_y: None
+                            height: dp(70)
+                            md_bg_color: 1, 1, 1, 1
+                            BoxLayout:
+                                size_hint: None, None
+                                size: dp(285), dp(70)
+                                pos_hint: {"center_x": 0.5, "center_y": 1}
+
+
+                                GridLayout:
+                                    cols: 4
+                                    spacing: dp(15)
+                                    size_hint_y: None
+                                    pos_hint: {"center_x": 0.5, "x": 0}
+                                    padding: dp(0),dp(10),dp(0),dp(10)
+                                    height: self.minimum_height
+
+                                    MDRaisedButton:
+                                        id: button1
+                                        size_hint: None, None
+                                        valign: "center"
+                                        size: dp(60), dp(45)
+                                        md_bg_color: 1, 1, 1, 1
+                                        line_color: 1, 0, 0, 1
+                                        line_width: "1dp"
+                                        elevation: 0
+                                        on_release: root.Book_Slot(self,day1.text,date1.text)
+                                        BoxLayout:
+                                            orientation: "vertical"
+                                            padding: dp(5)
+                                            spacing: dp(20)
+                                            Label:
+                                                id: day1
+                                                text: ""
+                                                bold: True
+                                                halign: "center"
+                                                color: 0, 0, 0, 0.7
+                                                height: self.texture_size[1]
+                                            Label:
+                                                id: date1
+                                                text: ""
+                                                bold: True
+                                                halign: "center"
+                                                color: 0, 0, 0, 0.7
+                                                height: self.texture_size[1]
+                                    MDRaisedButton:
+                                        id: button2
+                                        size_hint: None, None
+                                        valign: "center"
+                                        size: dp(60), dp(45)
+                                        md_bg_color: 1, 1, 1, 1
+                                        line_color: 1, 0, 0, 1
+                                        line_width: "1dp"
+                                        elevation: 0
+                                        on_release: root.Book_Slot(self,day2.text,date2.text)
+                                        BoxLayout:
+                                            orientation: "vertical"
+                                            padding: dp(5)
+                                            spacing: dp(20)
+                                            Label:
+                                                id: day2
+                                                text: ""
+                                                bold: True
+                                                halign: "center"
+                                                color: 0, 0, 0, 0.7
+                                                height: self.texture_size[1]
+                                            Label:
+                                                id: date2
+                                                text: ""
+                                                bold: True
+                                                halign: "center"
+                                                color: 0, 0, 0, 0.7
+                                                height: self.texture_size[1]
+
+                                    MDRaisedButton:
+                                        id: button3
+                                        size_hint: None, None
+                                        valign: "center"
+                                        size: dp(60), dp(45)
+                                        md_bg_color: 1, 1, 1, 1
+                                        line_color: 1, 0, 0, 1
+                                        line_width: "1dp"
+                                        elevation: 0
+                                        on_release: root.Book_Slot(self,day3.text,date3.text)
+                                        BoxLayout:
+                                            orientation: "vertical"
+                                            padding: dp(5)
+                                            spacing: dp(20)
+                                            Label:
+                                                id: day3
+                                                text: ""
+                                                bold: True
+                                                halign: "center"
+                                                color: 0, 0, 0, 0.7
+                                                height: self.texture_size[1]
+                                            Label:
+                                                id: date3
+                                                text: ""
+                                                bold: True
+                                                halign: "center"
+                                                color: 0, 0, 0, 0.7
+                                                height: self.texture_size[1]
+                                    MDRaisedButton:
+                                        id: button4
+                                        size_hint: None, None
+                                        valign: "center"
+                                        size: dp(60), dp(45)
+                                        md_bg_color: 1, 1, 1, 1
+                                        line_color: 1, 0, 0, 1
+                                        line_width: "1dp"
+                                        elevation: 0
+                                        on_release: root.Book_Slot(self,day4.text,date4.text)
+                                        BoxLayout:
+                                            orientation: "vertical"
+                                            padding: dp(5)
+                                            spacing: dp(20)
+                                            Label:
+                                                id: day4
+                                                text: ""
+                                                bold: True
+                                                halign: "center"
+                                                color: 0, 0, 0, 0.7
+                                                height: self.texture_size[1]
+                                            Label:
+                                                id: date4
+                                                text: ""
+                                                bold: True
+                                                halign: "center"
+                                                color: 0, 0, 0, 0.7
+                                                height: self.texture_size[1]
+                BoxLayout:
+                    orientation: 'vertical'
+                    spacing: 0
+                    size_hint_y: None
+                    height: card.height
+
+                    MDCard:
+                        id:card
+                        orientation: 'vertical'
+                        size_hint: None, None
+                        spacing: 5
+                        padding: dp(0),dp(0),dp(0),dp(5)
+                        size: "280dp",text_box.height + box_main.height+10
+                        size_hint: (1, 1)
+                        elevation: 1
+                        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+                        BoxLayout:
+                            id: text_box
+                            orientation: 'horizontal'
+                            padding: dp(2)
+                            size_hint_y: None
+                            height: "30dp"
+                            pos_hint: {"top": 1}
+
+                            MDLabel:
+                                id: available_slots_alert
+                                text: "Choose a Day"
+                                font_name: "Roboto"
+                                size_hint_x: 1
+                                halign: "center"
+                                valign: "top"
+#                                padding: dp(20)
+                                bold: True
+                                color: 1, 0, 0, 1
+                                canvas:
+                                    Color:
+                                        rgba: 0, 0, 0, 1
+                                    Line:
+                                        points: [self.x, self.y - 2, self.x + self.width, self.y - 2]
+                                        width: 1
+
+                        BoxLayout:
+                            id: box_main
+                            orientation: 'vertical'
+                            spacing: 0
+                            size_hint_y: None
+                            padding: dp(10),dp(0),dp(10),dp(0)
+                            height: child.height
+                            BoxLayout:
+                                id: child
+                                size_hint: None, None
+                                size: dp(290), CButton.height
+                                pos_hint: {"center_x": 0.5, "center_y": 0}
+                                GridLayout:
+                                    cols: 3
+                                    spacing: dp(10)
+                                    size_hint_y: None
+                                    pos_hint: {"center_x": 0.5, "x": 0}
+                                    height: self.minimum_height
+                                    id:CButton
+
+
+
+
+
+        Button:
+            id: book_slot
+            text: "Pay Now"
+            size_hint_y:.1
+            background_color: 0, 0, 0, 0
+            font_name: "Roboto"
+            bold: True
+            on_release:
+                root.pay_now(self)
+            canvas.before:
+                Color:
+                    rgb: rgba(255, 0, 0, 255)
+                RoundedRectangle:
+                    size: self.size
+                    pos: self.pos
+                    radius: [0]
