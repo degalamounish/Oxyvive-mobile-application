@@ -22,8 +22,8 @@ class ServiceRegisterForm2(MDScreen):
     def __init__(self, **kwargs):
         super(ServiceRegisterForm2, self).__init__(**kwargs)
         Window.bind(on_keyboard=self.on_keyboard)
-        # self.server = Server()
-        anvil.server.connect("server_VL2UZDSYOLIQMHPWT2MEQGTG-3VWJQYM6QFUZ2UGR")
+        self.server = Server()
+        # anvil.server.connect("server_VL2UZDSYOLIQMHPWT2MEQGTG-3VWJQYM6QFUZ2UGR")
 
     def on_keyboard(self, instance, key, scancode, codepoint, modifier):
         if key == 27:  # Keycode for the back button on Android
