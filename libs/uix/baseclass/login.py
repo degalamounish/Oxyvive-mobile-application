@@ -1,5 +1,6 @@
 import json
 
+import bcrypt
 from anvil.tables import app_tables
 from kivy.core.window import Window
 from kivymd.uix.screen import MDScreen
@@ -21,7 +22,7 @@ class Login(MDScreen):
         return False
 
     def on_back_button(self):
-        self.manager.push_replacement("main_sc","right")
+        self.manager.push_replacement("main_sc", "right")
 
     # def google_sign_in(self):
     #     # Set up the OAuth 2.0 client ID and client secret obtained from the Google Cloud Console
@@ -74,17 +75,18 @@ class Login(MDScreen):
     #
     #     return token_data
 
-
     def login_page(self, instance, *args):
+        password_value = False
+        password_value2 = False
         email = self.ids.login_email.text
-        password = self.ids.login_password.text
-        if len(email) == 0 and len(password) == 0:
+        entered_password = self.ids.login_password.text
+        if len(email) == 0 and len(entered_password) == 0:
             # Login failed
             self.ids.login_email.error = True
             self.ids.login_email.helper_text = "Invalid email or password"
             self.ids.login_password.error = True
             print("Enter Email and Password")
-        elif len(email) >= 0 and len(password) >= 0:
+        elif len(email) >= 0 and len(entered_password) >= 0:
             user_anvil = None
             user_sqlite = None
             try:
@@ -92,15 +94,14 @@ class Login(MDScreen):
                     # Fetch user from Anvil's database
                     user_anvil = app_tables.users.get(
                         email=email,
-                        password=password,
                     )
                 else:
                     # Fetch user from SQLite database
                     cursor = self.server.get_database_connection().cursor()
                     cursor.execute('''
-                                SELECT * FROM users
-                                WHERE email = ? AND password = ?
-                            ''', (email, password))
+                                    SELECT * FROM users
+                                    WHERE email = ? 
+                                    ''', (email,))
                     user_sqlite = cursor.fetchone()
             finally:
                 # Close the connection
@@ -108,33 +109,42 @@ class Login(MDScreen):
                     self.server.get_database_connection().close()
 
             if user_anvil or user_sqlite:
-                print("Login successful.")
-                self.manager.push("client_services")
-                if user_anvil:
-                    username = str(user_anvil["username"])
-                    email = str(user_anvil["email"])
-                    password = str(user_anvil["password"])
-                    phone = str(user_anvil["phone"])
-                    pincode = str(user_anvil["pincode"])
-                if user_sqlite:
-                    username = user_sqlite[1]
-                    email = user_sqlite[2]
-                    password = user_sqlite[3]
-                    phone = user_sqlite[4]
-                    pincode = user_sqlite[0]
-                    print(f"hi {username}")
-                logged_in = True
-                self.manager.load_screen("menu_profile")
-                logged_in_data = {'logged_in': logged_in}
-                user_info = {'username': username, 'email': email, 'phone': phone, 'pincode': pincode,
-                             'password': password}
-                with open("logged_in_data.json", "w") as json_file:
-                    json.dump(logged_in_data, json_file)
-                with open("user_data.json", "w") as json_file:
-                    json.dump(user_info, json_file)
-                screen = self.manager.get_screen("client_services")
-                screen.ids.username.text = user_info['username']
-                screen.ids.email.text = user_info['email']
+                if user_anvil is not None:
+                    password_value = bcrypt.checkpw(entered_password.encode('utf-8'),
+                                                    user_anvil['password'].encode('utf-8'))
+                if user_sqlite is not None:
+                    password_value2 = bcrypt.checkpw(entered_password.encode('utf-8'),
+                                                     user_sqlite[3].encode('utf-8'))
+                print('Password : ', password_value)
+                print('Password : ', password_value2)
+                if password_value or password_value2:
+                    print("Login successful.")
+                    self.manager.push("client_services")
+                    if user_anvil:
+                        username = str(user_anvil["username"])
+                        email = str(user_anvil["email"])
+                        password = str(user_anvil["password"])
+                        phone = str(user_anvil["phone"])
+                        pincode = str(user_anvil["pincode"])
+                    if user_sqlite:
+                        username = user_sqlite[1]
+                        email = user_sqlite[2]
+                        password = user_sqlite[3]
+                        phone = user_sqlite[4]
+                        pincode = user_sqlite[0]
+                        print(f"hi {username}")
+                    logged_in = True
+                    self.manager.load_screen("menu_profile")
+                    logged_in_data = {'logged_in': logged_in}
+                    user_info = {'username': username, 'email': email, 'phone': phone, 'pincode': pincode,
+                                 'password': password}
+                    with open("logged_in_data.json", "w") as json_file:
+                        json.dump(logged_in_data, json_file)
+                    with open("user_data.json", "w") as json_file:
+                        json.dump(user_info, json_file)
+                    screen = self.manager.get_screen("client_services")
+                    screen.ids.username.text = user_info['username']
+                    screen.ids.email.text = user_info['email']
 
             else:
                 # Login failed
