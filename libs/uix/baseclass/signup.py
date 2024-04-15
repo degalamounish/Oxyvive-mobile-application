@@ -1,4 +1,6 @@
 import re
+
+import bcrypt
 from anvil.tables import app_tables
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -94,6 +96,10 @@ class Signup(MDScreen):
         phone = self.ids.signup_phone.text
         pincode = self.ids.signup_pincode.text
 
+        hash_pashword = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        hash_pashword = hash_pashword.decode('utf-8')
+        print("hash_pashword  : ", hash_pashword)
+
         # Validation logic
         email_regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
         # Enhanced password validation
@@ -159,7 +165,7 @@ class Signup(MDScreen):
                             id=id,
                             username=username,
                             email=email,
-                            password=password,
+                            password=hash_pashword,
                             phone=float(phone),
                             pincode=int(pincode))
 
@@ -169,7 +175,7 @@ class Signup(MDScreen):
                             cursor.execute('''
                                             INSERT INTO users (username, email, password, phone, pincode)
                                             VALUES (?, ?, ?, ?, ?)
-                                        ''', (username, email, password, phone, pincode))
+                                        ''', (username, email, hash_pashword, phone, pincode))
                             connection.commit()
                         # Navigate to the success screen
                         self.manager.push("login")
