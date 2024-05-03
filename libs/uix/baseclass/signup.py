@@ -162,7 +162,7 @@ class Signup(MDScreen):
                         # Get the number of rows
                         id = len(rows) + 1
                         app_tables.users.add_row(
-                            id=id,
+                            id=str(id),
                             username=username,
                             email=email,
                             password=hash_pashword,
