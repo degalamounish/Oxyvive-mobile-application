@@ -7,7 +7,6 @@ from kivy.core.window import Window
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.screen import MDScreen
-
 from server import Server
 
 class Signup(MDScreen):
@@ -148,6 +147,7 @@ class Signup(MDScreen):
 
             try:
                 if self.server.is_connected():
+                    print("connected")
                     # Check if email and phone already exist in the database
                     existing_email = app_tables.users.get(email=email)
                     existing_phone = app_tables.users.get(phone=float(phone))
@@ -162,7 +162,7 @@ class Signup(MDScreen):
                         # Get the number of rows
                         id = len(rows) + 1
                         app_tables.users.add_row(
-                            id=id,
+                            id=str(id),
                             username=username,
                             email=email,
                             password=hash_pashword,

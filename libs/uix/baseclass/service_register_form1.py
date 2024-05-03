@@ -4,11 +4,17 @@ import sqlite3
 import random
 import string
 
+import bcrypt
 from kivy import platform
 from kivy.core.window import Window
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.dialog import MDDialog
 from kivymd.uix.screen import MDScreen
 from kivy.properties import BooleanProperty
 from kivy.clock import Clock
+
+from server import Server
+from anvil.tables import app_tables
 
 conn = sqlite3.connect("users.db")
 cursor = conn.cursor()
@@ -68,16 +74,28 @@ class ServiceRegisterForm1(MDScreen):
         super(ServiceRegisterForm1, self).__init__(**kwargs)
         Window.bind(on_keyboard=self.on_keyboard)
         Clock.schedule_interval(self.auto_validate, 0.5)
+        self.server = Server()
         if platform == 'android':
             from android.permissions import request_permissions, Permission
             request_permissions([Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE])
-
 
     def on_keyboard(self, instance, key, scancode, codepoint, modifier):
         if key == 27:  # Keycode for the back button on Android
             self.on_back_button()
             return True
         return False
+
+    def show_validation_dialog(self, message):
+        # Create the dialog asynchronously
+        Clock.schedule_once(lambda dt: self._create_dialog(message), 0)
+
+    def _create_dialog(self, message):
+        dialog = MDDialog(
+            text=f"{message}",
+            elevation=0,
+            buttons=[MDFlatButton(text="OK", on_release=lambda x: dialog.dismiss())],
+        )
+        dialog.open()
 
     def on_back_button(self):
         self.manager.push_replacement("signup", "right")
@@ -124,6 +142,10 @@ class ServiceRegisterForm1(MDScreen):
         random_code = self.generate_random_code()
         print(random_code)
 
+        hash_pashword = bcrypt.hashpw(service_provider_password.encode('utf-8'), bcrypt.gensalt())
+        hash_pashword = hash_pashword.decode('utf-8')
+        print("hash_pashword  : ", hash_pashword)
+
         # Validation logic
         email_regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
         is_valid_password, password_error_message = self.validate_password(service_provider_password)
@@ -152,10 +174,45 @@ class ServiceRegisterForm1(MDScreen):
         else:
             service_register_data = {'id': random_code, 'name': service_provider_name, 'email': service_provider_email,
                                      'phone': service_provider_phoneno, 'address': service_provider_address,
-                                     'password': service_provider_password, }
+                                     'password': hash_pashword, }
             with open("service_register_data.json", "w") as json_file:
                 json.dump(service_register_data, json_file)
-            self.manager.push("service_register_form2")
+            try:
+                print("Entering")
+                if self.server.is_connected():
+                    # Check if email and phone already exist in the database
+                    existing_email = app_tables.users.get(email=service_provider_email)
+                    existing_phone = app_tables.users.get(phone=float(service_provider_phoneno))
+
+                    if existing_email:
+                        print("email")
+                        self.ids.service_provider_email.error = True
+                        self.ids.service_provider_email.helper_text = "Email already registered"
+                        self.ids.service_provider_email.required = True
+
+                    elif existing_phone:
+                        self.ids.service_provider_phoneno.error = True
+                        self.ids.service_provider_phoneno.helper_text = "Phone number already registered"
+                        self.ids.service_provider_phoneno.required = True
+
+                    else:
+                        print("table")
+                        app_tables.users.add_row(
+                            username=service_provider_name,
+                            id=random_code,
+                            email=service_provider_email,
+                            password=hash_pashword,
+                            phone=int(service_provider_phoneno),
+                            address=service_provider_address,
+                            usertype='service provider')
+
+                        self.manager.push("service_register_form2")
+                else:
+                    self.show_validation_dialog("No internet connection")
+
+            except Exception as e:
+                print(e)
+                self.show_validation_dialog("Error processing user data")
 
     # password validation
     def validate_password(self, password):
@@ -189,5 +246,3 @@ class ServiceRegisterForm1(MDScreen):
         code = prefix + random_numbers
 
         return code
-
-

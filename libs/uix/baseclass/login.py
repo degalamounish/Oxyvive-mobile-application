@@ -4,8 +4,8 @@ import bcrypt
 from anvil.tables import app_tables
 from kivy.core.window import Window
 from kivymd.uix.screen import MDScreen
-
-from libs.uix.root import Root
+#
+# from libs.uix.root import Root
 from server import Server
 
 
@@ -76,6 +76,7 @@ class Login(MDScreen):
     #     return token_data
 
     def login_page(self, instance, *args):
+        user_type = None
         password_value = False
         password_value2 = False
         email = self.ids.login_email.text
@@ -88,6 +89,7 @@ class Login(MDScreen):
             print("Enter Email and Password")
         elif len(email) >= 0 and len(entered_password) >= 0:
             user_anvil = None
+            user_sp_anvil = None
             user_sqlite = None
             try:
                 if self.server.is_connected():
@@ -95,6 +97,11 @@ class Login(MDScreen):
                     user_anvil = app_tables.users.get(
                         email=email,
                     )
+                    # user_sp_anvil = app_tables.users.get(
+                    #     email=email,
+                    #     password=entered_password,
+                    #     usertype='service provider'
+                    # )
                 else:
                     # Fetch user from SQLite database
                     cursor = self.server.get_database_connection().cursor()
@@ -112,39 +119,47 @@ class Login(MDScreen):
                 if user_anvil is not None:
                     password_value = bcrypt.checkpw(entered_password.encode('utf-8'),
                                                     user_anvil['password'].encode('utf-8'))
+                    user_type = user_anvil['usertype']
                 if user_sqlite is not None:
                     password_value2 = bcrypt.checkpw(entered_password.encode('utf-8'),
                                                      user_sqlite[3].encode('utf-8'))
                 print('Password : ', password_value)
                 print('Password : ', password_value2)
-                if password_value or password_value2:
-                    print("Login successful.")
-                    self.manager.push("client_services")
-                    if user_anvil:
-                        username = str(user_anvil["username"])
-                        email = str(user_anvil["email"])
-                        password = str(user_anvil["password"])
-                        phone = str(user_anvil["phone"])
-                        pincode = str(user_anvil["pincode"])
-                    if user_sqlite:
-                        username = user_sqlite[1]
-                        email = user_sqlite[2]
-                        password = user_sqlite[3]
-                        phone = user_sqlite[4]
-                        pincode = user_sqlite[0]
-                        print(f"hi {username}")
-                    logged_in = True
-                    self.manager.load_screen("menu_profile")
-                    logged_in_data = {'logged_in': logged_in}
-                    user_info = {'username': username, 'email': email, 'phone': phone, 'pincode': pincode,
-                                 'password': password}
-                    with open("logged_in_data.json", "w") as json_file:
-                        json.dump(logged_in_data, json_file)
-                    with open("user_data.json", "w") as json_file:
-                        json.dump(user_info, json_file)
-                    screen = self.manager.get_screen("client_services")
-                    screen.ids.username.text = user_info['username']
-                    screen.ids.email.text = user_info['email']
+                if user_type == None:
+                    if password_value or password_value2:
+                        print("Login successful.")
+                        self.manager.push("client_services")
+                        if user_anvil:
+                            username = str(user_anvil["username"])
+                            email = str(user_anvil["email"])
+                            password = str(user_anvil["password"])
+                            phone = str(user_anvil["phone"])
+                            pincode = str(user_anvil["pincode"])
+                        if user_sqlite:
+                            username = user_sqlite[1]
+                            email = user_sqlite[2]
+                            password = user_sqlite[3]
+                            phone = user_sqlite[4]
+                            pincode = user_sqlite[0]
+                            print(f"hi {username}")
+                        logged_in = True
+                        self.manager.load_screen("menu_profile")
+                        logged_in_data = {'logged_in': logged_in}
+                        user_info = {'username': username, 'email': email, 'phone': phone, 'pincode': pincode,
+                                     'password': password}
+                        with open("logged_in_data.json", "w") as json_file:
+                            json.dump(logged_in_data, json_file)
+                        with open("user_data.json", "w") as json_file:
+                            json.dump(user_info, json_file)
+                        screen = self.manager.get_screen("client_services")
+                        screen.ids.username.text = user_info['username']
+                        screen.ids.email.text = user_info['email']
+                elif user_type == 'service provider':
+                    # if user_anvil is not None:
+                    #     password_value = bcrypt.checkpw(entered_password.encode('utf-8'),
+                    #                                     user_anvil['password'].encode('utf-8'))
+                    self.manager.push("servicer_dashboard")
+
 
             else:
                 # Login failed
