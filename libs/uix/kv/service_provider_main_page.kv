@@ -200,15 +200,11 @@
 
                                 MDIconButton:
                                     icon: 'account-circle'
-                                    on_release:
-                                        root.manager.transition.direction = "left"
-                                        root.manager.current = "service_profile"
+                                    on_release:root.manager.push_replacement("servicer_profile", "left")
                                     pos_hint:{'center_x':.3,'center_y':.7}
                                 MDTextButton:
                                     text: 'Profile'
-                                    on_release:
-                                        root.manager.transition.direction = "left"
-                                        root.manager.current = "service_profile"
+                                    on_release:root.manager.push_replacement("servicer_profile", "left")
                                     font_name: "Roboto"
                                     pos_hint:{'center_x':.3,'center_y':.7}
                             MDBoxLayout:
@@ -216,15 +212,11 @@
                                 height:dp(40)
                                 MDIconButton:
                                     icon: 'bell-outline'
-                                    on_release:
-                                        root.manager.transition.direction = "left"
-                                        root.manager.current = "service_notification"
+                                    on_release:root.manager.push_replacement("servicer_notification", "left")
                                     pos_hint:{'center_x':.3,'center_y':.7}
                                 MDTextButton:
                                     text: 'Notification'
-                                    on_release:
-                                        root.manager.transition.direction = "left"
-                                        root.manager.current = "service_notification"
+                                    on_release:root.manager.push_replacement("servicer_notification", "left")
                                     font_name: "Roboto"
                                     pos_hint:{'center_x':.3,'center_y':.7}
                             MDBoxLayout:
@@ -232,15 +224,11 @@
                                 height:dp(40)
                                 MDIconButton:
                                     icon: 'book-account-outline'
-                                    on_release:
-                                        root.manager.transition.direction = "left"
-                                        root.manager.current = "service_slot_adding"
+                                    on_release:root.manager.push_replacement("servicer_add_service", "left")
                                     pos_hint:{'center_x':.3,'center_y':.7}
                                 MDTextButton:
                                     text: 'Slots'
-                                    on_release:
-                                        root.manager.transition.direction = "left"
-                                        root.manager.current = "service_slot_adding"
+                                    on_release:root.manager.push_replacement("servicer_add_service", "left")
                                     halign: 'center'
                                     font_name: "Roboto"
                                     pos_hint:{'center_x':.3,'center_y':.7}
@@ -258,15 +246,11 @@
                                 height:dp(40)
                                 MDIconButton:
                                     icon: 'headphones'
-                                    on_release:
-                                        root.manager.transition.direction = "left"
-                                        root.manager.current = "service_support"
+                                    on_release:root.manager.push_replacement("servicer_support", "left")
                                     pos_hint:{'center_x':.3,'center_y':.7}
                                 MDTextButton:
                                     text: 'Support'
-                                    on_release:
-                                        root.manager.transition.direction = "left"
-                                        root.manager.current = "service_support"
+                                    on_release:root.manager.push_replacement("servicer_support", "left")
                                     font_name: "Roboto"
                                     pos_hint:{'center_x':.5,'center_y':.7}
                             MDBoxLayout:
@@ -288,34 +272,35 @@
     name:'service_profile'
     MDFloatLayout:
         md_bg_color: rgba(246, 250, 255, 255)
-        ProfileCard:
+        MDCard:
             size_hint_y: .65
             pos_hint: {"center_y": .7}
             elevation: 3
             md_bg_color: 1, 1, 1, 1
             radius: [0, 0, 20, 20]
-            MDIconButton:
-                icon: "arrow-left"
-                pos_hint: {"center_y": .91}
-                user_font_size: "20sp"
-                theme_text_color: "Custom"
-                text_color: rgba(34, 34, 34, 255)
-                on_release:
-                    root.manager.transition.direction = "right"
-                    root.manager.current = "service_provider_main_page"
-            MDIconButton:
-                icon: "dots-vertical"
-                pos_hint: {"center_x": .93, "center_y": .91}
-                user_font_size: "20sp"
-                theme_text_color: "Custom"
-                text_color: rgba(34, 34, 34, 255)
+            MDBoxLayout:
+                MDIconButton:
+                    icon: "arrow-left"
+                    pos_hint: {"center_y": .91}
+                    user_font_size: "20sp"
+                    theme_text_color: "Custom"
+                    text_color: rgba(34, 34, 34, 255)
+                    on_release:
+                        root.manager.transition.direction = "right"
+                        root.manager.current = "service_provider_main_page"
+                MDIconButton:
+                    icon: "dots-vertical"
+                    pos_hint: {"center_x": .93, "center_y": .91}
+                    user_font_size: "20sp"
+                    theme_text_color: "Custom"
+                    text_color: rgba(34, 34, 34, 255)
             MDLabel:
                 text: "My Profile"
                 font_name: "Roboto-Bold"
                 font_size: "20sp"
                 pos_hint: {"center_x": .56, "center_y": .82}
                 color: rgba(34, 34, 34, 255)
-            MDFloatLayout:
+            MDBoxLayout:
                 orientation:'vertical'
     #                pos_hint: {"center_x": .5, "center_y": .72}
 #                canvas:
