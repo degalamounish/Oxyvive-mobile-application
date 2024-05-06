@@ -1,7 +1,11 @@
+import base64
 import json
+from io import BytesIO
 
 import bcrypt
+import requests
 from anvil.tables import app_tables
+from kivy.atlas import CoreImage
 from kivy.core.window import Window
 from kivymd.uix.screen import MDScreen
 #
@@ -155,10 +159,27 @@ class Login(MDScreen):
                         screen.ids.username.text = user_info['username']
                         screen.ids.email.text = user_info['email']
                 elif user_type == 'service provider':
-                    # if user_anvil is not None:
-                    #     password_value = bcrypt.checkpw(entered_password.encode('utf-8'),
-                    #                                     user_anvil['password'].encode('utf-8'))
-                    self.manager.push("servicer_dashboard")
+                    if password_value:
+                        self.manager.push("servicer_dashboard")
+                        if user_anvil:
+                            username = str(user_anvil["username"])
+                            email = str(user_anvil["email"])
+                            phone = str(user_anvil["phone"])
+                            pincode = str(user_anvil["pincode"])
+                            profile_data = user_anvil['profile'].get_bytes()  # Example method to get image bytes
+                            profile_data = base64.b64encode(profile_data).decode('utf-8')
+                            id = user_anvil["id"]
+                        user_info = {'username': username, 'email': email, 'phone': phone, 'pincode': pincode,
+                                     'profile': profile_data, 'id': id}
+                        with open("user_data.json", "w") as json_file:
+                            json.dump(user_info, json_file)
+                        screen = self.manager.get_screen("servicer_dashboard")
+                        screen.ids.srv_username.text = user_info['username']
+                        screen.ids.srv_email.text = user_info['email']
+                        profile_texture = base64.b64decode(profile_data)
+                        profile_texture_io = BytesIO(profile_texture)
+                        profile_texture_obj = CoreImage(profile_texture_io, ext='png').texture
+                        screen.ids.profile_image.texture = profile_texture_obj
 
 
             else:
