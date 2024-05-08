@@ -1,5 +1,6 @@
 <ServiceProviderMain>:
     name: "service_provider_main_page"
+    customer_list: customer_list_id
 
     MDNavigationLayout:
         ScreenManager:
@@ -56,83 +57,170 @@
                                             size_hint_y: None
                                             height: dp(20)
                                             pos_hint: {'center_x': 0.5}
+                            BoxLayout:
+                                orientation: 'vertical'
+                                size_hint_y: None
+                                height: dp(40)
+                                md_bg_color: 1, 1, 1, 1
 
+                                MDCard:
+                                    orientation: 'vertical'
+                                    size_hint: None, None
+                                    size: "290dp", "40dp"
+                                    elevation: 2
+                                    pos_hint: {'center_x': 0.5, 'center_y': .5}
+
+                                    BoxLayout:
+                                        cols: 2
+                                        padding: dp(5)
+                                        spacing: dp(5)
+                                        size_hint_y: None
+                                        height: dp(40)
+                                        pos_hint: {'center_x': 0.5, 'center_y': .5}
+
+                                        MDLabel:
+                                            text: 'Date :'
+                                            halign: 'center'
+                                            font_name: 'Roboto'
+                                            theme_text_color: 'Custom'
+                                            text_color: 0, 0, 0, 1
+                                            size_hint_x: 0.5
+                                            size_hint_y: None
+                                            height: dp(20)
+                                            pos_hint: {'center_x': 0.5,'center_y': .5}
+                                        MDTextField:
+                                            id: extra_info2
+                                            text: ""
+                                            hint_text: "Choose Date"
+                                            halign: 'center'
+                                            font_name: 'Roboto'
+                                            theme_text_color: 'Custom'
+                                            text_color: 0, 0, 0, 1
+                                            size_hint_x: 0.5
+                                            size_hint_y: None
+                                            height: dp(20)
+                                            pos_hint: {'center_x': 0.5,'center_y': .5}
+                                            on_focus: if self.focus: root.show_date_picker(self)
+
+
+                            GridLayout:
+                                id: customer_list_id
+                                cols:1
+#                                size_hint_y: None
+#                                height: dp(200)
+#                                md_bg_color: 1, 1, 1, 1
+#                                MDCard:
+#                                    orientation: 'vertical'
+#                                    size_hint: None, None
+#                                    size: "290dp", "200dp"
+#                                    elevation: 2
+#                                    md_bg_color: 1, 1, 1, 1
+#                                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+#                                    GridLayout:
+#                                        id: inner_grid
+#                                        cols: 1
+#                                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+#                                        md_bg_color:1,0,0,1
+#                                        BoxLayout:
+#                                            size_hint_y: None
+#                                            height: dp(50)
+#                                            padding: "5dp"
+#                                            spacing: "5dp"
+#                                            pos_hint: {'center_x': 0.5}
+#                                            canvas.before:
+#                                                Color:
+#                                                    rgba: 1, 0, 0, 1
+#                                                Rectangle:
+#                                                    pos: self.pos
+#                                                    size: self.size
+#                                            BoxLayout:
+#                                                size_hint: None, None
+#                                                size: dp(50), dp(50)
+#                                                pos_hint: {'center_x': 0.5}
+#                                                canvas:
+#                                                    Color:
+#                                                        rgb: 1, 1, 1
+#                                                    Ellipse:
+#                                                        pos: self.pos
+#                                                        size: 50, 50
+#                                                        source: 'images/hospital.png'
+#                                                        angle_start: 0
+#                                                        angle_end: 360
+#
+#                                            BoxLayout:
+#                                                orientation: 'vertical'
+#                                                padding: "5dp"
+#                                                spacing: "10dp"
+#                                                pos_hint: {'center_x': 0.5}
+#
+#                                                MDLabel:
+#                                                    id: pat_username
+#                                                    text: "username"
+#                                                    font_name: "Roboto"
+#                                                    theme_text_color: 'Custom'
+#                                                    text_color: 1, 1, 1, 1
+#                                                    pos_hint: {'center_x': 0.5, 'center_y': 0.3}
+#
+#                                                MDLabel:
+#                                                    id: pat_email
+#                                                    text: "clientemail@gmail.com"
+#                                                    theme_text_color: 'Custom'
+#                                                    text_color: 1, 1, 1, 1
+#                                                    font_name: "Roboto"
+#                                                    font_size: '12sp'
+#                                                    pos_hint: {'center_x': 0.5, 'center_y': 0.1}
+#                                    BoxLayout:
+#                                        id: inner_grid
+#                                        orientation:'vertical'
+#                                        pos_hint: {'center_x': 0.5}
+#                                        padding:dp(2)
+#                                        spacing:dp(7)
+#                                        md_bg_color:1,0,0,1
 #                                        MDLabel:
-#                                            id: empty_slots
-#                                            text: '0'
-#                                            halign: 'center'
+#                                            text: 'Name :'
 #                                            font_name: 'Roboto'
 #                                            theme_text_color: 'Custom'
 #                                            text_color: 0, 0, 0, 1
 #                                            size_hint_x: 0.5
 #                                            size_hint_y: None
 #                                            height: dp(20)
-#                                            pos_hint: {'center_x': 0.5}
-                            BoxLayout:
-                                orientation: 'vertical'
-                                size_hint_y: None
-                                height: dp(200)
-                                md_bg_color: 1, 1, 1, 1
-                                MDCard:
-                                    orientation: 'vertical'
-                                    size_hint: None, None
-                                    size: "290dp", "200dp"
-                                    elevation: 2
-                                    md_bg_color: 1, 1, 1, 1
-                                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                                    GridLayout:
-                                        id: inner_grid
-                                        cols: 1
-                                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                                        BoxLayout:
-                                            size_hint_y: None
-                                            height: dp(50)
-                                            padding: "5dp"
-                                            spacing: "5dp"
-                                            pos_hint: {'center_x': 0.5}
-                                            canvas.before:
-                                                Color:
-                                                    rgba: 1, 0, 0, 1
-                                                Rectangle:
-                                                    pos: self.pos
-                                                    size: self.size
-                                            BoxLayout:
-                                                size_hint: None, None
-                                                size: dp(50), dp(50)
-                                                pos_hint: {'center_x': 0.5}
-                                                canvas:
-                                                    Color:
-                                                        rgb: 1, 1, 1
-                                                    Ellipse:
-                                                        pos: self.pos
-                                                        size: 50, 50
-                                                        source: 'images/hospital.png'
-                                                        angle_start: 0
-                                                        angle_end: 360
-
-                                            BoxLayout:
-                                                orientation: 'vertical'
-                                                padding: "5dp"
-                                                spacing: "10dp"
-                                                pos_hint: {'center_x': 0.5}
-
-                                                MDLabel:
-                                                    id: pat_username
-                                                    text: "username"
-                                                    font_name: "Roboto"
-                                                    theme_text_color: 'Custom'
-                                                    text_color: 1, 1, 1, 1
-                                                    pos_hint: {'center_x': 0.5, 'center_y': 0.3}
-
-                                                MDLabel:
-                                                    id: pat_email
-                                                    text: "clientemail@gmail.com"
-                                                    theme_text_color: 'Custom'
-                                                    text_color: 1, 1, 1, 1
-                                                    font_name: "Roboto"
-                                                    font_size: '12sp'
-                                                    pos_hint: {'center_x': 0.5, 'center_y': 0.1}
-
+#                                            pos_hint: {'center_x': 0.5,'center_y': .5}
+#                                        MDLabel:
+#                                            text: 'Phone :'
+#                                            font_name: 'Roboto'
+#                                            theme_text_color: 'Custom'
+#                                            text_color: 0, 0, 0, 1
+#                                            size_hint_x: 0.5
+#                                            size_hint_y: None
+#                                            height: dp(20)
+#                                            pos_hint: {'center_x': 0.5,'center_y': .5}
+#                                        MDLabel:
+#                                            text: 'Slot Time  :'
+#                                            font_name: 'Roboto'
+#                                            theme_text_color: 'Custom'
+#                                            text_color: 0, 0, 0, 1
+#                                            size_hint_x: 0.5
+#                                            size_hint_y: None
+#                                            height: dp(20)
+#                                            pos_hint: {'center_x': 0.5,'center_y': .5}
+#                                        MDLabel:
+#                                            text: 'Slot Date :'
+#                                            font_name: 'Roboto'
+#                                            theme_text_color: 'Custom'
+#                                            text_color: 0, 0, 0, 1
+#                                            size_hint_x: 0.5
+#                                            size_hint_y: None
+#                                            height: dp(20)
+#                                            pos_hint: {'center_x': 0.5,'center_y': .5}
+#                                        MDLabel:
+#                                            text: 'Service Type :'
+#                                            font_name: 'Roboto'
+#                                            theme_text_color: 'Custom'
+#                                            text_color: 0, 0, 0, 1
+#                                            size_hint_x: 0.5
+#                                            size_hint_y: None
+#                                            height: dp(20)
+#                                            pos_hint: {'center_x': 0.5,'center_y': .5}
         MDNavigationDrawer:
             id: nav_drawer
             orientation: 'vertical'
@@ -278,9 +366,9 @@
 
         MDTopAppBar:
             title: "View Profile"
-            elevation: 3
+            elevation: 1
             left_action_items: [['arrow-left', lambda x: root.on_back_button()]]
-            md_bg_color: 1, 1, 1, 1
+            md_bg_color: 1, 0, 0, 1
             color:0, 0, 0, 1
         ScrollView:  # Add ScrollView here
             do_scroll_x: False
@@ -409,7 +497,96 @@
 
 
                 MDLabel:
+                    text: ' Email '
+                    color: 0, 0, 0, 1
+                    halign: 'left'
+                    size_hint_x: 1
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                    bold: True
+
+                MDFloatLayout:
+                    size_hint: None, None
+                    size: dp(200), dp(40)
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                    size_hint_x: 1
+                    canvas.before:
+                        Color:
+                            rgba: 1, 1, 1, 1  # Set background color to white
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [10, 10, 10, 10]
+
+                        Color:
+                            rgba: 0, 0, 0, 1  # Set border color to black
+
+                        Line:
+                            rounded_rectangle: [self.x + 5, self.y + 0.9, self.width - 2, self.height - 0.5, 10, 10, 10, 10]
+                            width: 1  # Border line width
+
+                    MDFlatButton:
+                        text: "EDIT"
+                        pos_hint: {'center_x': 0.9, 'center_y': 0.5}
+                        theme_text_color: "Custom"
+                        text_color:6/255, 143/255, 236/255, 1
+                        font_name: "Roboto-Bold"
+
+                    MDTextField:
+                        id: text_input3
+                        size_hint: None, None
+                        size_hint_x: 0.91
+                        multiline: False
+                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                        line_color_normal: [1, 1, 1, 1]
+                        line_color_focus: [1, 1, 1, 1]
+                        font_name: "Roboto-Bold"
+
+                MDLabel:
                     text: ' Mobile Number '
+                    color: 0, 0, 0, 1
+                    halign: 'left'
+                    size_hint_x: 1
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                    bold: True
+
+                MDFloatLayout:
+                    size_hint: None, None
+                    size: dp(200), dp(40)
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                    size_hint_x: 1
+                    canvas.before:
+                        Color:
+                            rgba: 1, 1, 1, 1  # Set background color to white
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [10, 10, 10, 10]
+
+                        Color:
+                            rgba: 0, 0, 0, 1  # Set border color to black
+
+                        Line:
+                            rounded_rectangle: [self.x + 5, self.y + 0.9, self.width - 2, self.height - 0.5, 10, 10, 10, 10]
+                            width: 1  # Border line width
+
+                    MDFlatButton:
+                        text: "EDIT"
+                        pos_hint: {'center_x': 0.9, 'center_y': 0.5}
+                        theme_text_color: "Custom"
+                        text_color:6/255, 143/255, 236/255, 1
+                        font_name: "Roboto-Bold"
+
+                    MDTextField:
+                        id: text_input4
+                        size_hint: None, None
+                        size_hint_x: 0.91
+                        multiline: False
+                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                        line_color_normal: [1, 1, 1, 1]
+                        line_color_focus: [1, 1, 1, 1]
+                        font_name: "Roboto-Bold"
+                MDLabel:
+                    text: ' Address '
                     color: 0, 0, 0, 1
                     halign: 'left'
                     size_hint_x: 1

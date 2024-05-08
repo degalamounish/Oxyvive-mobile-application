@@ -166,11 +166,12 @@ class Login(MDScreen):
                             email = str(user_anvil["email"])
                             phone = str(user_anvil["phone"])
                             pincode = str(user_anvil["pincode"])
+                            address = str(user_anvil['address'])
                             profile_data = user_anvil['profile'].get_bytes()  # Example method to get image bytes
                             profile_data = base64.b64encode(profile_data).decode('utf-8')
                             id = user_anvil["id"]
                         user_info = {'username': username, 'email': email, 'phone': phone, 'pincode': pincode,
-                                     'profile': profile_data, 'id': id}
+                                     'profile': profile_data, 'id': id, 'address':address}
                         with open("user_data.json", "w") as json_file:
                             json.dump(user_info, json_file)
                         screen = self.manager.get_screen("servicer_dashboard")
