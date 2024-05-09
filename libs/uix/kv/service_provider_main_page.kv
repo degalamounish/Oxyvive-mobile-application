@@ -29,198 +29,71 @@
                             BoxLayout:
                                 orientation: 'vertical'
                                 size_hint_y: None
-                                height: dp(40)
+                                height: dp(100)
                                 md_bg_color: 1, 1, 1, 1
 
                                 MDCard:
-                                    orientation: 'vertical'
-                                    size_hint: None, None
-                                    size: "290dp", "40dp"
                                     elevation: 2
                                     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-
-                                    GridLayout:
-                                        cols: 2
-                                        padding: dp(10)
-                                        spacing: dp(5)
-                                        size_hint_y: None
-                                        height: dp(40)
-                                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-
-                                        MDLabel:
-                                            text: 'Oxivive Customers'
-                                            halign: 'center'
-                                            font_name: 'Roboto'
-                                            theme_text_color: 'Custom'
-                                            text_color: 0, 0, 0, 1
-                                            size_hint_x: 0.5
-                                            size_hint_y: None
-                                            height: dp(20)
-                                            pos_hint: {'center_x': 0.5}
-                            BoxLayout:
-                                orientation: 'vertical'
-                                size_hint_y: None
-                                height: dp(40)
-                                md_bg_color: 1, 1, 1, 1
-
-                                MDCard:
-                                    orientation: 'vertical'
-                                    size_hint: None, None
-                                    size: "290dp", "40dp"
-                                    elevation: 2
-                                    pos_hint: {'center_x': 0.5, 'center_y': .5}
-
                                     BoxLayout:
-                                        cols: 2
+                                        orientation: 'vertical'
                                         padding: dp(5)
                                         spacing: dp(5)
                                         size_hint_y: None
                                         height: dp(40)
-                                        pos_hint: {'center_x': 0.5, 'center_y': .5}
-
+                                        pos_hint: { 'center_y': .4}
                                         MDLabel:
-                                            text: 'Date :'
+                                            text: 'Oxivive Customers'
                                             halign: 'center'
                                             font_name: 'Roboto'
+                                            font_size: '18sp'
                                             theme_text_color: 'Custom'
-                                            text_color: 0, 0, 0, 1
-                                            size_hint_x: 0.5
+                                            text_color: 1, 0, 0, 1
                                             size_hint_y: None
                                             height: dp(20)
-                                            pos_hint: {'center_x': 0.5,'center_y': .5}
-                                        MDTextField:
-                                            id: extra_info2
-                                            text: ""
-                                            hint_text: "Choose Date"
-                                            halign: 'center'
-                                            font_name: 'Roboto'
-                                            theme_text_color: 'Custom'
-                                            text_color: 0, 0, 0, 1
-                                            size_hint_x: 0.5
+                                            pos_hint: {'center_x': 0.5,'center_y': .9}
+
+                                        BoxLayout:
+                                            padding: dp(5)
+                                            spacing: dp(5)
                                             size_hint_y: None
-                                            height: dp(20)
-                                            pos_hint: {'center_x': 0.5,'center_y': .5}
-                                            on_focus: if self.focus: root.show_date_picker(self)
+                                            height: dp(40)
+                                            pos_hint: { 'center_y': .4}
 
-
-                            GridLayout:
+                                            MDLabel:
+                                                text: 'Choose Date :'
+                                                halign: 'center'
+                                                font_name: 'Roboto'
+                                                theme_text_color: 'Custom'
+                                                text_color: 0, 0, 0, 1
+                                                size_hint_x: 0.5
+                                                size_hint_y: None
+                                                height: dp(20)
+                                                pos_hint: {'center_x': 0.5,'center_y': .5}
+                                            MDTextField:
+                                                id: extra_info2
+                                                text: ""
+                                                halign: 'center'
+                                                font_name: 'Roboto'
+                                                theme_text_color: 'Custom'
+                                                text_color: 0, 0, 0, 1
+                                                size_hint_x: 0.5
+                                                size_hint_y: None
+                                                height: dp(20)
+                                                pos_hint: {'center_x': 0.5,'center_y': .5}
+                                                on_focus: if self.focus: root.show_date_picker(self)
+                            BoxLayout:
                                 id: customer_list_id
-                                cols:1
+                                orientation:'vertical'
+                                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+##                                cols: 1
+#                                padding: dp(10)
+#                                spacing: dp(295)
 #                                size_hint_y: None
-#                                height: dp(200)
-#                                md_bg_color: 1, 1, 1, 1
-#                                MDCard:
-#                                    orientation: 'vertical'
-#                                    size_hint: None, None
-#                                    size: "290dp", "200dp"
-#                                    elevation: 2
-#                                    md_bg_color: 1, 1, 1, 1
-#                                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-#                                    GridLayout:
-#                                        id: inner_grid
-#                                        cols: 1
-#                                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-#                                        md_bg_color:1,0,0,1
-#                                        BoxLayout:
-#                                            size_hint_y: None
-#                                            height: dp(50)
-#                                            padding: "5dp"
-#                                            spacing: "5dp"
-#                                            pos_hint: {'center_x': 0.5}
-#                                            canvas.before:
-#                                                Color:
-#                                                    rgba: 1, 0, 0, 1
-#                                                Rectangle:
-#                                                    pos: self.pos
-#                                                    size: self.size
-#                                            BoxLayout:
-#                                                size_hint: None, None
-#                                                size: dp(50), dp(50)
-#                                                pos_hint: {'center_x': 0.5}
-#                                                canvas:
-#                                                    Color:
-#                                                        rgb: 1, 1, 1
-#                                                    Ellipse:
-#                                                        pos: self.pos
-#                                                        size: 50, 50
-#                                                        source: 'images/hospital.png'
-#                                                        angle_start: 0
-#                                                        angle_end: 360
-#
-#                                            BoxLayout:
-#                                                orientation: 'vertical'
-#                                                padding: "5dp"
-#                                                spacing: "10dp"
-#                                                pos_hint: {'center_x': 0.5}
-#
-#                                                MDLabel:
-#                                                    id: pat_username
-#                                                    text: "username"
-#                                                    font_name: "Roboto"
-#                                                    theme_text_color: 'Custom'
-#                                                    text_color: 1, 1, 1, 1
-#                                                    pos_hint: {'center_x': 0.5, 'center_y': 0.3}
-#
-#                                                MDLabel:
-#                                                    id: pat_email
-#                                                    text: "clientemail@gmail.com"
-#                                                    theme_text_color: 'Custom'
-#                                                    text_color: 1, 1, 1, 1
-#                                                    font_name: "Roboto"
-#                                                    font_size: '12sp'
-#                                                    pos_hint: {'center_x': 0.5, 'center_y': 0.1}
-#                                    BoxLayout:
-#                                        id: inner_grid
-#                                        orientation:'vertical'
-#                                        pos_hint: {'center_x': 0.5}
-#                                        padding:dp(2)
-#                                        spacing:dp(7)
-#                                        md_bg_color:1,0,0,1
-#                                        MDLabel:
-#                                            text: 'Name :'
-#                                            font_name: 'Roboto'
-#                                            theme_text_color: 'Custom'
-#                                            text_color: 0, 0, 0, 1
-#                                            size_hint_x: 0.5
-#                                            size_hint_y: None
-#                                            height: dp(20)
-#                                            pos_hint: {'center_x': 0.5,'center_y': .5}
-#                                        MDLabel:
-#                                            text: 'Phone :'
-#                                            font_name: 'Roboto'
-#                                            theme_text_color: 'Custom'
-#                                            text_color: 0, 0, 0, 1
-#                                            size_hint_x: 0.5
-#                                            size_hint_y: None
-#                                            height: dp(20)
-#                                            pos_hint: {'center_x': 0.5,'center_y': .5}
-#                                        MDLabel:
-#                                            text: 'Slot Time  :'
-#                                            font_name: 'Roboto'
-#                                            theme_text_color: 'Custom'
-#                                            text_color: 0, 0, 0, 1
-#                                            size_hint_x: 0.5
-#                                            size_hint_y: None
-#                                            height: dp(20)
-#                                            pos_hint: {'center_x': 0.5,'center_y': .5}
-#                                        MDLabel:
-#                                            text: 'Slot Date :'
-#                                            font_name: 'Roboto'
-#                                            theme_text_color: 'Custom'
-#                                            text_color: 0, 0, 0, 1
-#                                            size_hint_x: 0.5
-#                                            size_hint_y: None
-#                                            height: dp(20)
-#                                            pos_hint: {'center_x': 0.5,'center_y': .5}
-#                                        MDLabel:
-#                                            text: 'Service Type :'
-#                                            font_name: 'Roboto'
-#                                            theme_text_color: 'Custom'
-#                                            text_color: 0, 0, 0, 1
-#                                            size_hint_x: 0.5
-#                                            size_hint_y: None
-#                                            height: dp(20)
-#                                            pos_hint: {'center_x': 0.5,'center_y': .5}
+#                                height: self.minimum_height
+#                                pos_hint: {'center_y': 0.5}
+#                                md_bg_color: 0, 0, 0, 1
+
         MDNavigationDrawer:
             id: nav_drawer
             orientation: 'vertical'
@@ -350,576 +223,118 @@
                                     font_name: "Roboto"
 
 
-#----------------------------Service-Profile---------------------------------------------------------------
-<ServiceProfile>:
-    canvas.before:
-        Color:
-            rgba: 1, 1, 1, 1
-        Rectangle:
-            size: self.size
-            pos: self.pos
 
-    BoxLayout:
+
+<Customers>:
+    MDCard:
         orientation: 'vertical'
-        size_hint: 1, 1
-        pos_hint: {'center_x':0.5, 'center_y':0.5}
-
-        MDTopAppBar:
-            title: "View Profile"
-            elevation: 1
-            left_action_items: [['arrow-left', lambda x: root.on_back_button()]]
-            md_bg_color: 1, 0, 0, 1
-            color:0, 0, 0, 1
-        ScrollView:  # Add ScrollView here
-            do_scroll_x: False
+        size_hint: (1, 1)
+        elevation: 2
+        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+        md_bg_color: 1, 1, 1, 1
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        GridLayout:
+            id: inner_grid
+            cols: 1
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            md_bg_color:1,0,0,1
             BoxLayout:
-                orientation: "vertical"
-                padding:dp(35)
-                spacing:dp(20)
                 size_hint_y: None
-                height: self.minimum_height
-                MDRectangleFlatButton:
-
-                    line_color:1,1,1,1
+                height: dp(50)
+                padding: "5dp"
+                spacing: "5dp"
+                pos_hint: {'center_x': 0.5}
+                canvas.before:
+                    Color:
+                        rgba: 1, 0, 0, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                BoxLayout:
                     size_hint: None, None
-                    size: dp(120), dp(120)
-                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                    canvas.before:
+                    size: dp(50), dp(50)
+                    pos_hint: {'center_x': 0.5}
+                    canvas:
                         Color:
-                            rgba: 174/255, 214/255, 241/255, 1
+                            rgb: 1, 1, 1
                         Ellipse:
-                            size: self.size
                             pos: self.pos
+                            size: 50, 50
+                            source: 'images/hospital.png'
+                            angle_start: 0
+                            angle_end: 360
 
-                    Image:
-                        id: selected_image1
-                        source: "profile.png"
+                BoxLayout:
+                    orientation: 'vertical'
+                    padding: "5dp"
+                    spacing: "10dp"
+                    pos_hint: {'center_x': 0.5}
 
+                    MDLabel:
+                        id: pat_username
+                        text: "username"
+                        font_name: "Roboto"
+                        theme_text_color: 'Custom'
+                        text_color: 1, 1, 1, 1
+                        pos_hint: {'center_x': 0.5, 'center_y': 0.3}
 
-                    MDFloatLayout:
-
-                        size_hint:(None,None)
-                        spacing:dp(0)
-                        padding:dp(0)
-                        pos_hint: {'center_x': 0, 'center_y': 0}
-                        MDIconButton:
-                            icon: 'camera-plus'
-                            on_release: app.root.get_screen('ServiceProfile').check_and_open_file_manager1()
-                            pos_hint: {'center_x':1.2, 'center_y':0}
-                Label:
-                    id: selected_file_label
-                    text: 'Selected File: None'
-                    size_hint_y: None
-                    height: 30
-                MDLabel:
-                    text: ' Customer ID '
-                    color: 0, 0, 0, 1
-                    halign: 'left'
-                    size_hint_x: 1
-                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                    bold: True
-                MDFloatLayout:
-                    size_hint: None, None
-                    size: dp(200), dp(40)
-                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                    size_hint_x: 1
-                    canvas.before:
-                        Color:
-                            rgba: 1, 1, 1, 1  # Set background color to white
-                        RoundedRectangle:
-                            pos: self.pos
-                            size: self.size
-                            radius: [10, 10, 10, 10]
-
-                        Color:
-                            rgba: 0, 0, 0, 1  # Set border color to black
-
-                        Line:
-                            rounded_rectangle: [self.x + 5, self.y + 0.9, self.width - 2, self.height - 0.5, 10, 10, 10, 10]
-                            width: 1  # Border line width
-
-
-                    MDTextField:
-                        id: text_input1
-                        size_hint: None, None
-                        size_hint_x: 0.91
-                        multiline: False
-                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                        line_color_normal: [1, 1, 1, 1]
-                        line_color_focus: [1, 1, 1, 1]
-                        readonly: True
-                MDLabel:
-                    text: ' Full Name '
-                    color: 0, 0, 0, 1
-                    halign: 'left'
-                    size_hint_x: 1
-                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                    bold: True
-                MDFloatLayout:
-                    size_hint: None, None
-                    size: dp(200), dp(40)
-                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                    size_hint_x: 1
-                    canvas.before:
-                        Color:
-                            rgba: 1, 1, 1, 1  # Set background color to white
-                        RoundedRectangle:
-                            pos: self.pos
-                            size: self.size
-                            radius: [10, 10, 10, 10]
-
-                        Color:
-                            rgba: 0, 0, 0, 1  # Set border color to black
-
-                        Line:
-                            rounded_rectangle: [self.x + 5, self.y + 0.9, self.width - 2, self.height - 0.5, 10, 10, 10, 10]
-                            width: 1  # Border line width
-
-                    MDFlatButton:
-                        text: "EDIT"
-                        id: edit_button
-                        size_hint: None, None
-                        pos_hint: {'center_x': 0.9, 'center_y': 0.5}
-                        theme_text_color: "Custom"
-                        text_color: 6/255, 143/255, 236/255, 1
-                        font_name: "Roboto-Bold"
-
-
-                    MDTextField:
-                        id: text_input2
-                        size_hint: None, None
-                        size_hint_x: 0.91
-                        multiline: False
-                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                        line_color_normal: [1, 1, 1, 1]
-                        line_color_focus: [1, 1, 1, 1]
-                        font_name: "Roboto-Bold"
-
-
-                MDLabel:
-                    text: ' Email '
-                    color: 0, 0, 0, 1
-                    halign: 'left'
-                    size_hint_x: 1
-                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                    bold: True
-
-                MDFloatLayout:
-                    size_hint: None, None
-                    size: dp(200), dp(40)
-                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                    size_hint_x: 1
-                    canvas.before:
-                        Color:
-                            rgba: 1, 1, 1, 1  # Set background color to white
-                        RoundedRectangle:
-                            pos: self.pos
-                            size: self.size
-                            radius: [10, 10, 10, 10]
-
-                        Color:
-                            rgba: 0, 0, 0, 1  # Set border color to black
-
-                        Line:
-                            rounded_rectangle: [self.x + 5, self.y + 0.9, self.width - 2, self.height - 0.5, 10, 10, 10, 10]
-                            width: 1  # Border line width
-
-                    MDFlatButton:
-                        text: "EDIT"
-                        pos_hint: {'center_x': 0.9, 'center_y': 0.5}
-                        theme_text_color: "Custom"
-                        text_color:6/255, 143/255, 236/255, 1
-                        font_name: "Roboto-Bold"
-
-                    MDTextField:
-                        id: text_input3
-                        size_hint: None, None
-                        size_hint_x: 0.91
-                        multiline: False
-                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                        line_color_normal: [1, 1, 1, 1]
-                        line_color_focus: [1, 1, 1, 1]
-                        font_name: "Roboto-Bold"
-
-                MDLabel:
-                    text: ' Mobile Number '
-                    color: 0, 0, 0, 1
-                    halign: 'left'
-                    size_hint_x: 1
-                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                    bold: True
-
-                MDFloatLayout:
-                    size_hint: None, None
-                    size: dp(200), dp(40)
-                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                    size_hint_x: 1
-                    canvas.before:
-                        Color:
-                            rgba: 1, 1, 1, 1  # Set background color to white
-                        RoundedRectangle:
-                            pos: self.pos
-                            size: self.size
-                            radius: [10, 10, 10, 10]
-
-                        Color:
-                            rgba: 0, 0, 0, 1  # Set border color to black
-
-                        Line:
-                            rounded_rectangle: [self.x + 5, self.y + 0.9, self.width - 2, self.height - 0.5, 10, 10, 10, 10]
-                            width: 1  # Border line width
-
-                    MDFlatButton:
-                        text: "EDIT"
-                        pos_hint: {'center_x': 0.9, 'center_y': 0.5}
-                        theme_text_color: "Custom"
-                        text_color:6/255, 143/255, 236/255, 1
-                        font_name: "Roboto-Bold"
-
-                    MDTextField:
-                        id: text_input4
-                        size_hint: None, None
-                        size_hint_x: 0.91
-                        multiline: False
-                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                        line_color_normal: [1, 1, 1, 1]
-                        line_color_focus: [1, 1, 1, 1]
-                        font_name: "Roboto-Bold"
-                MDLabel:
-                    text: ' Address '
-                    color: 0, 0, 0, 1
-                    halign: 'left'
-                    size_hint_x: 1
-                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                    bold: True
-
-                MDFloatLayout:
-                    size_hint: None, None
-                    size: dp(200), dp(40)
-                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                    size_hint_x: 1
-                    canvas.before:
-                        Color:
-                            rgba: 1, 1, 1, 1  # Set background color to white
-                        RoundedRectangle:
-                            pos: self.pos
-                            size: self.size
-                            radius: [10, 10, 10, 10]
-
-                        Color:
-                            rgba: 0, 0, 0, 1  # Set border color to black
-
-                        Line:
-                            rounded_rectangle: [self.x + 5, self.y + 0.9, self.width - 2, self.height - 0.5, 10, 10, 10, 10]
-                            width: 1  # Border line width
-
-                    MDFlatButton:
-                        text: "EDIT"
-                        pos_hint: {'center_x': 0.9, 'center_y': 0.5}
-                        theme_text_color: "Custom"
-                        text_color:6/255, 143/255, 236/255, 1
-                        font_name: "Roboto-Bold"
-
-                    MDTextField:
-                        id: text_input5
-                        size_hint: None, None
-                        size_hint_x: 0.91
-                        multiline: False
-                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                        line_color_normal: [1, 1, 1, 1]
-                        line_color_focus: [1, 1, 1, 1]
-                        font_name: "Roboto-Bold"
-
-
-
-
-
-
-
-#----------------------Service-Notification-Page-----------------------
-
-<ServiceNotification>
-    name:'service_notification'
-    MDFloatLayout:
-        md_bg_color: rgba(246, 250, 255, 255)
-        MDIconButton:
-            icon: "arrow-left"
-            pos_hint: {"center_y": .94}
-            user_font_size: "20sp"
-            theme_text_color: "Custom"
-            text_color: rgba(34, 34, 34, 255)
-            on_release:root.on_back_button()
-
-        MDIconButton:
-            icon: "dots-vertical"
-            pos_hint: {"center_x": .93, "center_y": .94}
-            user_font_size: "20sp"
-            theme_text_color: "Custom"
-            text_color: rgba(34, 34, 34, 255)
-
-        MDLabel:
-            text: "Notification"
-            font_name: "Roboto-Bold"
-            font_size: "20sp"
-            pos_hint: {"center_x": .56, "center_y": .88}
-            color: rgba(34, 34, 34, 255)
-        MDLabel:
-            text: "No current notifications"
-            font_size: "25sp"
-            halign:'center'
-            font_name: "Roboto"
-            pos_hint: {"center_x": .5, "center_y": .5}
-            color: rgba(94, 94, 94, 255)
-
-#-------------------------Service-Slot-Adding-Page----------------------------
-<ServiceSlotAdding>
-    name:'service_slot_adding'
-    MDIconButton:
-        icon: "arrow-left"
-        pos_hint: {"center_y": .94}
-        user_font_size: "20sp"
-        theme_text_color: "Custom"
-        text_color: rgba(34, 34, 34, 255)
-        on_release:root.on_back_button()
-
-    MDIconButton:
-        icon: "dots-vertical"
-        pos_hint: {"center_x": .93, "center_y": .94}
-        user_font_size: "20sp"
-        theme_text_color: "Custom"
-        text_color: rgba(34, 34, 34, 255)
-
-    MDBoxLayout:
-        orientation: 'vertical'
-        size_hint_y: None
-        height: self.minimum_height
-#            MDTextField:
-#                id:slot_no
-#                hint_text: "Slot No"
-#        #                        required: True
-#                font_name: "Roboto"
-#                font_size: "14sp"
-#                pos_hint:{'center_x':.5}
-#                size_hint:.9,None
-#                height: "30dp"
-#                multiline: False
-#                color_mode: 'custom'
-#                line_color_focus: 0, 0, 0, 1
-#                text_color_focus:0,0,0,1
-#                hint_text_color:0,0,0,1
-#                hint_text_color_focus:0,0,0,.5
-#            MDTextField:
-#                id:add_date
-#                hint_text: "Date"
-#        #                        required: True
-#                font_name: "Roboto"
-#                font_size: "14sp"
-#                pos_hint:{'center_x':.5}
-#                size_hint:.9,None
-#                height: "30dp"
-#                multiline: False
-#                color_mode: 'custom'
-#                line_color_focus: 0, 0, 0, 1
-#                text_color_focus:0,0,0,1
-#                hint_text_color:0,0,0,1
-#                hint_text_color_focus:0,0,0,.5
-#                on_focus: root.show_date_picker(self)
-#            MDLabel:
-#                text:'Upload Slot Photos :'
-#                size_hint_y:.1
-#                font_size: "16sp"
-#            MDBoxLayout:
-#                orientation: 'horizontal'
-#                size_hint_y: None
-#                height: self.minimum_height
-#                padding:dp(20)
-#                spacing:dp(20)
-#
-#                MDFlatButton:
-#                    text: "Select File"
-#                    size_hint:None,None
-#                    height:dp(20)
-#                    width:dp(30)
-#                    on_release: root.file_manager_open()
-#                    pos_hint: {"center_x":.3,'center_y':.5}
-#                    background_color: 0, 0, 0, 0
-#                    font_name: "Roboto-Bold"
-#                    font_size: "12sp"
-#                    background_color: 0, 0, 0, 0
-#                    color: rgba(1, 1, 1, 255)
-#                    canvas.before:
-#                        Color:
-#                            rgb: rgba(255, 0, 0, 255)
-#                        Line:
-#                            width: 1.2
-#                            rounded_rectangle: self.x, self.y, self.width, self.height, 5, 5, 5, 5, 100
-#                MDFlatButton:
-#                    id: upload
-#                    text: "UPLOAD"
-#                    size_hint:None,None
-#                    height:dp(20)
-#                    width:dp(30)
-#                    pos_hint: {"center_x":.8,'center_y':.5}
-#                    background_color: 0, 0, 0, 0
-#                    font_name: "Roboto-Bold"
-#                    font_size: "12sp"
-#                    background_color: 0, 0, 0, 0
-#                    color: rgba(1, 1, 1, 255)
-#                    on_release: root.upload_file()
-#                    canvas.before:
-#                        Color:
-#                            rgb: rgba(255, 0, 0, 255)
-#                        Line:
-#                            width: 1.2
-#                            rounded_rectangle: self.x, self.y, self.width, self.height, 5, 5, 5, 5, 100
-#
-#            MDLabel:
-#                id: file_path
-#                text: "None selected"  # Initial text when no file is selected
-#        #                            font_name: "Roboto"
-#                italic: True
-#                color: 0.5, 0.5, 0.5, 1
-#                pos_hint: {"center_x": .5,'center_y':.4}
-#                size_hint_y: None
-#                height: "30dp"
-#
-#
-#            Button:
-#                id: solt_permission
-#                text: "GET PERMISSION"
-#                size_hint: .7,None
-#                height:dp(40)
-#                pos_hint: {"center_x": .5, "center_y": .34}
-#                background_color: 0, 0, 0, 0
-#                font_name: "Roboto-Bold"
-#                on_release:
-#                    root.solt_permission(self)
-#                canvas.before:
-#                    Color:
-#                        rgb: rgba(255, 0, 0, 255)
-#                    RoundedRectangle:
-#                        size: self.size
-#                        pos: self.pos
-#                        radius: [5]
-#----------------------------service-support-------------------------------------
-<ServiceSupport>
-    name:'service_support'
-    MDIconButton:
-        icon: "arrow-left"
-        pos_hint: {"center_y": .96}
-        user_font_size: "20sp"
-        theme_text_color: "Custom"
-        text_color: rgba(35, 35, 35, 255)
-        on_release:root.on_back_button()
-
-    MDIconButton:
-        icon: "dots-vertical"
-        pos_hint: {"center_x": 0.9, "center_y": 0.96}
-        user_font_size: "20sp"
-        theme_text_color: "Custom"
-        text_color: rgba(35, 35, 35, 255)
-
-    MDLabel:
-        text: "Support"
-        font_name: "Roboto-Bold"
-        font_size: "20sp"
-        pos_hint: {"center_x": .55, "center_y":0.90}
-        color: rgba(35, 35, 35, 255)
-
-    OneLineIconListItem:
-        text: "Contact Client Support"
-        pos_hint: {"center_x":0.55, "center_y":0.8}
-        on_release: root.show_customer_support_dialog()
-        IconLeftWidget:
-            icon: "face-agent"
-
-    OneLineIconListItem:
-        text: "Contact on-call Client Support"
-        pos_hint: {"center_x":0.55, "center_y":0.70}
-        on_release: root.show_doctor_dialog()
-        IconLeftWidget:
-            icon: "doctor"
-
-    MDLabel:
-        text: "Raise a ticket"
-        font_name: "Roboto-Bold"
-        font_size: "15sp"
-        pos_hint: {"center_x": .55, "center_y": .60}
-        color: rgba(35, 35, 35, 255)
-
-    TextInput:
-        id: issue_title
-        hint_text: "Issue Title"
-        font_name: "Roboto"
-        size_hint_y: 0.1
-        helper_text:'Required'
-        helper_text_mode:  'on_error'
-        required: True
-        pos_hint: {"center_x": .55, "center_y": .5}
-        background_color: 1, 1, 1, 0
-        foreground_color: rgba(0, 0, 59, 255)
-        cursor_color: rgba(35, 35, 35, 255)
-        font_size: "14sp"
-        cursor_width: "2sp"
-        multiline: False
-        write_tab: True
-        on_text_validate: root.clear_text_input()
-
-    TextInput:
-        id: issue_description
-        hint_text: "Issue description"
-        font_name: "Roboto"
-        size_hint_y: .1
-        helper_text:'Required'
-        helper_text_mode:  'on_error'
-        required: False
-        pos_hint: {"center_x": .55, "center_y": .4}
-        background_color: 1, 1, 1, 0
-        foreground_color: rgba(0, 0, 59, 255)
-        cursor_color: rgba(35, 35, 35, 255)
-        font_size: "14sp"
-        cursor_width: "2sp"
-        multiline: True
-        write_tab: True
-        on_text_validate: root.clear_text_input()
-
-    Button:
-        id: submit_ticket
-        text: "Submit Ticket"
-        size_hint: .5, .05
-        pos_hint: {"center_x": .3, "center_y": .2}
-        background_color: 0, 0, 0, 0
-        font_name: "Roboto-Bold"
-        canvas.before:
-            Color:
-                rgb: rgba(255, 0, 0, 255)
-            RoundedRectangle:
-                size: self.size
-                pos: self.pos
-                radius: [5]
-        on_release:
-            root.submit_ticket()
-            root.show_ticket_popup()
-
-
-<MDDialog>:
-    size_hint: 0.8, 0.3
-
-#<ProfileImage>:
-#    size_hint: None, None
-#    size: dp(70), dp(70)
-#    canvas.before:
-#        Color:
-#            rgba: 1, 1, 1, 1
-#        Ellipse:
-#            pos: self.pos
-#            size: self.size
-#
-#            # Clip the image within the Ellipse shape
-#            source: root.source
-#
-#    Image:
-#        id: profile_image
-#        size_hint: None, None
-#        size: dp(70), dp(70)
-#        source: root.source  # Make sure the image source is also set here
+                    MDLabel:
+                        id: pat_email
+                        text: "clientemail@gmail.com"
+                        theme_text_color: 'Custom'
+                        text_color: 1, 1, 1, 1
+                        font_name: "Roboto"
+                        font_size: '12sp'
+                        pos_hint: {'center_x': 0.5, 'center_y': 0.1}
+        BoxLayout:
+            id: inner_grid
+            orientation:'vertical'
+            pos_hint: {'center_x': 0.5}
+            padding:dp(2)
+            spacing:dp(7)
+            md_bg_color:1,0,0,1
+            MDLabel:
+                text: 'Name :'
+                font_name: 'Roboto'
+                theme_text_color: 'Custom'
+                text_color: 0, 0, 0, 1
+                size_hint_x: 0.5
+                size_hint_y: None
+                height: dp(20)
+                pos_hint: {'center_x': 0.5,'center_y': .5}
+            MDLabel:
+                text: 'Phone :'
+                font_name: 'Roboto'
+                theme_text_color: 'Custom'
+                text_color: 0, 0, 0, 1
+                size_hint_x: 0.5
+                size_hint_y: None
+                height: dp(20)
+                pos_hint: {'center_x': 0.5,'center_y': .5}
+            MDLabel:
+                text: 'Slot Time  :'
+                font_name: 'Roboto'
+                theme_text_color: 'Custom'
+                text_color: 0, 0, 0, 1
+                size_hint_x: 0.5
+                size_hint_y: None
+                height: dp(20)
+                pos_hint: {'center_x': 0.5,'center_y': .5}
+            MDLabel:
+                text: 'Slot Date :'
+                font_name: 'Roboto'
+                theme_text_color: 'Custom'
+                text_color: 0, 0, 0, 1
+                size_hint_x: 0.5
+                size_hint_y: None
+                height: dp(20)
+                pos_hint: {'center_x': 0.5,'center_y': .5}
+            MDLabel:
+                text: 'Service Type :'
+                font_name: 'Roboto'
+                theme_text_color: 'Custom'
+                text_color: 0, 0, 0, 1
+                size_hint_x: 0.5
+                size_hint_y: None
+                height: dp(20)
+                pos_hint: {'center_x': 0.5,'center_y': .5}
