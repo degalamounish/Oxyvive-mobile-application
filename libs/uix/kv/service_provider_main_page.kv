@@ -228,11 +228,12 @@
 <Customers>:
     MDCard:
         orientation: 'vertical'
-        size_hint: (1, 1)
+        size_hint_x: 1
+        size_hint_y:None
+        height:'200dp'
         elevation: 2
         pos_hint: {"center_x": 0.5, "center_y": 0.5}
         md_bg_color: 1, 1, 1, 1
-        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
         GridLayout:
             id: inner_grid
             cols: 1
