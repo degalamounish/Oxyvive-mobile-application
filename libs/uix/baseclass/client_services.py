@@ -60,7 +60,7 @@ class HeroItem(MDHeroFrom):
             print(self.manager)
             screen = self.manager.load_screen('servicer_details')
             # screen.hero_to.tag = self.tag
-            self.manager.push("servicer_details")
+            self.manager.push("slot_booking")
             print(self.tag)
 
         Clock.schedule_once(switch_screen, 0.2)
