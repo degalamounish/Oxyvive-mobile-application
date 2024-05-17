@@ -17,82 +17,81 @@
                         right_action_items: [["dots-vertical", lambda x: root.service_button(x)]]
                         elevation: 2
 
+
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: dp(100)
+                        md_bg_color: 1, 1, 1, 1
+                        padding: dp(15)
+
+                        MDCard:
+                            elevation: 2
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                            BoxLayout:
+                                orientation: 'vertical'
+                                padding: dp(5)
+                                spacing: dp(5)
+                                size_hint_y: None
+                                height: dp(40)
+                                pos_hint: { 'center_y': .4}
+                                MDLabel:
+                                    text: 'Oxivive Customers'
+                                    halign: 'center'
+                                    font_name: 'Roboto'
+                                    font_size: '18sp'
+                                    theme_text_color: 'Custom'
+                                    text_color: 1, 0, 0, 1
+                                    size_hint_y: None
+                                    height: dp(20)
+                                    pos_hint: {'center_x': 0.5,'center_y': .9}
+
+                                BoxLayout:
+                                    padding: dp(5)
+                                    spacing: dp(5)
+                                    size_hint_y: None
+                                    height: dp(40)
+                                    pos_hint: { 'center_y': .4}
+
+                                    MDLabel:
+                                        text: 'Choose Date :'
+                                        halign: 'center'
+                                        font_name: 'Roboto'
+                                        theme_text_color: 'Custom'
+                                        text_color: 0, 0, 0, 1
+                                        size_hint_x: 0.5
+                                        size_hint_y: None
+                                        height: dp(20)
+                                        pos_hint: {'center_x': 0.5,'center_y': .5}
+                                    MDTextField:
+                                        id: extra_info2
+                                        text: ""
+                                        halign: 'center'
+                                        font_name: 'Roboto'
+                                        theme_text_color: 'Custom'
+                                        text_color: 0, 0, 0, 1
+                                        size_hint_x: 0.5
+                                        size_hint_y: None
+                                        height: dp(20)
+                                        pos_hint: {'center_x': 0.5,'center_y': .5}
+                                        on_focus: if self.focus: root.show_date_picker(self)
                     ScrollView:
-                        GridLayout:
+                        BoxLayout:
                             id: grid
                             cols: 1
+                            orientation:'vertical'
                             padding: dp(10)
                             spacing: dp(20)
                             size_hint_y: None
                             height: self.minimum_height
-                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}  # Center the entire content
-                            BoxLayout:
-                                orientation: 'vertical'
-                                size_hint_y: None
-                                height: dp(100)
-                                md_bg_color: 1, 1, 1, 1
-
-                                MDCard:
-                                    elevation: 2
-                                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                                    BoxLayout:
-                                        orientation: 'vertical'
-                                        padding: dp(5)
-                                        spacing: dp(5)
-                                        size_hint_y: None
-                                        height: dp(40)
-                                        pos_hint: { 'center_y': .4}
-                                        MDLabel:
-                                            text: 'Oxivive Customers'
-                                            halign: 'center'
-                                            font_name: 'Roboto'
-                                            font_size: '18sp'
-                                            theme_text_color: 'Custom'
-                                            text_color: 1, 0, 0, 1
-                                            size_hint_y: None
-                                            height: dp(20)
-                                            pos_hint: {'center_x': 0.5,'center_y': .9}
-
-                                        BoxLayout:
-                                            padding: dp(5)
-                                            spacing: dp(5)
-                                            size_hint_y: None
-                                            height: dp(40)
-                                            pos_hint: { 'center_y': .4}
-
-                                            MDLabel:
-                                                text: 'Choose Date :'
-                                                halign: 'center'
-                                                font_name: 'Roboto'
-                                                theme_text_color: 'Custom'
-                                                text_color: 0, 0, 0, 1
-                                                size_hint_x: 0.5
-                                                size_hint_y: None
-                                                height: dp(20)
-                                                pos_hint: {'center_x': 0.5,'center_y': .5}
-                                            MDTextField:
-                                                id: extra_info2
-                                                text: ""
-                                                halign: 'center'
-                                                font_name: 'Roboto'
-                                                theme_text_color: 'Custom'
-                                                text_color: 0, 0, 0, 1
-                                                size_hint_x: 0.5
-                                                size_hint_y: None
-                                                height: dp(20)
-                                                pos_hint: {'center_x': 0.5,'center_y': .5}
-                                                on_focus: if self.focus: root.show_date_picker(self)
-                            BoxLayout:
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                            GridLayout:
                                 id: customer_list_id
-                                orientation:'vertical'
-                                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-##                                cols: 1
-#                                padding: dp(10)
-#                                spacing: dp(295)
-#                                size_hint_y: None
-#                                height: self.minimum_height
-#                                pos_hint: {'center_y': 0.5}
-#                                md_bg_color: 0, 0, 0, 1
+                                cols: 1
+                                spacing: dp(205)
+                                size_hint_y: None
+                                adaptive_height:True
+
 
         MDNavigationDrawer:
             id: nav_drawer

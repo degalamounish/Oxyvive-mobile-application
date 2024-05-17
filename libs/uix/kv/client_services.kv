@@ -1,286 +1,163 @@
+<CustomImageTile>:
+    radius: 24
+    box_radius: [0, 0, 24, 24]
+    box_color: 1, 1, 1, .2
+    source: "cats.jpg"
+    pos_hint: {"center_x": .5, "center_y": .5}
+    size_hint: None, None
+    size: "320dp", "200dp"
+
+    MDIconButton:
+        icon: "heart-outline"
+        theme_icon_color: "Custom"
+        icon_color: 1, 0, 0, 1
+        pos_hint: {"center_y": .5}
+        on_release: self.icon = "heart" if self.icon == "heart-outline" else "heart-outline"
+
+    MDLabel:
+        text: "Julia and Julie"
+        bold: True
+        color: 1, 1, 1, 1
+
+<ClickableTextFieldRound>:
+    size_hint_y: None
+    height: text_field.height
+    MDTextField:
+        id: text_field
+        mode: "fill"
+        hint_text: root.hint_text
+        text: root.text
+        radius:[20, 20, 20, 20]
+        password: True
+        # icon_left: "magnify"
+        line_color_focus: 1, 1, 1, 1  # Gray line color
+        background_color: 1, 1, 1, 1
+    MDIconButton:
+        icon: "magnify"
+        pos_hint: {"center_y": .5}
+        pos: text_field.width - self.width + dp(10), 0
+        theme_text_color: "Hint"
+        on_release:pass
+
+
+
+
+<HeroItem>
+    id:hero
+    size_hint_y: None
+    size_hint_x: None
+    height: '120dp'
+    width: '80dp'
+    radius: 10
+    MDSmartTile:
+        id: tile
+        radius: 10
+        box_radius: 0, 0, 10, 10
+        box_color: 0, 0, 0, 0.5
+        source: root.text
+        size_hint: None, None
+        size: root.size
+        mipmap: True
+        on_release: root.on_release()
+
+        MDLabel:
+            text: root.tag
+            bold: True
+            font_style: "Subtitle2"
+            halign:'center'
+            opposite_colors: True
+
 <Client_services>:
-    ScreenManager:
+    MDScreenManager:
         id: screen_manager
         NavigationDrawerScreen:
             name: "navigation_drawer"
             MDScreen:
-                BoxLayout:
-                    orientation: 'vertical'
+                name: "screen A"
+                MDBoxLayout:
+                    orientation: "vertical"
+                    md_bg_color:1,1,1,1
                     MDTopAppBar:
-                        title: "Available Services"
-                        font_name: "Roboto"
-                        md_bg_color: 1, 0, 0, 1
+                        title: 'Username'
+                        type_height:'small'
+                        elevation:0
+                        md_bg_color:1,1,1,1
+                        specific_text_color: 0,0,0,1
                         left_action_items: [["menu", lambda x: nav_drawer.set_state()]]
-                        right_action_items: [["map-marker", lambda x: root.location_screen()]]
+                    MDBoxLayout:
+                        orientation: 'vertical'
+                        adaptive_height: True
+                        padding: dp(25), 0, dp(25), 0
+                        ClickableTextFieldRound:
+                            # size_hint_x: None
+                            # width: "300dp"
+                            hint_text: "Search here"
+                            pos_hint: {"center_x": .5, "center_y": .9}
                     ScrollView:
-                        GridLayout:
-                            id: card_grid
-                            cols: 1
-                            spacing: dp(10)
-                            padding: dp(10)
-                            size_hint_y: None
-                            height: self.minimum_height
-                            pos_hint: {"center_x": 0.5, "center_y": 0.5}
-                            BoxLayout:
-                                orientation: 'vertical'
+                        bar_width: 0
+                        MDBoxLayout:
+                            orientation:'vertical'
+                            adaptive_height: True
+                            padding: dp(25), 0, dp(25), 0
+                            MDLabel:
+                                text: 'AVAILABLE SERVICES'
+                                font_style: "Subtitle2"
                                 size_hint_y: None
-                                height: dp(185)
-                                md_bg_color: 1, 1, 1, 1
-
-                                MDCard:
-                                    orientation: 'horizontal'
-                                    size_hint: (1, 1)
-                                    elevation: 2
-                                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
-                                    BoxLayout:
-                                        orientation: 'vertical'
-                                        size_hint: (0.5, 1)
-                                        padding: dp(8),dp(5),dp(5),dp(5)
-                                        AsyncImage:
-                                            id: organization_image
-                                            source: 'images/hospital-building.jpg'
-                                            size_hint: (1, 1)
-                                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                                            allow_stretch: True
-
-                                    BoxLayout:
-                                        id: information
-                                        orientation: 'vertical'
-                                        size_hint_x: 0.5
-                                        padding: dp(2)
-                                        spacing: dp(10)
-                                        BoxLayout:
-                                            id: box_one
-                                            orientation: 'horizontal'
-                                            size_hint_y: None
-                                            height: dp(50)
-                                            spacing: dp(5)
-                                            pos_hint: {'top': 1}
-
-                                            MDLabel:
-                                                id: Horganization_name
-                                                text: "Hospital"
-                                                font_name: "Roboto-Bold"
-                                                theme_text_color: "Primary"
-                                                font_size: '25sp'
-                                                halign: 'center'
-                                                valign: 'center'
-                                                height: dp(50)
-                                                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                                                canvas.before:
-                                                    Color:
-                                                        rgba: 0.5, 0.5, 0.5, 1
-                                                    Line:
-                                                        points: self.x, self.y, self.x + self.width, self.y
-                                                        width: 1
-
-                                        BoxLayout:
-                                            id: box_two
-                                            orientation: 'horizontal'
-                                            size_hint_y: None
-                                            height: dp(70)
-                                            spacing: dp(5)
-                                            MDLabel:
-                                                id: Horganization_address
-                                                text: "Hospitals Address"
-                                                font_name: "Roboto"
-                                                theme_text_color: "Primary"
-                                                font_size: '18sp'
-                                                pos_hint: {'center_x': 0.5,'center_y': 0.8}
-
-                                        MDRaisedButton:
-                                            text: "Book Now"
-                                            font_name: "Roboto-Bold"
-                                            size_hint: None, None
-                                            size: "100dp", "30dp"
-                                            pos_hint: {'right': 0.95, 'y': 0}
-                                            md_bg_color: 1, 0, 0, 1
-                                            elevation: 3
-                                            theme_text_color: "Custom"
-                                            text_color: 1, 1, 1, 1
-                                            font_style: "Button"
-                                            on_release: root.book_now( Horganization_name.text, Horganization_address.text)
-                                            canvas.before:
-                                                Color:
-                                                    rgb: rgba(255, 0, 0, 255)
-                                                RoundedRectangle:
-                                                    size: self.size
-                                                    pos: self.pos
-                                                    radius: [5]
-                            BoxLayout:
-                                orientation: 'vertical'
+                                height: '40dp'
+                            MDLabel:
+                                text: 'Oxiclinic'
+                                font_style: "Subtitle2"
                                 size_hint_y: None
-                                height: dp(185)
-                                md_bg_color: 1, 1, 1, 1
-
-                                MDCard:
-                                    orientation: 'horizontal'
-                                    size_hint: (1, 1)
-                                    elevation: 2
-                                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
-                                    BoxLayout:
-                                        orientation: 'vertical'
-                                        size_hint: (0.5, 1)
-                                        padding: dp(8),dp(5),dp(5),dp(5)
-                                        AsyncImage:
-                                            id: organization_image
-                                            source: 'images/ambuleone.png'
-                                            size_hint: (1, 1)
-                                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                                            allow_stretch: True
-
-                                    BoxLayout:
-                                        id: information
-                                        orientation: 'vertical'
-                                        size_hint_x: 0.5
-                                        padding: dp(2)
-                                        spacing: dp(10)
-                                        BoxLayout:
-                                            id: box_one
-                                            orientation: 'horizontal'
-                                            size_hint_y: None
-                                            height: dp(50)
-                                            spacing: dp(5)
-                                            pos_hint: {'top': 1}
-
-                                            MDLabel:
-                                                id: Worganization_name
-                                                text: "Oxy Wheels"
-                                                font_name: "Roboto-Bold"
-                                                theme_text_color: "Primary"
-                                                font_size: '25sp'
-                                                halign: 'center'
-                                                valign: 'center'
-                                                height: dp(50)
-                                                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                                                canvas.before:
-                                                    Color:
-                                                        rgba: 0.5, 0.5, 0.5, 1
-                                                    Line:
-                                                        points: self.x, self.y, self.x + self.width, self.y
-                                                        width: 1
-
-                                        BoxLayout:
-                                            id: box_two
-                                            orientation: 'horizontal'
-                                            size_hint_y: None
-                                            height: dp(70)
-                                            spacing: dp(5)
-                                            MDLabel:
-                                                id: Worganization_address
-                                                text: "Vehicle Details"
-                                                font_name: "Roboto"
-                                                theme_text_color: "Primary"
-                                                font_size: '18sp'
-                                                pos_hint: {'center_x': 0.5,'center_y': 0.8}
-
-                                        MDRaisedButton:
-                                            text: "Book Now"
-                                            font_name: "Roboto-Bold"
-                                            size_hint: None, None
-                                            size: "100dp", "30dp"
-                                            pos_hint: {'right': 0.95, 'y': 0}
-                                            md_bg_color: 1, 0, 0, 1
-                                            elevation: 3
-                                            theme_text_color: "Custom"
-                                            text_color: 1, 1, 1, 1
-                                            font_style: "Button"
-                                            on_release: root.book_now( Worganization_name.text, Worganization_address.text)
-                                            canvas.before:
-                                                Color:
-                                                    rgb: rgba(255, 0, 0, 255)
-                                                RoundedRectangle:
-                                                    size: self.size
-                                                    pos: self.pos
-                                                    radius: [5]
-                            BoxLayout:
-                                orientation: 'vertical'
+                                height: '20dp'
+                            ScrollView:
                                 size_hint_y: None
-                                height: dp(185)
-                                md_bg_color: 1, 1, 1, 1
-
-                                MDCard:
-                                    orientation: 'horizontal'
-                                    size_hint: (1, 1)
-                                    elevation: 2
-                                    pos_hint: {"center_x": 0.5, "center_y": 0.5}
-                                    BoxLayout:
-                                        orientation: 'vertical'
-                                        size_hint: (0.5, 1)
-                                        padding: dp(8),dp(5),dp(5),dp(5)
-                                        AsyncImage:
-                                            id: organization_image
-                                            source: 'images/Gym-Logo.jpg'
-                                            size_hint: (1, 1)
-                                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                                            allow_stretch: True
-
-                                    BoxLayout:
-                                        id: information
-                                        orientation: 'vertical'
-                                        size_hint_x: 0.5
-                                        padding: dp(2)
-                                        spacing: dp(10)
-                                        BoxLayout:
-                                            id: box_one
-                                            orientation: 'horizontal'
-                                            size_hint_y: None
-                                            height: dp(50)
-                                            spacing: dp(5)
-                                            pos_hint: {'top': 1}
-
-                                            MDLabel:
-                                                id: Gorganization_name
-                                                text: "Oxy-Gym"
-                                                font_name: "Roboto-Bold"
-                                                theme_text_color: "Primary"
-                                                font_size: '25sp'
-                                                halign: 'center'
-                                                valign: 'center'
-                                                height: dp(50)
-                                                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                                                canvas.before:
-                                                    Color:
-                                                        rgba: 0.5, 0.5, 0.5, 1
-                                                    Line:
-                                                        points: self.x, self.y, self.x + self.width, self.y
-                                                        width: 1
-
-                                        BoxLayout:
-                                            id: box_two
-                                            orientation: 'horizontal'
-                                            size_hint_y: None
-                                            height: dp(70)
-                                            spacing: dp(5)
-                                            MDLabel:
-                                                id: Gorganization_address
-                                                text: "Gym Address"
-                                                font_name: "Roboto"
-                                                theme_text_color: "Primary"
-                                                font_size: '18sp'
-                                                pos_hint: {'center_x': 0.5,'center_y': 0.8}
-
-                                        MDRaisedButton:
-                                            text: "Book Now"
-                                            font_name: "Roboto-Bold"
-                                            size_hint: None, None
-                                            size: "100dp", "30dp"
-                                            pos_hint: {'right': 0.95, 'y': 0}
-                                            md_bg_color: 1, 0, 0, 1
-                                            elevation: 3
-                                            theme_text_color: "Custom"
-                                            text_color: 1, 1, 1, 1
-                                            font_style: "Button"
-                                            on_release: root.book_now( Gorganization_name.text, Gorganization_address.text)
-                                            canvas.before:
-                                                Color:
-                                                    rgb: rgba(255, 0, 0, 255)
-                                                RoundedRectangle:
-                                                    size: self.size
-                                                    pos: self.pos
-                                                    radius: [5]
-
-
+                                height: '130dp'
+                                bar_width: 0
+                                MDBoxLayout:
+                                    id:box
+                                    adaptive_width: True
+                                    spacing: '15dp'
+                            MDLabel:
+                                text: 'Oxiwheel'
+                                font_style: "Subtitle2"
+                                size_hint_y: None
+                                height: '40dp'
+                            ScrollView:
+                                size_hint_y: None
+                                height: '130dp'
+                                bar_width: 0
+                                MDBoxLayout:
+                                    id:box1
+                                    adaptive_width: True
+                                    spacing: '15dp'
+                            MDLabel:
+                                text: 'Oxigym'
+                                font_style: "Subtitle2"
+                                size_hint_y: None
+                                height: '40dp'
+                            ScrollView:
+                                size_hint_y: None
+                                height: '130dp'
+                                bar_width: 0
+                                MDBoxLayout:
+                                    id:box2
+                                    adaptive_width: True
+                                    spacing: '15dp'
+                            MDLabel:
+                                text: 'ENVIRONMENT SETUP '
+                                font_style: "Subtitle2"
+                                size_hint_y: None
+                                height: '40dp'
+                            ScrollView:
+                                size_hint_y: None
+                                height: '220dp'
+                                bar_width: 0
+                                MDBoxLayout:
+                                    id:box3
+                                    adaptive_width: True
+                                    spacing: '15dp'
+                                    size_hint_y: None
+                                    height: '220dp'
             MDNavigationLayout:
                 id: nav_layout
                 MDNavigationDrawer:
@@ -382,4 +259,3 @@
                                         IconLeftWidget:
                                             icon: "logout"
                                             on_release: root.logout()
-
