@@ -58,9 +58,9 @@ class HeroItem(MDHeroFrom):
             print(args)
             self.manager.current_heroes = [self.tag]
             print(self.manager)
-            # screen = self.manager.get_screen('menu_notification')
-            self.manager.hero_to.tag = self.tag
-            self.manager.current = " screen B"
+            screen = self.manager.load_screen('servicer_details')
+            # screen.hero_to.tag = self.tag
+            self.manager.push("servicer_details")
             print(self.tag)
 
         Clock.schedule_once(switch_screen, 0.2)
@@ -85,7 +85,7 @@ class Client_services(MDScreen):
         print('on_b1')
         for i in range(12):
             hero_item = HeroItem(
-                text="images/gym.png", tag=f"Dr.OxiClinic {i}", manager=self.ids.screen_manager
+                text="images/gym.png", tag=f"Dr.OxiClinic {i}", manager=self.manager
             )
             if not i % 2:
                 hero_item.ids.tile.md_bg_color = "lightgrey"
@@ -95,7 +95,7 @@ class Client_services(MDScreen):
         print('on_b2')
         for i in range(12):
             hero_item = HeroItem(
-                text="images/gym.png", tag=f"Dr.OxiWheel {i}", manager=self.ids.screen_manager
+                text="images/gym.png", tag=f"Dr.OxiWheel {i}", manager=self.manager
             )
             if not i % 2:
                 hero_item.ids.tile.md_bg_color = "lightgrey"
@@ -105,7 +105,7 @@ class Client_services(MDScreen):
         print('on_b3')
         for i in range(12):
             hero_item = HeroItem(
-                text="images/gym.png", tag=f"Dr.OxiGym {i}", manager=self.ids.screen_manager
+                text="images/gym.png", tag=f"Dr.OxiGym {i}", manager=self.manager
             )
             if not i % 2:
                 hero_item.ids.tile.md_bg_color = "lightgrey"

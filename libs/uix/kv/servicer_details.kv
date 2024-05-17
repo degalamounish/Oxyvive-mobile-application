@@ -1,0 +1,15 @@
+<ServicerDetails>:
+    heroes_to: [hero_to]
+    MDHeroTo:
+        id: hero_to
+        size_hint: 1, None
+        height: "300dp"
+        pos_hint: {"top": 1}
+
+    MDRaisedButton:
+        text: "Move Hero To Screen A"
+        pos_hint: {"center_x": .5}
+        y: "36dp"
+        on_release:
+            root.current_heroes = [hero_to.tag]
+            root.manager.push( "client_services")
