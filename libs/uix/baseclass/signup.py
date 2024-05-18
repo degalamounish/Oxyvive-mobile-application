@@ -9,6 +9,8 @@ from kivymd.uix.dialog import MDDialog
 from kivymd.uix.screen import MDScreen
 from server import Server
 
+
+
 class Signup(MDScreen):
     def __init__(self, **kwargs):
         super(Signup, self).__init__(**kwargs)
@@ -173,9 +175,11 @@ class Signup(MDScreen):
                         with self.server.sqlite3_users_db() as connection:
                             cursor = connection.cursor()
                             cursor.execute('''
-                                            INSERT INTO users (username, email, password, phone, pincode)
-                                            VALUES (?, ?, ?, ?, ?)
-                                        ''', (username, email, hash_pashword, phone, pincode))
+                                INSERT INTO users (id, username, email, password, phone, pincode)
+                                VALUES (?, ?, ?, ?, ?, ?)
+                            ''', (id, username, email, hash_pashword, phone, pincode))
+                            connection.commit()
+
                             connection.commit()
                         # Navigate to the success screen
                         self.manager.push("login")

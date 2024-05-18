@@ -120,25 +120,25 @@
         "kv": "libs/uix/kv/service_provider_main_page.kv"
     },
     "servicer_profile":{
-        "import": "from libs.uix.baseclass.service_provider_main_page import ServiceProfile",
+        "import": "from libs.uix.baseclass.servicer_profile import ServiceProfile",
         "object": "ServiceProfile()",
-        "kv": "libs/uix/kv/service_provider_main_page.kv"
+        "kv": "libs/uix/kv/servicer_profile.kv"
 
     },
     "servicer_notification":{
-        "import": "from libs.uix.baseclass.service_provider_main_page import ServiceNotification",
+        "import": "from libs.uix.baseclass.servicer_notification import ServiceNotification",
         "object": "ServiceNotification()",
-        "kv": "libs/uix/kv/service_provider_main_page.kv"
+        "kv": "libs/uix/kv/servicer_notification.kv"
     },
     "servicer_add_service":{
-        "import": "from libs.uix.baseclass.service_provider_main_page import ServiceSlotAdding",
+        "import": "from libs.uix.baseclass.servicer_add_service import ServiceSlotAdding",
         "object": "ServiceSlotAdding()",
-        "kv": "libs/uix/kv/service_provider_main_page.kv"
+        "kv": "libs/uix/kv/servicer_add_service.kv"
     },
     "servicer_support":{
-        "import": "from libs.uix.baseclass.service_provider_main_page import ServiceSupport",
+        "import": "from libs.uix.baseclass.servicer_support import ServiceSupport",
         "object": "ServiceSupport()",
-        "kv": "libs/uix/kv/service_provider_main_page.kv"
+        "kv": "libs/uix/kv/servicer_support.kv"
     },
     "Screen_name": {
         "import": "",

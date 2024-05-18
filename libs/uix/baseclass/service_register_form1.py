@@ -1,7 +1,7 @@
 import json
 import re
-import sqlite3
 import random
+import sqlite3
 import string
 
 import bcrypt
