@@ -3,11 +3,12 @@ import json
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager
+from kivymd.uix.screenmanager import MDScreenManager
 
 from libs.applibs import utils
 
 
-class Root(ScreenManager):
+class Root(MDScreenManager):
     history = []
 
     def __init__(self, **kwargs):

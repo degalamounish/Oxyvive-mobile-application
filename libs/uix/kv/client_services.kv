@@ -68,12 +68,12 @@
             opposite_colors: True
 
 <Client_services>:
-    MDScreenManager:
-        id: screen_manager
-        NavigationDrawerScreen:
-            name: "navigation_drawer"
+    MDNavigationLayout:
+        id: nav_layout
+        MDScreenManager:
+            id: screen_manager
             MDScreen:
-                name: "screen A"
+                name: "main_screen"
                 MDBoxLayout:
                     orientation: "vertical"
                     md_bg_color:1,1,1,1
@@ -94,7 +94,7 @@
                             hint_text: "Search here"
                             pos_hint: {"center_x": .5, "center_y": .9}
                     ScrollView:
-                        bar_width: 0
+                        bar_widAth: 0
                         MDBoxLayout:
                             orientation:'vertical'
                             adaptive_height: True
@@ -158,104 +158,119 @@
                                     spacing: '15dp'
                                     size_hint_y: None
                                     height: '220dp'
-            MDNavigationLayout:
-                id: nav_layout
-                MDNavigationDrawer:
-                    id: nav_drawer
-                    orientation: 'vertical'
-                    size_hint_x:dp(290)
-                    size_hint_max_x: "270dp"
-                    padding: "0dp"
-                    spacing: "5dp"
-                    MDCard:
-                        orientation: 'vertical'
-                        size_hint: None, None
-                        size: "268dp", "100dp"
-                        elevation: 2
-                        md_bg_color: 1, 1, 1, 1
-                        BoxLayout:
-                            size_hint_y: None
-                            height: dp(90)
-                            padding: "15dp"
-                            BoxLayout:
-                                size_hint: None, None
-                                size: dp(60), dp(60)
-                                canvas:
-                                    Color:
-                                        rgb: 1, 1, 1
-                                    Ellipse:
-                                        pos: self.pos
-                                        size: 60, 60
-                                        source: 'images/doctor.jpg'
-                                        angle_start: 0
-                                        angle_end: 360
-                            BoxLayout:
-                                orientation: 'vertical'
-                                padding: "5dp"
-                                spacing: "5dp"
-                                MDLabel:
-                                    id: username
-                                    text: "username"
-                                    font_name: "Roboto"
-                                    theme_text_color: "Secondary"
-                                    pos_hint: {'center_x': 0.5,'center_y': 0.2}
-                                MDLabel:
-                                    id: email
-                                    text: "clientemail@gmail.com"
-                                    theme_text_color: "Hint"
-                                    font_name: "Roboto"
-                                    font_size:'12sp'
-                                    pos_hint: {'center_x': 0.5,'center_y': 0.1}
 
+        MDNavigationDrawer:
+            id: nav_drawer
+            orientation: 'vertical'
+            size_hint_x:dp(290)
+            size_hint_max_x: "270dp"
+            padding: "0dp"
+            spacing: "5dp"
+            MDCard:
+                orientation: 'vertical'
+                size_hint: None, None
+                size: "268dp", "100dp"
+                elevation: 2
+                md_bg_color: 1, 1, 1, 1
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(90)
+                    padding: "15dp"
+                    BoxLayout:
+                        size_hint: None, None
+                        size: dp(60), dp(60)
+                        FitImage:
+                            id:image
+                            source: "images/hospital-building.jpg"
+                            pos_hint: {"top": 1}
+                            radius: 50
                     BoxLayout:
                         orientation: 'vertical'
-                        ScrollView:
-                            MDList:
-                                id: md_list
-                                MDList:
-                                    OneLineIconListItem:
-                                        text: "Home"
-                                        on_release: root.home()
-                                        IconLeftWidget:
-                                            icon: "home"
-                                            on_release: root.home()
-                                    OneLineIconListItem:
-                                        text: "Profile"
-                                        on_release: root.manager.push("menu_profile")
-                                        IconLeftWidget:
-                                            icon: "account-circle"
-                                            on_release: root.manager.push("menu_profile")
-                                    OneLineIconListItem:
-                                        text: "Notification"
-                                        on_release: root.manager.push("menu_notification")
-                                        IconLeftWidget:
-                                            icon: "bell-outline"
-                                            on_release: root.manager.push("menu_notification")
+                        padding: "5dp"
+                        spacing: "5dp"
+                        MDLabel:
+                            id: username
+                            text: "username"
+                            font_name: "Roboto"
+                            theme_text_color: "Secondary"
+                            pos_hint: {'center_x': 0.5,'center_y': 0.2}
+                        MDLabel:
+                            id: email
+                            text: "clientemail@gmail.com"
+                            theme_text_color: "Hint"
+                            font_name: "Roboto"
+                            font_size:'12sp'
+                            pos_hint: {'center_x': 0.5,'center_y': 0.1}
 
-                                    OneLineIconListItem:
-                                        text: "Bookings"
-                                        on_release: root.manager.push("menu_bookings")
-                                        IconLeftWidget:
-                                            icon: "book-account-outline"
-                                            on_release: root.manager.push("menu_bookings")
+            BoxLayout:
+                orientation: 'vertical'
+                ScrollView:
+                    MDList:
+                        id: md_list
+                        MDList:
+                            OneLineIconListItem:
+                                text: "Home"
+                                on_release: root.home()
+                                IconLeftWidget:
+                                    icon: "home"
+                                    on_release: root.home()
+                            OneLineIconListItem:
+                                text: "Profile"
+                                on_release:
+                                    root.manager.current_heroes = []
+                                    root.manager.push_replacement("menu_profile")
+                                IconLeftWidget:
+                                    icon: "account-circle"
+                                    on_release:
+                                        root.manager.current_heroes = []
+                                        root.manager.push_replacement("menu_profile")
+                            OneLineIconListItem:
+                                text: "Notification"
+                                on_release:
+                                    root.manager.current_heroes = []
+                                    root.manager.push("menu_notification")
+                                IconLeftWidget:
+                                    icon: "bell-outline"
+                                    on_release:
+                                        root.manager.current_heroes = []
+                                        root.manager.push("menu_notification")
 
-                                    OneLineIconListItem:
-                                        text: "Reports"
-                                        on_release: root.manager.push("menu_reports")
-                                        IconLeftWidget:
-                                            icon: "file-multiple"
-                                            on_release: root.manager.push("menu_reports")
+                            OneLineIconListItem:
+                                text: "Bookings"
+                                on_release:
+                                    root.manager.current_heroes = []
+                                    root.manager.push("menu_bookings")
+                                IconLeftWidget:
+                                    icon: "book-account-outline"
+                                    on_release:
+                                        root.manager.current_heroes = []
+                                        root.manager.push("menu_bookings")
 
-                                    OneLineIconListItem:
-                                        text: "Support"
-                                        on_release: root.manager.push("menu_support")
-                                        IconLeftWidget:
-                                            icon: "book-information-variant"
-                                            on_release: root.manager.push("menu_support")
+                            OneLineIconListItem:
+                                text: "Reports"
+                                on_release:
+                                    root.manager.current_heroes = []
+                                    root.manager.push("menu_reports")
+                                IconLeftWidget:
+                                    icon: "file-multiple"
+                                    on_release:
+                                        root.manager.current_heroes = []
+                                        root.manager.push("menu_reports")
 
-                                    OneLineIconListItem:
-                                        text: "Logout"
-                                        on_release: root.logout()
-                                        IconLeftWidget:
-                                            icon: "logout"
-                                            on_release: root.logout()
+                            OneLineIconListItem:
+                                text: "Support"
+                                on_release:
+                                    root.manager.current_heroes = []
+                                    root.manager.push("menu_support")
+                                IconLeftWidget:
+                                    icon: "book-information-variant"
+                                    on_release:
+                                        root.manager.current_heroes = []
+                                        root.manager.push("menu_support")
+
+                            OneLineIconListItem:
+                                text: "Logout"
+                                on_release: root.logout()
+                                IconLeftWidget:
+                                    icon: "logout"
+                                    on_release: root.logout()

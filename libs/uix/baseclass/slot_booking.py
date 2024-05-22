@@ -48,7 +48,6 @@ class CButton(MDFlatButton):
         self.default_md_bg_color = self.md_bg_color  # Store the default background color
         self.default_line_color = self.line_color  # Store the default line color
 
-
     def Slot_Timing(self, slot_timing):
         CButton.slot_time = slot_timing
         # Reset the colors of all buttons to their default state
@@ -61,14 +60,16 @@ class CButton(MDFlatButton):
         self.md_bg_color = (1, 0, 0, 0.1)  # Set background color
         self.line_color = (1, 0, 0, 0.5)  # Set line color
         self.CButton_pressed = True
-        print( f"Selected time: {slot_timing}")
+        print(f"Selected time: {slot_timing}")
 
     pass
+
+
 class Alert_Label(MDLabel):
     pass
 
-class Slot_Booking(MDScreen):
 
+class Slot_Booking(MDScreen):
     time_slots = ['9am - 11am', '11am - 1pm', '1pm - 3pm', '3pm - 5pm', '5pm - 7pm', '7pm - 9pm']
 
     def __init__(self, **kwargs):
@@ -78,7 +79,6 @@ class Slot_Booking(MDScreen):
         self.book_slot_pressed = False
         self.server = Server()
 
-
     def on_keyboard(self, instance, key, scancode, codepoint, modifier):
         if key == 27:  # Keycode for the back button on Android
             self.on_back_button()
@@ -86,7 +86,7 @@ class Slot_Booking(MDScreen):
         return False
 
     def on_back_button(self, instance):
-        self.manager.push_replacement("hospital_booking", "right")
+        self.manager.push_replacement("servicer_details", "right")
         self.ids.CButton.clear_widgets()
         # reset all the buttons
         for button_id in ['button1', 'button2', 'button3', 'button4']:
@@ -99,6 +99,7 @@ class Slot_Booking(MDScreen):
 
     # Book slot button logic
     date_list = []
+
     def slot_days(self):
         # Initialize empty lists to store dates and weekdays
         day_list = []
@@ -202,15 +203,18 @@ class Slot_Booking(MDScreen):
             if count_time_slot == 2:
                 updated_list.remove(time_slot)
         return updated_list
+
     def get_book_times(self, selected_date):
-        book_slot = app_tables.book_slot.search(book_date=selected_date)
+        date_format = "%d-%m-%Y"  # Day-Month-Year
+        date_object = datetime.strptime(selected_date, date_format)
+        date_only = date_object.date()
+        book_slot = app_tables.book_slot.search(book_date=date_only)
         book_times = [row['book_time'] for row in book_slot]
         return book_times
 
-
-
     def pay_now(self, instance, *args):
-        cbutton_pressed = any(button.CButton_pressed for button in self.ids.CButton.children if isinstance(button, CButton))
+        cbutton_pressed = any(
+            button.CButton_pressed for button in self.ids.CButton.children if isinstance(button, CButton))
         if self.book_slot_pressed and cbutton_pressed:
             print("Date:", self.selected_date)
             print("Time:", CButton.slot_time)
@@ -226,7 +230,7 @@ class Slot_Booking(MDScreen):
         elif not self.book_slot_pressed and cbutton_pressed:
             self.show_validation_dialog("Select Date")
             print("Select Date")
-        elif self.book_slot_pressed  and not cbutton_pressed:
+        elif self.book_slot_pressed and not cbutton_pressed:
             self.show_validation_dialog("Select Time")
             print("Select Time")
         else:
@@ -276,24 +280,24 @@ class Slot_Booking(MDScreen):
 
     # def pay_now(self, instance, *args):
     #     self.manager.push("payment_page")
-        # session_date = self.ids.date_choosed.text
-        # # Extract the username from menu_profile
-        # screen = self.manager.get_screen('client_services')
-        # username = screen.ids.username.text
-        # if len(session_date) == 10 and hasattr(self, 'session_time') and self.session_time:
-        #     print(username, session_date, self.session_time)
-        #     self.manager.load_screen("payment_page")
-        #     current_screen = self.manager.get_screen('payment_page')
-        #     current_screen.ids.user_name.text = username
-        #     current_screen.ids.session_date.text = session_date
-        #     current_screen.ids.session_time.text = self.session_time
-        #     self.manager.push("payment_page")
-        # elif len(session_date) == 13 and hasattr(self, 'session_time') and self.session_time:
-        #     self.show_validation_dialog("Select Date")
-        # elif hasattr(self, 'session_time') == False and len(session_date) == 10:
-        #     self.show_validation_dialog("Select Time")
-        # else:
-        #     self.show_validation_dialog("Select Date and Time")
+    # session_date = self.ids.date_choosed.text
+    # # Extract the username from menu_profile
+    # screen = self.manager.get_screen('client_services')
+    # username = screen.ids.username.text
+    # if len(session_date) == 10 and hasattr(self, 'session_time') and self.session_time:
+    #     print(username, session_date, self.session_time)
+    #     self.manager.load_screen("payment_page")
+    #     current_screen = self.manager.get_screen('payment_page')
+    #     current_screen.ids.user_name.text = username
+    #     current_screen.ids.session_date.text = session_date
+    #     current_screen.ids.session_time.text = self.session_time
+    #     self.manager.push("payment_page")
+    # elif len(session_date) == 13 and hasattr(self, 'session_time') and self.session_time:
+    #     self.show_validation_dialog("Select Date")
+    # elif hasattr(self, 'session_time') == False and len(session_date) == 10:
+    #     self.show_validation_dialog("Select Time")
+    # else:
+    #     self.show_validation_dialog("Select Date and Time")
 
     def show_validation_dialog(self, message):
         # Create the dialog asynchronously

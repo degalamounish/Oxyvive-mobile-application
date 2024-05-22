@@ -52,16 +52,12 @@ class HeroItem(MDHeroFrom):
         ).start(instance_hero_widget)
 
     def on_release(self):
-        print('release')
-
         def switch_screen(*args):
-            print(args)
             self.manager.current_heroes = [self.tag]
-            print(self.manager)
-            screen = self.manager.load_screen('servicer_details')
-            # screen.hero_to.tag = self.tag
-            self.manager.push("slot_booking")
-            print(self.tag)
+            self.manager.load_screen("servicer_details")
+            screen = self.manager.get_screen("servicer_details")
+            screen.ids.hero_to.tag = self.tag  # Access hero_to through ids
+            self.manager.push("servicer_details")
 
         Clock.schedule_once(switch_screen, 0.2)
 
@@ -118,6 +114,7 @@ class Client_services(MDScreen):
         self.ids.email.text = user_info['email']
 
     def logout(self):
+        self.manager.current_heroes = []
         self.manager.push_replacement("login", "right")
         self.ids.nav_drawer.set_state("close")
         with open('user_data.json', 'r') as file:

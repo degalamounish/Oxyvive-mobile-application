@@ -3,9 +3,10 @@ from kivymd.uix.screen import MDScreen
 
 
 class ServicerDetails(MDScreen):
-    tag = StringProperty()
-    heroes_to = ObjectProperty()
-    hero_to = ObjectProperty()
 
     def __init__(self, **kwargs):
         super(ServicerDetails, self).__init__(**kwargs)
+
+    def on_back_button(self, hero):
+        self.manager.current_heroes = [hero]
+        self.manager.current = "servicer_details"

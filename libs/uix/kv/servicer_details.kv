@@ -1,15 +1,94 @@
 <ServicerDetails>:
+    name: 'servicer_details'
     heroes_to: [hero_to]
-    MDHeroTo:
-        id: hero_to
-        size_hint: 1, None
-        height: "300dp"
-        pos_hint: {"top": 1}
 
-    MDRaisedButton:
-        text: "Move Hero To Screen A"
-        pos_hint: {"center_x": .5}
-        y: "36dp"
-        on_release:
-            root.current_heroes = [hero_to.tag]
-            root.manager.push( "client_services")
+    MDBoxLayout:
+        orientation: 'vertical'
+        padding: dp(16)
+
+        MDBoxLayout:
+            size_hint_y: None
+            height: dp(56)
+            MDIconButton:
+                icon: "arrow-left"
+                size_hint: None, None
+                size: dp(56), dp(56)
+                pos_hint: {"center_y": .5}
+                on_release:
+                    root.current_heroes = [root.ids.hero_to.tag]
+                    root.manager.push('client_services')
+
+        MDHeroTo:
+            id: hero_to
+            size_hint: 1, None
+            height: dp(300)
+
+        MDBoxLayout:
+            orientation: 'vertical'
+            spacing: dp(16)
+
+            MDBoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: None
+                height: dp(20)
+                spacing: dp(2)
+
+                MDIconButton:
+                    icon: 'star'
+                    theme_text_color: 'Custom'
+                    text_color: (1, 0.843, 0)
+
+                MDIconButton:
+                    icon: 'star'
+                    theme_text_color: 'Custom'
+                    text_color: (1, 0.843, 0)
+
+                MDIconButton:
+                    icon: 'star'
+                    theme_text_color: 'Custom'
+                    text_color: (1, 0.843, 0)
+
+                MDIconButton:
+                    icon: 'star'
+                    theme_text_color: 'Custom'
+                    text_color: (1, 0.843, 0)
+
+                MDIconButton:
+                    icon: 'star'
+                    theme_text_color: 'Custom'
+                    text_color: (1, 0.843, 0)
+
+            MDLabel:
+                text: 'Description:'
+                font_style: 'Subtitle2'
+                font_size: '16dp'
+                size_hint_y: None
+                height: self.texture_size[1]
+
+            MDLabel:
+                text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+                theme_text_color: "Secondary"
+                font_style: 'Body1'
+                font_size: '14dp'
+                size_hint_y: None
+                height: self.texture_size[1]
+                text_size: self.width, None
+
+        Widget:  # Spacer
+            size_hint_y: None
+            height: dp(20)
+
+        MDBoxLayout:
+            size_hint_y: None
+            height: dp(50)
+            padding: dp(16)
+            MDRaisedButton:
+                text: "Book an Appointment"
+                size_hint_x: 1
+                size_hint_y: None
+                height: dp(50)
+                md_bg_color: 1, 0, 0, 1
+                text_color: 1, 1, 1, 1
+                on_release:
+                    root.current_heroes = []
+                    root.manager.push('slot_booking')
