@@ -139,6 +139,9 @@ class Login(MDScreen):
                             password = str(user_anvil["password"])
                             phone = str(user_anvil["phone"])
                             pincode = str(user_anvil["pincode"])
+                            profile_data = user_anvil['profile'].get_bytes()  # Example method to get image bytes
+                            profile_data = base64.b64encode(profile_data).decode('utf-8')
+
                         if user_sqlite:
                             username = user_sqlite[1]
                             email = user_sqlite[2]
@@ -150,7 +153,7 @@ class Login(MDScreen):
                         self.manager.load_screen("menu_profile")
                         logged_in_data = {'logged_in': logged_in}
                         user_info = {'username': username, 'email': email, 'phone': phone, 'pincode': pincode,
-                                     'password': password}
+                                     'password': password, 'profile': profile_data}
                         with open("logged_in_data.json", "w") as json_file:
                             json.dump(logged_in_data, json_file)
                         with open("user_data.json", "w") as json_file:
@@ -158,6 +161,15 @@ class Login(MDScreen):
                         screen = self.manager.get_screen("client_services")
                         screen.ids.username.text = user_info['username']
                         screen.ids.email.text = user_info['email']
+                        profile_texture = base64.b64decode(profile_data)
+                        profile_image_path = "profile_image.png"  # Path where the profile image will be saved
+
+                        # Save the image to a file
+                        with open(profile_image_path, "wb") as profile_image_file:
+                            profile_image_file.write(profile_texture)
+
+                        # Set the source of the image widget
+                        screen.ids.image.source = profile_image_path
                 elif user_type == 'service provider':
                     if password_value:
                         self.manager.push("servicer_dashboard")
@@ -171,16 +183,21 @@ class Login(MDScreen):
                             profile_data = base64.b64encode(profile_data).decode('utf-8')
                             id = user_anvil["id"]
                         user_info = {'username': username, 'email': email, 'phone': phone, 'pincode': pincode,
-                                     'profile': profile_data, 'id': id, 'address':address}
+                                     'profile': profile_data, 'id': id, 'address': address}
                         with open("user_data.json", "w") as json_file:
                             json.dump(user_info, json_file)
                         screen = self.manager.get_screen("servicer_dashboard")
                         screen.ids.srv_username.text = user_info['username']
                         screen.ids.srv_email.text = user_info['email']
                         profile_texture = base64.b64decode(profile_data)
-                        profile_texture_io = BytesIO(profile_texture)
-                        profile_texture_obj = CoreImage(profile_texture_io, ext='png').texture
-                        screen.ids.profile_image.texture = profile_texture_obj
+                        profile_image_path = "profile_image.png"  # Path where the profile image will be saved
+
+                        # Save the image to a file
+                        with open(profile_image_path, "wb") as profile_image_file:
+                            profile_image_file.write(profile_texture)
+
+                        # Set the source of the image widget
+                        screen.ids.profile_image.source = profile_image_path
 
 
             else:
