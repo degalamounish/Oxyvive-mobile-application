@@ -37,7 +37,7 @@ conn.commit()
 # Builder.load_file("slot_booking.kv")
 
 
-class CButton(MDFlatButton):
+class CButton(MDRaisedButton):
     label_text = StringProperty("")
     slot_time = None
 
@@ -47,20 +47,24 @@ class CButton(MDFlatButton):
         self.CButton_pressed = False
         self.default_md_bg_color = self.md_bg_color  # Store the default background color
         self.default_line_color = self.line_color  # Store the default line color
+        self.default_label_color = (0.5, 0.5, 0.5, 1)
 
-    def Slot_Timing(self, slot_timing):
-        CButton.slot_time = slot_timing
+
+    def Slot_Timing(self):
+        CButton.slot_time = self.text
         # Reset the colors of all buttons to their default state
         for button in self.parent.children:
             if isinstance(button, CButton):
                 button.md_bg_color = button.default_md_bg_color
                 button.line_color = button.default_line_color
+                button.text_color = (0, 0, 0, 0.7)
 
         # Set the colors of the current button
-        self.md_bg_color = (1, 0, 0, 0.1)  # Set background color
-        self.line_color = (1, 0, 0, 0.5)  # Set line color
+        self.md_bg_color = (1, 0, 0, 0.8)  # Set background color
+        self.line_color = (0, 0, 0, 0.8)  # Set line color
+        self.text_color = (1, 1, 1, 1)
         self.CButton_pressed = True
-        print(f"Selected time: {slot_timing}")
+        print(f"Selected time: {self.slot_time}")
 
     pass
 
@@ -91,9 +95,13 @@ class Slot_Booking(MDScreen):
         # reset all the buttons
         for button_id in ['button1', 'button2', 'button3', 'button4']:
             button = self.ids[button_id]
-            button.elevation = 0
+            button.elevation = 1
             button.md_bg_color = (1, 1, 1, 1)
-            button.line_color = (1, 0, 0, 1)
+            button.line_color = (0, 0, 0, 0)
+        # reset all the labels
+        for label_id in ['day1', 'day2', 'day3', 'day4', 'date1', 'date2', 'date3', 'date4']:
+            label = self.ids[label_id]
+            label.color = (0, 0, 0, .7)
         self.ids.available_slots_alert.text = "Choose a Day"
         print("Back To Hospital Page")
 
@@ -112,7 +120,7 @@ class Slot_Booking(MDScreen):
             # Append the date to the date list
             self.date_list.append(next_date.strftime('%d-%m-%Y'))
             # Append the weekday to the day list
-            day_list.append(next_date.strftime('%a'))
+            day_list.append(next_date.strftime('%A'))
         # Now you have all dates in date_list and all weekdays in day_list
         dates = [date.split('-')[0] for date in self.date_list]
         print("Weekdays:", day_list)
@@ -127,7 +135,7 @@ class Slot_Booking(MDScreen):
     # logic for slot available for selected date
     time_list = ['09:00 AM', '11:00 AM', '01:00 PM', '03:00 PM', '05:00 PM', '07:00 PM']
 
-    def Book_Slot(self, button_instance, day, date):
+    def Book_Slot(self, button_instance, day, date, day_instance, date_instance):
 
         self.book_slot_pressed = True
         self.selected_day = day  # Store the selected day
@@ -145,12 +153,21 @@ class Slot_Booking(MDScreen):
         # reset all the buttons
         for button_id in ['button1', 'button2', 'button3', 'button4']:
             button = self.ids[button_id]
-            button.elevation = 0
+            button.elevation = 1
             button.md_bg_color = (1, 1, 1, 1)
-            button.line_color = (1, 0, 0, 1)
+            button.line_color = (0, 0, 0, 0)
+        # reset all the labels
+        for label_id in ['day1', 'day2', 'day3', 'day4', 'date1', 'date2', 'date3', 'date4']:
+            label = self.ids[label_id]
+            label.color = (0, 0, 0, .7)
+
         # Set  color for the clicked button
-        button_instance.md_bg_color = (1, 0, 0, 0.1)
-        button_instance.line_color = (1, 0, 0, 0.5)
+        button_instance.md_bg_color = (1, 0, 0, .8)
+
+        button_instance.line_color = (0, 0, 0, 0.8)
+        day_instance.color = (1, 1, 1, 1)
+        date_instance.color = (1, 1, 1, 1)
+
         # If selected  date is equal to today's date
         if date == (datetime.now().strftime('%d')):
 
@@ -225,7 +242,7 @@ class Slot_Booking(MDScreen):
             user_info['slot_time'] = CButton.slot_time
             with open("user_data.json", "w") as json_file:
                 json.dump(user_info, json_file)
-
+            self.manager.current_heroes = []
             self.manager.push("payment_page")
         elif not self.book_slot_pressed and cbutton_pressed:
             self.show_validation_dialog("Select Date")
