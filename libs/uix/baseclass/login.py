@@ -139,8 +139,13 @@ class Login(MDScreen):
                             password = str(user_anvil["password"])
                             phone = str(user_anvil["phone"])
                             pincode = str(user_anvil["pincode"])
-                            profile_data = user_anvil['profile'].get_bytes()  # Example method to get image bytes
-                            profile_data = base64.b64encode(profile_data).decode('utf-8')
+                            try:
+                                # Attempt to retrieve the profile image bytes and encode them to base64
+                                profile_data = user_anvil['profile'].get_bytes()
+                                profile_data = base64.b64encode(profile_data).decode('utf-8')
+                            except (KeyError, AttributeError):
+                                # Handle the case where 'profile' is missing or is None
+                                profile_data = ''  # Assign an empty string or default image data
 
                         if user_sqlite:
                             username = user_sqlite[1]
@@ -179,8 +184,13 @@ class Login(MDScreen):
                             phone = str(user_anvil["phone"])
                             pincode = str(user_anvil["pincode"])
                             address = str(user_anvil['address'])
-                            profile_data = user_anvil['profile'].get_bytes()  # Example method to get image bytes
-                            profile_data = base64.b64encode(profile_data).decode('utf-8')
+                            try:
+                                # Attempt to retrieve the profile image bytes and encode them to base64
+                                profile_data = user_anvil['profile'].get_bytes()
+                                profile_data = base64.b64encode(profile_data).decode('utf-8')
+                            except (KeyError, AttributeError):
+                                # Handle the case where 'profile' is missing or is None
+                                profile_data = ''  # Assign an empty string or default image data
                             id = user_anvil["id"]
                         user_info = {'username': username, 'email': email, 'phone': phone, 'pincode': pincode,
                                      'profile': profile_data, 'id': id, 'address': address}

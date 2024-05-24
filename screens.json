@@ -140,6 +140,11 @@
         "object": "ServiceSupport()",
         "kv": "libs/uix/kv/servicer_support.kv"
     },
+    "servicer_details":{
+        "import": "from libs.uix.baseclass.servicer_details import ServicerDetails",
+        "object": "ServicerDetails()",
+        "kv": "libs/uix/kv/servicer_details.kv"
+    },
     "Screen_name": {
         "import": "",
         "object": "()",
