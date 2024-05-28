@@ -1,6 +1,8 @@
 import json
 import re
 import sqlite3
+import string
+import random
 
 import anvil
 from anvil.tables import app_tables
@@ -103,21 +105,22 @@ class ServiceRegisterForm2(MDScreen):
                 building_licence = BlobMedia(content_type="application/octet-stream", name='building_licence',
                                              content=data[14])
                 app_tables.oxiclinics.add_row(
-                    id=id,
-                    name=name,
-                    email=email,
-                    password=password,
-                    phone=int(phone),
-                    address=address,
-                    Oxiclinics_Name=Oxiclinics_Name,
-                    established_year=established_year,
-                    District=District,
-                    State=State,
-                    pincode=int(pincode),
-                    address_2=address_2,
-                    capsules=int(capsules),
-                    medical_licence=medical_licence,
-                    building_licence=building_licence)
+                    oxi_id=id,
+                    oxi_name=name,
+                    oxi_email=email,
+                    oxi_password=password,
+                    oxi_phone=int(phone),
+                    oxi_address=address,
+                    oxiclinics_Name=Oxiclinics_Name,
+                    oxiclinics_established_year=established_year,
+                    oxiclinics_District=District,
+                    oxiclinics_State=State,
+                    oxiclinics_pincode=int(pincode),
+                    oxiclinics_address=address_2,
+                    oxiclinics_capsules=int(capsules),
+                    oxiclinics_medical_licence=medical_licence,
+                    oxiclinics_building_licence=building_licence,
+                    oxiclinics_id=self.generate_unique_oxiclinic_id())
 
             # ------------------------------------------------------------
             for row in oxiwheel:
@@ -144,21 +147,22 @@ class ServiceRegisterForm2(MDScreen):
                 driving_licence = BlobMedia(content_type="application/octet-stream", name='driving_licence',
                                             content=data[14])
                 app_tables.oxiwheels.add_row(
-                    id=id,
-                    name=name,
-                    email=email,
-                    password=password,
-                    phone=int(phone),
-                    address=address,
-                    Oxiwheels_Name=Oxiwheels_Name,
-                    model_year=model_year,
-                    District=District,
-                    State=State,
-                    pincode=int(pincode),
-                    address_2=address_2,
-                    capsules=int(capsules),
-                    vehicle_rc=vehicle_rc,
-                    driving_licence=driving_licence)
+                    oxi_id=id,
+                    oxi_name=name,
+                    oxi_email=email,
+                    oxi_password=password,
+                    oxi_phone=int(phone),
+                    oxi_address=address,
+                    oxiwheels_Name=Oxiwheels_Name,
+                    oxiwheels_model_year=model_year,
+                    oxiwheels_District=District,
+                    oxiwheels_State=State,
+                    oxiwheels_pincode=int(pincode),
+                    oxiwheels_address=address_2,
+                    oxiwheels_capsules=int(capsules),
+                    oxiwheels_vehicle_rc=vehicle_rc,
+                    oxiwheels_driving_licence=driving_licence,
+                    oxiwheels_id=self.generate_unique_oxiwheels_id())
             # -------------------------------------------------------------------
             for row in oxigym:
                 data = []
@@ -184,11 +188,11 @@ class ServiceRegisterForm2(MDScreen):
                 building_licence = BlobMedia(content_type="application/octet-stream", name='building_licence',
                                              content=data[14])
 
-                app_tables.oxigyms.add_row(id=id, name=name, email=email, password=password, phone=int(phone),
-                                           address=address, Oxigyms_Name=Oxigyms_Name,
-                                           established_year=established_year, District=District, State=State,
-                                           pincode=int(pincode), address_2=address_2, capsules=int(capsules),
-                                           gym_licence=gym_licence, building_licence=building_licence)
+                app_tables.oxigyms.add_row(oxi_id=id, oxi_name=name, oxi_email=email, oxi_password=password, oxi_phone=int(phone),
+                                           oxi_address=address, oxigyms_Name=Oxigyms_Name,
+                                           oxigyms_established_year=established_year, oxigyms_District=District, oxigyms_State=State,
+                                           oxigyms_pincode=int(pincode), oxigyms_address=address_2, oxigyms_capsules=int(capsules),
+                                           oxigyms_licence=gym_licence, oxigyms_building_licence=building_licence,oxigyms_id=self.generate_unique_oxigyms_id())
 
         except sqlite3.Error as e:
             print("Error inserting data:", e)
@@ -229,3 +233,39 @@ class ServiceRegisterForm2(MDScreen):
             self.delete_all_rows_from_all_tables()
             print('deleted local data')
             self.manager.push_replacement("login", "right")
+
+    def generate_unique_oxiclinic_id(self):
+        prefix = "OC"
+        while True:
+            random_numbers = ''.join(random.choices(string.digits, k=5))
+            code = prefix + random_numbers
+
+            # Check if the code already exists in the data table
+            existing_rows = app_tables.oxiclinics.get(oxiclinics_id=code)
+            if not existing_rows:
+                # If the code does not exist, return it
+                return code
+
+    def generate_unique_oxigyms_id(self):
+        prefix = "OG"
+        while True:
+            random_numbers = ''.join(random.choices(string.digits, k=5))
+            code = prefix + random_numbers
+
+            # Check if the code already exists in the data table
+            existing_rows = app_tables.oxigyms.get(oxigyms_id=code)
+            if not existing_rows:
+                # If the code does not exist, return it
+                return code
+
+    def generate_unique_oxiwheels_id(self):
+        prefix = "OW"
+        while True:
+            random_numbers = ''.join(random.choices(string.digits, k=5))
+            code = prefix + random_numbers
+
+            # Check if the code already exists in the data table
+            existing_rows = app_tables.oxiwheels.get(oxiwheels_id=code)
+            if not existing_rows:
+                # If the code does not exist, return it
+                return code

@@ -151,8 +151,8 @@ class Signup(MDScreen):
                 if self.server.is_connected():
                     print("connected")
                     # Check if email and phone already exist in the database
-                    existing_email = app_tables.users.get(email=email)
-                    existing_phone = app_tables.users.get(phone=float(phone))
+                    existing_email = app_tables.oxi_users.get(oxi_email=email)
+                    existing_phone = app_tables.oxi_users.get(oxi_phone=float(phone))
 
                     if existing_email:
                         self.ids.signup_email.helper_text = "Email already registered"
@@ -160,16 +160,17 @@ class Signup(MDScreen):
                         self.ids.signup_phone.helper_text = "Phone number already registered"
                     else:
                         # If not present, proceed to insert the new user
-                        rows = app_tables.users.search()
+                        rows = app_tables.oxi_users.search()
                         # Get the number of rows
                         id = len(rows) + 1
-                        app_tables.users.add_row(
-                            id=str(id),
-                            username=username,
-                            email=email,
-                            password=hash_pashword,
-                            phone=float(phone),
-                            pincode=int(pincode))
+                        app_tables.oxi_users.add_row(
+                            oxi_id=str(id),
+                            oxi_username=username,
+                            oxi_email=email,
+                            oxi_password=hash_pashword,
+                            oxi_phone=float(phone),
+                            oxi_pincode=int(pincode),
+                            oxi_usertype='client')
 
                         # Additional SQLite insert (if needed)
                         with self.server.sqlite3_users_db() as connection:
