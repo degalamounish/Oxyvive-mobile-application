@@ -181,8 +181,8 @@ class ServiceRegisterForm1(MDScreen):
                 print("Entering")
                 if self.server.is_connected():
                     # Check if email and phone already exist in the database
-                    existing_email = app_tables.users.get(email=service_provider_email)
-                    existing_phone = app_tables.users.get(phone=float(service_provider_phoneno))
+                    existing_email = app_tables.oxi_users.get(oxi_email=service_provider_email)
+                    existing_phone = app_tables.oxi_users.get(oxi_phone=float(service_provider_phoneno))
 
                     if existing_email:
                         print("email")
@@ -197,14 +197,14 @@ class ServiceRegisterForm1(MDScreen):
 
                     else:
                         print("table")
-                        app_tables.users.add_row(
-                            username=service_provider_name,
-                            id=random_code,
-                            email=service_provider_email,
-                            password=hash_pashword,
-                            phone=int(service_provider_phoneno),
-                            address=service_provider_address,
-                            usertype='service provider')
+                        app_tables.oxi_users.add_row(
+                            oxi_username=service_provider_name,
+                            oxi_id=random_code,
+                            oxi_email=service_provider_email,
+                            oxi_password=hash_pashword,
+                            oxi_phone=int(service_provider_phoneno),
+                            oxi_address=service_provider_address,
+                            oxi_usertype='service provider')
 
                         self.manager.push("service_register_form2")
                 else:

@@ -98,8 +98,8 @@ class Login(MDScreen):
             try:
                 if self.server.is_connected():
                     # Fetch user from Anvil's database
-                    user_anvil = app_tables.users.get(
-                        email=email,
+                    user_anvil = app_tables.oxi_users.get(
+                        oxi_email=email,
                     )
                     # user_sp_anvil = app_tables.users.get(
                     #     email=email,
@@ -122,8 +122,8 @@ class Login(MDScreen):
             if user_anvil or user_sqlite:
                 if user_anvil is not None:
                     password_value = bcrypt.checkpw(entered_password.encode('utf-8'),
-                                                    user_anvil['password'].encode('utf-8'))
-                    user_type = user_anvil['usertype']
+                                                    user_anvil['oxi_password'].encode('utf-8'))
+                    user_type = user_anvil['oxi_usertype']
                 if user_sqlite is not None:
                     password_value2 = bcrypt.checkpw(entered_password.encode('utf-8'),
                                                      user_sqlite[3].encode('utf-8'))
@@ -134,14 +134,14 @@ class Login(MDScreen):
                         print("Login successful.")
                         self.manager.push("client_services")
                         if user_anvil:
-                            username = str(user_anvil["username"])
-                            email = str(user_anvil["email"])
-                            password = str(user_anvil["password"])
-                            phone = str(user_anvil["phone"])
-                            pincode = str(user_anvil["pincode"])
+                            username = str(user_anvil["oxi_username"])
+                            email = str(user_anvil["oxi_email"])
+                            password = str(user_anvil["oxi_password"])
+                            phone = str(user_anvil["oxi_phone"])
+                            pincode = str(user_anvil["oxi_pincode"])
                             try:
                                 # Attempt to retrieve the profile image bytes and encode them to base64
-                                profile_data = user_anvil['profile'].get_bytes()
+                                profile_data = user_anvil['oxi_profile'].get_bytes()
                                 profile_data = base64.b64encode(profile_data).decode('utf-8')
                             except (KeyError, AttributeError):
                                 # Handle the case where 'profile' is missing or is None
@@ -179,14 +179,14 @@ class Login(MDScreen):
                     if password_value:
                         self.manager.push("servicer_dashboard")
                         if user_anvil:
-                            username = str(user_anvil["username"])
-                            email = str(user_anvil["email"])
-                            phone = str(user_anvil["phone"])
-                            pincode = str(user_anvil["pincode"])
-                            address = str(user_anvil['address'])
+                            username = str(user_anvil["oxi_username"])
+                            email = str(user_anvil["oxi_email"])
+                            phone = str(user_anvil["oxi_phone"])
+                            pincode = str(user_anvil["oxi_pincode"])
+                            address = str(user_anvil['oxi_address'])
                             try:
                                 # Attempt to retrieve the profile image bytes and encode them to base64
-                                profile_data = user_anvil['profile'].get_bytes()
+                                profile_data = user_anvil['oxi_profile'].get_bytes()
                                 profile_data = base64.b64encode(profile_data).decode('utf-8')
                             except (KeyError, AttributeError):
                                 # Handle the case where 'profile' is missing or is None
