@@ -129,7 +129,7 @@ class Login(MDScreen):
                                                      user_sqlite[3].encode('utf-8'))
                 print('Password : ', password_value)
                 print('Password : ', password_value2)
-                if user_type == None:
+                if user_type == 'client':
                     if password_value or password_value2:
                         print("Login successful.")
                         self.manager.push("client_services")
@@ -191,7 +191,7 @@ class Login(MDScreen):
                             except (KeyError, AttributeError):
                                 # Handle the case where 'profile' is missing or is None
                                 profile_data = ''  # Assign an empty string or default image data
-                            id = user_anvil["id"]
+                            id = user_anvil["oxi_id"]
                         user_info = {'username': username, 'email': email, 'phone': phone, 'pincode': pincode,
                                      'profile': profile_data, 'id': id, 'address': address}
                         with open("user_data.json", "w") as json_file:
