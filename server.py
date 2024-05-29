@@ -18,7 +18,7 @@ class Server:
 
             # Connect to Anvil
             with self.anvil_connection_lock:
-                anvil.server.connect("server_SEZ6OUNXKHD4PMKODGRPCX4H-UUMOW7YTJKQXKMQA")
+                anvil.server.connect("server_PTWCSFLNB4SATW3RVY3IRUSN-RMBAH6GYMLLHSP7F")
                 self.anvil_connected = True
                 print("Connected to anvil.server")
         except OSError:
@@ -30,7 +30,7 @@ class Server:
     def get_database_connection(self):
         if self.is_connected():
             # Use Anvil's database connection
-            return anvil.server.connect("server_SEZ6OUNXKHD4PMKODGRPCX4H-UUMOW7YTJKQXKMQA")
+            return anvil.server.connect("server_PTWCSFLNB4SATW3RVY3IRUSN-RMBAH6GYMLLHSP7F")
         else:
             # Use SQLite database connection
             return sqlite3.connect('users.db')
@@ -41,11 +41,12 @@ class Server:
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT NOT NULL,
+                name TEXT NOT NULL,
                 email TEXT NOT NULL,
                 password TEXT NOT NULL,
                 phone TEXT NOT NULL,
-                pincode TEXT NOT NULL
+                pincode TEXT NOT NULL,
+                pan_card_no TEXT NOT NULL
             )
         ''')
         conn.commit()
