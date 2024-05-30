@@ -108,10 +108,20 @@ class Client_services(MDScreen):
     def __init__(self, **kwargs):
         super(Client_services, self).__init__(**kwargs)
         # self.server = Server()
-        # anvil.server.connect("server_XTGZL46YXWDMB56CRKF5RIZS-ZQQ676TIQE64OWT6")
-
+        anvil.server.connect("server_XTGZL46YXWDMB56CRKF5RIZS-ZQQ676TIQE64OWT6")
+    def change(self):
+        with open('user_data.json', 'r') as file:
+            user_info = json.load(file)
+        self.ids.username.text = f"{user_info['username']}"
+        self.ids.email.text = f"{user_info['email']}"
+        profile_texture = base64.b64decode(user_info['profile'])
+        profile_image_path = "profile_image.png"
+        with open(profile_image_path, "wb") as profile_image_file:
+            profile_image_file.write(profile_texture)
+        self.ids.image.source = profile_image_path
     def on_pre_enter(self):
         self.server = Server()
+        self.change()
 
         self.on_b1()
         self.on_b2()
