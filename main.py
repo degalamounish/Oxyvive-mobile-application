@@ -3,8 +3,6 @@ from kivymd.app import MDApp
 from kivy.core.window import Window
 from libs.uix.root import Root
 
-Window.size = (320, 580)
-
 
 class ShotApp(MDApp):
     def __init__(self, **kwargs):
@@ -31,6 +29,7 @@ class ShotApp(MDApp):
         else:
             self.root.load_screen("main_sc")
             self.root.current = "main_sc"
+
 
 # Run the app
 if __name__ == '__main__':
