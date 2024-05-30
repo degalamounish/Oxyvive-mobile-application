@@ -1,12 +1,18 @@
+import base64
 import json
+import os
 
+import anvil
+from anvil.tables import app_tables
 from kivy.animation import Animation
 from kivy.clock import Clock
-from kivy.properties import StringProperty, ObjectProperty
+from kivy.properties import StringProperty, ObjectProperty, DictProperty
 from kivymd.uix.hero import MDHeroFrom
 from kivymd.uix.imagelist import MDSmartTile
 from kivymd.uix.relativelayout import MDRelativeLayout
 from kivymd.uix.screen import MDScreen
+
+from server import Server
 
 
 class NavigationDrawerScreen(MDScreen):
@@ -27,9 +33,11 @@ class ClickableTextFieldRound(MDRelativeLayout):
 
 class HeroItem(MDHeroFrom):
     text = StringProperty()
+    text2 = StringProperty()
     tag = StringProperty()
     manager = ObjectProperty()
     id = ObjectProperty()
+    details = DictProperty()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -57,6 +65,40 @@ class HeroItem(MDHeroFrom):
             self.manager.load_screen("servicer_details")
             screen = self.manager.get_screen("servicer_details")
             screen.ids.hero_to.tag = self.tag  # Access hero_to through ids
+            # Extract the table identifier and ID from the tag
+            table_identifier = self.tag[:2]
+
+            # Check and fetch the description from the appropriate table
+            if table_identifier == 'OC':
+                discription_row = app_tables.oxiclinics.get(oxiclinics_id=self.tag)
+                if discription_row:
+                    discription = discription_row['oxiclinics_discription']
+                    if discription == None:
+                        discription = 'No description available'
+                else:
+                    discription = 'No description available'
+            elif table_identifier == 'OW':
+                discription_row = app_tables.oxiwheels.get(oxiwheels_id=self.tag)
+                if discription_row:
+                    discription = discription_row['oxiwheels_discrption']
+                    if discription == None:
+                        discription = 'No description available'
+                else:
+                    discription = 'No description available'
+            elif table_identifier == 'OG':
+                discription_row = app_tables.oxigyms.get(oxigyms_id=self.tag)
+                if discription_row:
+                    discription = discription_row['oxigyms_discrption']
+                    if discription == None:
+                        discription = 'No description available'
+                else:
+                    discription = 'No description available'
+
+
+
+            print(discription)
+
+            screen.ids.discrptions.text = discription
             self.manager.push("servicer_details")
 
         Clock.schedule_once(switch_screen, 0.2)
@@ -65,43 +107,119 @@ class HeroItem(MDHeroFrom):
 class Client_services(MDScreen):
     def __init__(self, **kwargs):
         super(Client_services, self).__init__(**kwargs)
+        # self.server = Server()
+        # anvil.server.connect("server_XTGZL46YXWDMB56CRKF5RIZS-ZQQ676TIQE64OWT6")
 
     def on_pre_enter(self):
+        self.server = Server()
 
         self.on_b1()
         self.on_b2()
         self.on_b3()
-        for i in range(5):
+        images = ['images/1.jpg','images/2.png', 'images/3.webp','images/gym.png']
+        for i in images:
             environment_img = CustomImageTile(
-                source="images/gym.png"
+                source=i
             )
             self.ids.box3.add_widget(environment_img)
 
     def on_b1(self):
+
+        # Clear existing widgets in the container
+        self.ids.box.clear_widgets()
+        oxiclinics = app_tables.oxiclinics.search()
+        print(oxiclinics)
         print('on_b1')
-        for i in range(12):
+
+        for i, row in enumerate(oxiclinics):
+            try:
+                oxiclinics_image = row['oxiclinics_image'].get_bytes()
+                oxiclinics_image = base64.b64encode(oxiclinics_image).decode('utf-8')
+                profile_texture = base64.b64decode(oxiclinics_image)
+
+                # Generate a dynamic file path for each image to prevent overwriting
+                profile_image_path = f"oxiclinic_image_{i}.png"
+
+                # Save the image to a file
+                with open(profile_image_path, "wb") as profile_image_file:
+                    profile_image_file.write(profile_texture)
+            except (KeyError, AttributeError):
+                # Handle the case where 'image' is missing or is None
+                profile_image_path = ''
+
             hero_item = HeroItem(
-                text="images/gym.png", tag=f"Dr.OxiClinic {i}", manager=self.manager
+                text=f"{profile_image_path if profile_image_path else ''}",
+                tag=f"{row['oxiclinics_id']}",
+                manager=self.manager,
+                text2=f"{row['oxiclinics_Name']}",
+                details=row
+
+
             )
             if not i % 2:
                 hero_item.ids.tile.md_bg_color = "lightgrey"
             self.ids.box.add_widget(hero_item)
 
     def on_b2(self):
+        self.ids.box1.clear_widgets()
+        oxiwheels = app_tables.oxiwheels.search()
         print('on_b2')
-        for i in range(12):
+
+        for i, row in enumerate(oxiwheels):
+            try:
+                oxiwheels_image = row['oxiwheels_image'].get_bytes()
+                oxiwheels_image = base64.b64encode(oxiwheels_image).decode('utf-8')
+                profile_texture = base64.b64decode(oxiwheels_image)
+
+                # Generate a dynamic file path for each image to prevent overwriting
+                profile_image_path = f"oxiwheels_image_{i}.png"
+
+                # Save the image to a file
+                with open(profile_image_path, "wb") as profile_image_file:
+                    profile_image_file.write(profile_texture)
+            except (KeyError, AttributeError):
+                # Handle the case where 'image' is missing or is None
+                profile_image_path = ''
+
             hero_item = HeroItem(
-                text="images/gym.png", tag=f"Dr.OxiWheel {i}", manager=self.manager
+                text=f"{profile_image_path if profile_image_path else ''}",
+                tag=f"{row['oxiwheels_id']}",
+                manager=self.manager,
+                text2=f"{row['oxiwheels_Name']}",
+
+
             )
+
             if not i % 2:
                 hero_item.ids.tile.md_bg_color = "lightgrey"
             self.ids.box1.add_widget(hero_item)
 
     def on_b3(self):
+        self.ids.box2.clear_widgets()
+        oxigyms = app_tables.oxigyms.search()
         print('on_b3')
-        for i in range(12):
+
+        for i, row in enumerate(oxigyms):
+            try:
+                oxigyms_image = row['oxigyms_image'].get_bytes()
+                oxigyms_image = base64.b64encode(oxigyms_image).decode('utf-8')
+                profile_texture = base64.b64decode(oxigyms_image)
+
+                # Generate a dynamic file path for each image to prevent overwriting
+                profile_image_path = f"oxigyms_image_{i}.png"
+
+                # Save the image to a file
+                with open(profile_image_path, "wb") as profile_image_file:
+                    profile_image_file.write(profile_texture)
+            except (KeyError, AttributeError):
+                # Handle the case where 'image' is missing or is None
+                profile_image_path = ''
+
             hero_item = HeroItem(
-                text="images/gym.png", tag=f"Dr.OxiGym {i}", manager=self.manager
+                text=f"{profile_image_path if profile_image_path else ''}",
+                tag=f"{row['oxigyms_id']}",
+                manager=self.manager,
+                text2=f"{row['oxigyms_Name']}"
             )
             if not i % 2:
                 hero_item.ids.tile.md_bg_color = "lightgrey"

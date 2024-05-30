@@ -15,6 +15,7 @@
         on_release: self.icon = "heart" if self.icon == "heart-outline" else "heart-outline"
 
     MDLabel:
+        id:label
         text: "Julia and Julie"
         bold: True
         color: 1, 1, 1, 1
@@ -61,7 +62,7 @@
         on_release: root.on_release()
 
         MDLabel:
-            text: root.tag
+            text: root.text2
             bold: True
             font_style: "Subtitle2"
             halign:'center'

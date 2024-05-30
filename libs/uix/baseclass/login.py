@@ -129,7 +129,7 @@ class Login(MDScreen):
                                                      user_sqlite[3].encode('utf-8'))
                 print('Password : ', password_value)
                 print('Password : ', password_value2)
-                if user_type == None:
+                if user_type == 'client':
                     if password_value or password_value2:
                         print("Login successful.")
                         self.manager.push("client_services")
