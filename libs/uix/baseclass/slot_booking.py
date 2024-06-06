@@ -225,7 +225,7 @@ class Slot_Booking(MDScreen):
         date_format = "%d-%m-%Y"  # Day-Month-Year
         date_object = datetime.strptime(selected_date, date_format)
         date_only = date_object.date()
-        book_slot = app_tables.book_slot.search(book_date=date_only)
+        book_slot = app_tables.oxi_book_slot.search(oxi_book_date=date_only)
         book_times = [row['book_time'] for row in book_slot]
         return book_times
 
@@ -276,7 +276,7 @@ class Slot_Booking(MDScreen):
         date_object = datetime.strptime(str(value), "%Y-%m-%d")
         # Format the date as "day-month-year"
         formatted_date = date_object.strftime("%d-%m-%Y")
-        book_slot = app_tables.book_slot.search(book_date=formatted_date)
+        book_slot = app_tables.oxi_book_slot.search(book_date=formatted_date)
         book_times = [row['book_time'] for row in book_slot]
         print(formatted_date, book_times)
         for slots in Slot_Booking.time_slots:

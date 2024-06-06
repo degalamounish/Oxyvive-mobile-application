@@ -102,16 +102,16 @@ class Payment(MDScreen):
 
         try:
             if self.server.is_connected():
-                user = app_tables.users.get(email=email)
-                user_id = user['id']
-                row = app_tables.book_slot.search()
+                user = app_tables.oxi_users.get(oxi_email=email)
+                user_id = user['oxi_id']
+                row = app_tables.oxi_book_slot.search()
                 slot_id = len(row) + 1
-                app_tables.book_slot.add_row(
-                    slot_id=slot_id,
-                    user_id=user_id,
-                    username=user_name,
-                    book_date=book_date,
-                    book_time=book_time
+                app_tables.oxi_book_slot.add_row(
+                    oxi_serviceProvider_id=slot_id,
+                    oxi_client_id=user_id,
+                    oxi_service_type=user_name,
+                    oxi_book_date=book_date,
+                    oxi_book_time=book_time
                 )
             else:
                 self.show_validation_dialog("No internet connection")
