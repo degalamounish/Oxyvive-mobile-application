@@ -19,10 +19,10 @@
         "object": "ForgotPassword()",
         "kv": "libs/uix/kv/forgot_password.kv"
     },
-    "location": {
-        "import": "from libs.uix.baseclass.location import Location",
-        "object": "Location()",
-        "kv": "libs/uix/kv/location.kv"
+    "client_location": {
+        "import": "from libs.uix.baseclass.client_location import ClientLocation",
+        "object": "ClientLocation()",
+        "kv": "libs/uix/kv/client_location.kv"
     },
     "client_services": {
         "import": "from libs.uix.baseclass.client_services import Client_services",

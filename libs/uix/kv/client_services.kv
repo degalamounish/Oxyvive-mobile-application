@@ -5,8 +5,7 @@
     source: "cats.jpg"
     pos_hint: {"center_x": .5, "center_y": .5}
     size_hint: None, None
-    size: "320dp", "200dp"
-
+    size: "320dp", "150dp"
     MDIconButton:
         icon: "heart-outline"
         theme_icon_color: "Custom"
@@ -21,24 +20,7 @@
         color: 1, 1, 1, 1
 
 <ClickableTextFieldRound>:
-    size_hint_y: None
-    height: text_field.height
-    MDTextField:
-        id: text_field
-        mode: "fill"
-        hint_text: root.hint_text
-        text: root.text
-        radius:[20, 20, 20, 20]
-        password: True
-        # icon_left: "magnify"
-        line_color_focus: 1, 1, 1, 1  # Gray line color
-        background_color: 1, 1, 1, 1
-    MDIconButton:
-        icon: "magnify"
-        pos_hint: {"center_y": .5}
-        pos: text_field.width - self.width + dp(10), 0
-        theme_text_color: "Hint"
-        on_release:pass
+
 
 
 
@@ -48,7 +30,7 @@
     size_hint_y: None
     size_hint_x: None
     height: '120dp'
-    width: '80dp'
+    width: '100dp'
     radius: 10
     MDSmartTile:
         id: tile
@@ -78,200 +60,367 @@
                 MDBoxLayout:
                     orientation: "vertical"
                     md_bg_color:1,1,1,1
-                    MDTopAppBar:
-                        title: 'Username'
-                        type_height:'small'
-                        elevation:0
+                    MDBottomNavigation:
+                        #panel_color: "#eeeaea"
+                        id:bottom_nav
+
+                        text_color_active: "black"
                         md_bg_color:1,1,1,1
-                        specific_text_color: 0,0,0,1
-                        left_action_items: [["menu", lambda x: nav_drawer.set_state()]]
-                    MDBoxLayout:
-                        orientation: 'vertical'
-                        adaptive_height: True
-                        padding: dp(25), 0, dp(25), 0
-                        ClickableTextFieldRound:
-                            # size_hint_x: None
-                            # width: "300dp"
-                            hint_text: "Search here"
-                            pos_hint: {"center_x": .5, "center_y": .9}
-                    ScrollView:
-                        bar_widAth: 0
-                        MDBoxLayout:
-                            orientation:'vertical'
-                            adaptive_height: True
-                            padding: dp(25), 0, dp(25), 0
-                            MDLabel:
-                                text: 'AVAILABLE SERVICES'
-                                font_style: "Subtitle2"
-                                size_hint_y: None
-                                height: '40dp'
-                            MDLabel:
-                                text: 'Oxiclinic'
-                                font_style: "Subtitle2"
-                                size_hint_y: None
-                                height: '20dp'
-                            ScrollView:
-                                size_hint_y: None
-                                height: '130dp'
-                                bar_width: 0
+                        selected_color_background:0,0,0,0
+
+                        MDBottomNavigationItem:
+                            name: 'home screen'
+                            text: 'Home'
+                            icon: 'home'
+#                            badge_icon: "numeric-10"
+                            MDBoxLayout:
+                                orientation: "vertical"
+                                md_bg_color:1,1,1,1
                                 MDBoxLayout:
-                                    id:box
-                                    adaptive_width: True
-                                    spacing: '15dp'
-                            MDLabel:
-                                text: 'Oxiwheel'
-                                font_style: "Subtitle2"
-                                size_hint_y: None
-                                height: '40dp'
-                            ScrollView:
-                                size_hint_y: None
-                                height: '130dp'
-                                bar_width: 0
-                                MDBoxLayout:
-                                    id:box1
-                                    adaptive_width: True
-                                    spacing: '15dp'
-                            MDLabel:
-                                text: 'Oxigym'
-                                font_style: "Subtitle2"
-                                size_hint_y: None
-                                height: '40dp'
-                            ScrollView:
-                                size_hint_y: None
-                                height: '130dp'
-                                bar_width: 0
-                                MDBoxLayout:
-                                    id:box2
-                                    adaptive_width: True
-                                    spacing: '15dp'
-                            MDLabel:
-                                text: 'ENVIRONMENT SETUP '
-                                font_style: "Subtitle2"
-                                size_hint_y: None
-                                height: '40dp'
-                            ScrollView:
-                                size_hint_y: None
-                                height: '220dp'
-                                bar_width: 0
-                                MDBoxLayout:
-                                    id:box3
-                                    adaptive_width: True
-                                    spacing: '15dp'
+                                    orientation: "vertical"
+                                    md_bg_color:1,1,1,1
                                     size_hint_y: None
-                                    height: '220dp'
+                                    height: '100dp'
+                                    padding: dp(25), 0, dp(25), 0
+                                    spacing: dp(25)
+                                    MDLabel:
+                                        text: 'Oxivive'
+                                        font_style: "Subtitle2"
+                                        font_size:'32sp'
+                                        font_name: "Roboto-Bold"
+                                        size_hint_y: None
+                                        height: '60dp'
+                                        halign:'left'
+                                        bold:True
+                                MDBoxLayout:
+                                    orientation: 'vertical'
+                                    adaptive_height: True
+                                    padding: dp(25), 0, dp(25), 0
+                                    ClickableTextFieldRound:
+                                        size_hint_y: None
+                                        height: text_field.height
+                                        pos_hint: {"center_x": .5, "center_y": .9}
+                                        MDTextField:
+                                            id: text_field
+                                            mode: "fill"
+#                                            hint_text: "Search location here"
+                                            text: ''
+                                            radius:[30, 30, 30, 30]
+                                            line_color_focus: 1, 1, 1, 1  # Gray line color
+                                            background_color: 1, 1, 1, 1
+                                            on_focus:root.location_screen()
+            #                                    root.manager.current = "client_location"
+                                        MDIconButton:
+                                            icon: "magnify"
+                                            pos_hint: {"center_y": .5}
+                                            #pos: text_field.width - self.width + dp(0), 0
+#                                            theme_text_color: "Hint"
+                                            on_release:root.location_screen()
+                                        MDFlatButton:
+                                            text:"Where to?"
+                                            icon: "magnify"
+                                            pos_hint: {"center_y": .5,"center_y": .5}
+                                            pos:self.width -dp(60), 0
+                                            font_style: "Subtitle2"
+                                            font_size:'18sp'
+                                            on_release:root.location_screen()
+                                MDGridLayout:
+                                    cols:1
+                                    padding: dp(25), 0, dp(25), 0
+                                    MDBoxLayout:
+                                        orientation:'horizontal'
+                                        size_hint_y: None
+                                        height:"40dp"
+                                        MDLabel:
+                                            text: 'Suggestions'
+                                            font_style: "Subtitle2"
+                                            font_size:'18sp'
+                                            font_name: "Roboto-Bold"
+                                            size_hint_y: None
+                                            height: '40dp'
+                                            valign:'top'
+                                            pos_hint:{'top':1}
+                                            bold:True
+                                        MDTextButton:
+                                            text:'See All'
+                                            font_style: "Subtitle2"
+                                            size_hint_y: None
+                                            height: '40dp'
+                                            valign:'middle'
+                                            bold:True
+                                            pos_hint:{'top':.7}
+                                            on_release: root.switch_to_service_screen()
+                                    MDBoxLayout:
+                                        id:box
+#                                        adaptive_width: True
+                                        spacing: '15dp'
+                                        size_hint_y: None
+                                        height:"150dp"
+                                        MDSmartTile:
+                                            radius: 10
+                                            box_radius: [0, 0, 10, 10]
+                                            box_color: 0, 0, 0, 0
+                                            source: "images/doctor.png"
+                                            pos_hint: {"center_x": .5, "center_y": .5}
+                                            size_hint_y:None
+                                            height:"100dp"
+                                            opposite_colors:True
+                                            on_release:root.location_screen()
+                                            MDLabel:
+                                                text: "OxiWheel"
+                                                #bold: True
+                                                font_style:'Subtitle2'
+                                                font_size:'14sp'
+                                                color: 1, 1, 1, 1
+                                                opposite_colors:True
+                                        MDSmartTile:
+                                            radius: 10
+                                            box_radius: [0, 0, 10, 10]
+                                            box_color: 0, 0, 0, 0
+                                            source: "images/1.jpg"
+                                            pos_hint: {"center_x": .5, "center_y": .5}
+                                            size_hint_y: None
+                                            height: "100dp"
+                                            on_release:root.location_screen()
+                                            MDLabel:
+                                                text: "OxiClinic"
+                                                font_style:'Subtitle2'
+                                                font_size:'14sp'
+                                                #bold: True
+                                                color: 1, 1, 1, 1
+                                    MDLabel:
+                                        text: 'PROMOTION '
+                                        font_style: "Subtitle2"
+                                        font_name: "Roboto-Bold"
+                                        size_hint_y: None
+                                        height: '40dp'
+                                    ScrollView:
+                                        size_hint_y: None
+                                        height: '170dp'
+                                        bar_width: 0
+                                        MDBoxLayout:
+                                            id:box3
+                                            adaptive_width: True
+                                            spacing: '15dp'
+                                            size_hint_y: None
+                                            height: '170dp'
 
-        MDNavigationDrawer:
-            id: nav_drawer
-            orientation: 'vertical'
-            size_hint_x:dp(290)
-            size_hint_max_x: "270dp"
-            padding: "0dp"
-            spacing: "5dp"
-            MDCard:
-                orientation: 'vertical'
-                size_hint: None, None
-                size: "268dp", "100dp"
-                elevation: 2
-                md_bg_color: 1, 1, 1, 1
-                BoxLayout:
-                    size_hint_y: None
-                    height: dp(90)
-                    padding: "15dp"
-                    BoxLayout:
-                        size_hint: None, None
-                        size: dp(60), dp(60)
-                        FitImage:
-                            id:image
-                            source: "profile_image.png"
-                            pos_hint: {"top": 1}
-                            radius: 50
-                    BoxLayout:
-                        orientation: 'vertical'
-                        padding: "5dp"
-                        spacing: "5dp"
-                        MDLabel:
-                            id: username
-                            text: "username"
-                            font_name: "Roboto"
-                            theme_text_color: "Secondary"
-                            pos_hint: {'center_x': 0.5,'center_y': 0.2}
-                        MDLabel:
-                            id: email
-                            text: "clientemail@gmail.com"
-                            theme_text_color: "Hint"
-                            font_name: "Roboto"
-                            font_size:'12sp'
-                            pos_hint: {'center_x': 0.5,'center_y': 0.1}
+                        MDBottomNavigationItem:
+                            name: 'service_screen'
+                            text: 'Service'
+                            icon: 'dots-grid'
+                            MDBoxLayout:
+                                orientation: "vertical"
+                                md_bg_color:1,1,1,1
+                                MDBoxLayout:
+                                    orientation: "vertical"
+                                    md_bg_color:1,1,1,1
+                                    size_hint_y: None
+                                    height: '80dp'
+                                    padding: dp(25), 0, dp(25), 0
+                                    spacing: dp(25)
+                                    MDLabel:
+                                        text: 'Services'
+                                        font_style: "Subtitle2"
+                                        font_size:'32sp'
+                                        font_name: "Roboto-Bold"
+                                        size_hint_y: None
+                                        height: '60dp'
+                                        halign:'left'
+                                        bold:True
+                                MDGridLayout:
+                                    cols:1
+                                    padding: dp(25), 0, dp(25), 0
+                                    MDBoxLayout:
+                                        orientation:'horizontal'
+                                        size_hint_y: None
+                                        height:"60dp"
+                                        MDLabel:
+                                            text: 'Choose one, get younger feel'
+                                            font_style: "Subtitle1"
+                                            font_size:'18sp'
+                                            font_name: "Roboto-Bold"
+                                            size_hint_y: None
+                                            height: '50dp'
+                                            valign:'top'
+                                            pos_hint:{'top':1}
 
-            BoxLayout:
-                orientation: 'vertical'
-                ScrollView:
-                    MDList:
-                        id: md_list
-                        MDList:
-                            OneLineIconListItem:
-                                text: "Home"
-                                on_release: root.home()
-                                IconLeftWidget:
-                                    icon: "home"
-                                    on_release: root.home()
-                            OneLineIconListItem:
-                                text: "Profile"
-                                on_release:
-                                    root.manager.current_heroes = []
-                                    root.manager.push_replacement("menu_profile")
-                                IconLeftWidget:
-                                    icon: "account-circle"
-                                    on_release:
-                                        root.manager.current_heroes = []
-                                        root.manager.push_replacement("menu_profile")
-                            OneLineIconListItem:
-                                text: "Notification"
-                                on_release:
-                                    root.manager.current_heroes = []
-                                    root.manager.push("menu_notification")
-                                IconLeftWidget:
-                                    icon: "bell-outline"
-                                    on_release:
-                                        root.manager.current_heroes = []
-                                        root.manager.push("menu_notification")
+                                    MDGridLayout:
+                                        id:box
+#                                        adaptive_width: True
+                                        cols:2
+                                        spacing: '15dp'
+                                        size_hint_y: None
+                                        height:"150dp"
+                                        MDSmartTile:
+                                            radius: 10
+                                            box_radius: [0, 0, 10, 10]
+                                            box_color: 0, 0, 0, 0
+                                            source: "images/doctor.png"
+                                            pos_hint: {"center_x": .5, "center_y": .5}
+                                            size_hint_y:None
+                                            height:"100dp"
+                                            opposite_colors:True
+                                            on_release:root.location_screen()
+                                            MDLabel:
+                                                text: "OxiWheel"
+                                                #bold: True
+                                                font_style:'Subtitle2'
+                                                font_size:'14sp'
+                                                color: 1, 1, 1, 1
+                                                opposite_colors:True
+                                        MDSmartTile:
+                                            radius: 10
+                                            box_radius: [0, 0, 10, 10]
+                                            box_color: 0, 0, 0, 0
+                                            source: "images/1.jpg"
+                                            pos_hint: {"center_x": .5, "center_y": .5}
+                                            size_hint_y: None
+                                            height: "100dp"
+                                            on_release:root.location_screen()
+                                            MDLabel:
+                                                text: "OxiClinic"
+                                                font_style:'Subtitle2'
+                                                font_size:'14sp'
+                                                #bold: True
+                                                color: 1, 1, 1, 1
+                                        MDSmartTile:
+                                            radius: 10
+                                            box_radius: [0, 0, 10, 10]
+                                            box_color: 0, 0, 0, 0
+                                            source: "images/1.jpg"
+                                            pos_hint: {"center_x": .5, "center_y": .5}
+                                            size_hint_y: None
+                                            height: "100dp"
+                                            on_release:root.location_screen()
+                                            MDLabel:
+                                                text: "OxiGym"
+                                                font_style:'Subtitle2'
+                                                font_size:'14sp'
+                                                #bold: True
+                                                color: 1, 1, 1, 1
 
-                            OneLineIconListItem:
-                                text: "Bookings"
-                                on_release:
-                                    root.manager.current_heroes = []
-                                    root.manager.push("menu_bookings")
-                                IconLeftWidget:
-                                    icon: "book-account-outline"
-                                    on_release:
-                                        root.manager.current_heroes = []
-                                        root.manager.push("menu_bookings")
+                        MDBottomNavigationItem:
+                            name: 'activity screen'
+                            text: 'Activity'
+                            icon: 'view-list'
 
-                            OneLineIconListItem:
-                                text: "Reports"
-                                on_release:
-                                    root.manager.current_heroes = []
-                                    root.manager.push("menu_reports")
-                                IconLeftWidget:
-                                    icon: "file-multiple"
-                                    on_release:
-                                        root.manager.current_heroes = []
-                                        root.manager.push("menu_reports")
+                            MDLabel:
+                                text: 'Activity'
+                                halign: 'center'
 
-                            OneLineIconListItem:
-                                text: "Support"
-                                on_release:
-                                    root.manager.current_heroes = []
-                                    root.manager.push("menu_support")
-                                IconLeftWidget:
-                                    icon: "book-information-variant"
-                                    on_release:
-                                        root.manager.current_heroes = []
-                                        root.manager.push("menu_support")
+                        MDBottomNavigationItem:
+                            name: 'account screen'
+                            text: 'Account'
+                            icon: 'account'
+                            MDGridLayout:
+                                cols:1
+                                padding: dp(25), 0, dp(25), 0
+                                MDCard:
+                                    orientation: 'vertical'
+                                    size_hint: None, None
+                                    size: "268dp", "100dp"
+                                    elevation: 2
+                                    md_bg_color: 1, 1, 1, 1
+                                    BoxLayout:
+                                        size_hint_y: None
+                                        height: dp(90)
+                                        padding: "15dp"
+                                        BoxLayout:
+                                            size_hint: None, None
+                                            size: dp(60), dp(60)
+                                            FitImage:
+                                                id:image
+                                                source: "profile_image.png"
+                                                pos_hint: {"top": 1}
+                                                radius: 50
+                                        BoxLayout:
+                                            orientation: 'vertical'
+                                            padding: "5dp"
+                                            spacing: "5dp"
+                                            MDLabel:
+                                                id: username
+                                                text: "username"
+                                                font_name: "Roboto"
+                                                theme_text_color: "Secondary"
+                                                pos_hint: {'center_x': 0.5,'center_y': 0.2}
+                                            MDLabel:
+                                                id: email
+                                                text: "clientemail@gmail.com"
+                                                theme_text_color: "Hint"
+                                                font_name: "Roboto"
+                                                font_size:'12sp'
+                                                pos_hint: {'center_x': 0.5,'center_y': 0.1}
 
-                            OneLineIconListItem:
-                                text: "Logout"
-                                on_release: root.logout()
-                                IconLeftWidget:
-                                    icon: "logout"
-                                    on_release: root.logout()
+                                BoxLayout:
+                                    orientation: 'vertical'
+                                    ScrollView:
+                                        MDList:
+                                            id: md_list
+                                            MDList:
+                                                OneLineIconListItem:
+                                                    text: "Home"
+                                                    on_release: root.home()
+                                                    IconLeftWidget:
+                                                        icon: "home"
+                                                        on_release: root.home()
+                                                OneLineIconListItem:
+                                                    text: "Profile"
+                                                    on_release:
+                                                        root.manager.current_heroes = []
+                                                        root.manager.push_replacement("menu_profile")
+                                                    IconLeftWidget:
+                                                        icon: "account-circle"
+                                                        on_release:
+                                                            root.manager.current_heroes = []
+                                                            root.manager.push_replacement("menu_profile")
+                                                OneLineIconListItem:
+                                                    text: "Notification"
+                                                    on_release:
+                                                        root.manager.current_heroes = []
+                                                        root.manager.push("menu_notification")
+                                                    IconLeftWidget:
+                                                        icon: "bell-outline"
+                                                        on_release:
+                                                            root.manager.current_heroes = []
+                                                            root.manager.push("menu_notification")
+
+                                                OneLineIconListItem:
+                                                    text: "Bookings"
+                                                    on_release:
+                                                        root.manager.current_heroes = []
+                                                        root.manager.push("menu_bookings")
+                                                    IconLeftWidget:
+                                                        icon: "book-account-outline"
+                                                        on_release:
+                                                            root.manager.current_heroes = []
+                                                            root.manager.push("menu_bookings")
+
+                                                OneLineIconListItem:
+                                                    text: "Reports"
+                                                    on_release:
+                                                        root.manager.current_heroes = []
+                                                        root.manager.push("menu_reports")
+                                                    IconLeftWidget:
+                                                        icon: "file-multiple"
+                                                        on_release:
+                                                            root.manager.current_heroes = []
+                                                            root.manager.push("menu_reports")
+
+                                                OneLineIconListItem:
+                                                    text: "Support"
+                                                    on_release:
+                                                        root.manager.current_heroes = []
+                                                        root.manager.push("menu_support")
+                                                    IconLeftWidget:
+                                                        icon: "book-information-variant"
+                                                        on_release:
+                                                            root.manager.current_heroes = []
+                                                            root.manager.push("menu_support")
+
+                                                OneLineIconListItem:
+                                                    text: "Logout"
+                                                    on_release: root.logout()
+                                                    IconLeftWidget:
+                                                        icon: "logout"
+                                                        on_release: root.logout()
