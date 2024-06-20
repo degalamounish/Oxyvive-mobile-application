@@ -30,6 +30,9 @@ class ClickableTextFieldRound(MDRelativeLayout):
     text = StringProperty()
     hint_text = StringProperty()
 
+    def on_focus(self):
+        pass
+
 
 class HeroItem(MDHeroFrom):
     text = StringProperty()
@@ -94,8 +97,6 @@ class HeroItem(MDHeroFrom):
                 else:
                     discription = 'No description available'
 
-
-
             print(discription)
 
             screen.ids.discrptions.text = discription
@@ -107,8 +108,9 @@ class HeroItem(MDHeroFrom):
 class Client_services(MDScreen):
     def __init__(self, **kwargs):
         super(Client_services, self).__init__(**kwargs)
-        # self.server = Server()
-        anvil.server.connect("server_XTGZL46YXWDMB56CRKF5RIZS-ZQQ676TIQE64OWT6")
+        self.server = Server()
+        self.change()
+
     def change(self):
         with open('user_data.json', 'r') as file:
             user_info = json.load(file)
@@ -119,127 +121,15 @@ class Client_services(MDScreen):
         with open(profile_image_path, "wb") as profile_image_file:
             profile_image_file.write(profile_texture)
         self.ids.image.source = profile_image_path
-    def on_pre_enter(self):
-        self.server = Server()
-        self.change()
 
-        self.on_b1()
-        self.on_b2()
-        self.on_b3()
-        images = ['images/1.jpg','images/2.png', 'images/3.webp','images/gym.png']
+    def on_pre_enter(self):
+        self.change()
+        images = ['images/1.jpg', 'images/2.png', 'images/3.webp', 'images/gym.png']
         for i in images:
             environment_img = CustomImageTile(
                 source=i
             )
             self.ids.box3.add_widget(environment_img)
-
-    def on_b1(self):
-
-        # Clear existing widgets in the container
-        self.ids.box.clear_widgets()
-        oxiclinics = app_tables.oxiclinics.search()
-        print(oxiclinics)
-        print('on_b1')
-
-        for i, row in enumerate(oxiclinics):
-            try:
-                oxiclinics_image = row['oxiclinics_image'].get_bytes()
-                oxiclinics_image = base64.b64encode(oxiclinics_image).decode('utf-8')
-                profile_texture = base64.b64decode(oxiclinics_image)
-
-                # Generate a dynamic file path for each image to prevent overwriting
-                profile_image_path = f"oxiclinic_image_{i}.png"
-
-                # Save the image to a file
-                with open(profile_image_path, "wb") as profile_image_file:
-                    profile_image_file.write(profile_texture)
-            except (KeyError, AttributeError):
-                # Handle the case where 'image' is missing or is None
-                profile_image_path = ''
-
-            hero_item = HeroItem(
-                text=f"{profile_image_path if profile_image_path else ''}",
-                tag=f"{row['oxiclinics_id']}",
-                manager=self.manager,
-                text2=f"{row['oxiclinics_Name']}",
-                details=row
-
-
-            )
-            if not i % 2:
-                hero_item.ids.tile.md_bg_color = "lightgrey"
-            self.ids.box.add_widget(hero_item)
-
-    def on_b2(self):
-        self.ids.box1.clear_widgets()
-        oxiwheels = app_tables.oxiwheels.search()
-        print('on_b2')
-
-        for i, row in enumerate(oxiwheels):
-            try:
-                oxiwheels_image = row['oxiwheels_image'].get_bytes()
-                oxiwheels_image = base64.b64encode(oxiwheels_image).decode('utf-8')
-                profile_texture = base64.b64decode(oxiwheels_image)
-
-                # Generate a dynamic file path for each image to prevent overwriting
-                profile_image_path = f"oxiwheels_image_{i}.png"
-
-                # Save the image to a file
-                with open(profile_image_path, "wb") as profile_image_file:
-                    profile_image_file.write(profile_texture)
-            except (KeyError, AttributeError):
-                # Handle the case where 'image' is missing or is None
-                profile_image_path = ''
-
-            hero_item = HeroItem(
-                text=f"{profile_image_path if profile_image_path else ''}",
-                tag=f"{row['oxiwheels_id']}",
-                manager=self.manager,
-                text2=f"{row['oxiwheels_Name']}",
-
-
-            )
-
-            if not i % 2:
-                hero_item.ids.tile.md_bg_color = "lightgrey"
-            self.ids.box1.add_widget(hero_item)
-
-    def on_b3(self):
-        self.ids.box2.clear_widgets()
-        oxigyms = app_tables.oxigyms.search()
-        print('on_b3')
-
-        for i, row in enumerate(oxigyms):
-            try:
-                oxigyms_image = row['oxigyms_image'].get_bytes()
-                oxigyms_image = base64.b64encode(oxigyms_image).decode('utf-8')
-                profile_texture = base64.b64decode(oxigyms_image)
-
-                # Generate a dynamic file path for each image to prevent overwriting
-                profile_image_path = f"oxigyms_image_{i}.png"
-
-                # Save the image to a file
-                with open(profile_image_path, "wb") as profile_image_file:
-                    profile_image_file.write(profile_texture)
-            except (KeyError, AttributeError):
-                # Handle the case where 'image' is missing or is None
-                profile_image_path = ''
-
-            hero_item = HeroItem(
-                text=f"{profile_image_path if profile_image_path else ''}",
-                tag=f"{row['oxigyms_id']}",
-                manager=self.manager,
-                text2=f"{row['oxigyms_Name']}"
-            )
-            if not i % 2:
-                hero_item.ids.tile.md_bg_color = "lightgrey"
-            self.ids.box2.add_widget(hero_item)
-
-    def change(self):
-        with open('user_data.json', 'r') as file:
-            user_info = json.load(file)
-        self.ids.username.text = user_info['username']
-        self.ids.email.text = user_info['email']
 
     def logout(self):
         self.manager.current_heroes = []
@@ -262,7 +152,10 @@ class Client_services(MDScreen):
         self.ids.nav_drawer.set_state("close")
 
     def location_screen(self):
-        self.manager.push("location")
+        self.manager.current_heroes = []
+        self.manager.load_screen("client_location")
+        self.manager.get_screen("client_location")
+        self.manager.push_replacement("client_location")
 
     def book_now(self, organization_name, organization_address):
         print(organization_name, organization_address)
@@ -270,3 +163,6 @@ class Client_services(MDScreen):
         with open("organization_data.json", "w") as json_file:
             json.dump(organization_info, json_file)
         self.manager.push("hospital_booking")
+
+    def switch_to_service_screen(self):
+        self.ids.bottom_nav.switch_tab('service_screen')
