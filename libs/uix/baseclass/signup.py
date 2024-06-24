@@ -89,13 +89,14 @@ class Signup(MDScreen):
         )
         dialog.open()
 
-    def users(self, instance, *args):
+    def users(self, instance, existing_pan_card_no=None, *args):
 
-        username = self.ids.signup_username.text
+        name = self.ids.signup_name.text
         email = self.ids.signup_email.text
         password = self.ids.signup_password.text
         phone = self.ids.signup_phone.text
         pincode = self.ids.signup_pincode.text
+        pan_card_no = self.ids.signup_pan_card_no.text
 
         hash_pashword = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         hash_pashword = hash_pashword.decode('utf-8')
@@ -106,14 +107,15 @@ class Signup(MDScreen):
         # Enhanced password validation
         is_valid_password, password_error_message = self.validate_password(password)
         # Clear existing helper texts
-        self.ids.signup_username.helper_text = ""
+        self.ids.signup_name.helper_text = ""
         self.ids.signup_email.helper_text = ""
         self.ids.signup_password.helper_text = ""
         self.ids.signup_phone.helper_text = ""
         self.ids.signup_pincode.helper_text = ""
-        if not username:
-            self.ids.signup_username.error = True
-            self.ids.signup_username.helper_text = "Enter Name"
+        self.ids.signup_pan_card_no.text = ""
+        if not name:
+            self.ids.signup_name.error = True
+            self.ids.signup_name.helper_text = "Enter Name"
         elif not email or not re.match(email_regex, email):
             self.ids.signup_email.error = True
             self.ids.signup_email.helper_text = "Invalid Email"
@@ -126,11 +128,14 @@ class Signup(MDScreen):
         elif not pincode or len(pincode) != 6:
             self.ids.signup_pincode.error = True
             self.ids.signup_pincode.helper_text = "Invalid Pincode (6 digits required)"
+        elif not pan_card_no or len(pan_card_no) != 10:
+            self.ids.signup_pan_card_no.error = True
+            self.ids.signup_pan_card_no.helper_text = "Invalid Pan Card Number (10 digits required)"
 
         else:
             # Clear any existing errors and helper texts
-            self.ids.signup_username.error = False
-            self.ids.signup_username.helper_text = ""
+            self.ids.signup_name.error = False
+            self.ids.signup_name.helper_text = ""
             self.ids.signup_email.error = False
             self.ids.signup_email.helper_text = ""
             self.ids.signup_password.error = False
@@ -139,13 +144,16 @@ class Signup(MDScreen):
             self.ids.signup_phone.helper_text = ""
             self.ids.signup_pincode.error = False
             self.ids.signup_pincode.helper_text = ""
+            self.ids.signup_pan_card_no.error = False
+            self.ids.signup_pan_card_no.helper_text = ""
 
             # clear input texts
-            self.ids.signup_username.text = ""
+            self.ids.signup_name.text = ""
             self.ids.signup_email.text = ""
             self.ids.signup_password.text = ""
             self.ids.signup_phone.text = ""
             self.ids.signup_pincode.text = ""
+            self.ids.signup_pan_card_no.text = ""
 
             try:
                 if self.server.is_connected():
@@ -158,6 +166,8 @@ class Signup(MDScreen):
                         self.ids.signup_email.helper_text = "Email already registered"
                     elif existing_phone:
                         self.ids.signup_phone.helper_text = "Phone number already registered"
+                    elif existing_pan_card_no:
+                        self.ids.signup_pan_card_no.helper_text = "Pan Card number already registered"
                     else:
                         # If not present, proceed to insert the new user
                         rows = app_tables.oxi_users.search()
@@ -165,20 +175,21 @@ class Signup(MDScreen):
                         id = len(rows) + 1
                         app_tables.oxi_users.add_row(
                             oxi_id=str(id),
-                            oxi_username=username,
+                            oxi_name=name,
                             oxi_email=email,
                             oxi_password=hash_pashword,
                             oxi_phone=float(phone),
                             oxi_pincode=int(pincode),
+                            oxi_pan_card_no=str(pan_card_no),
                             oxi_usertype='client')
 
                         # Additional SQLite insert (if needed)
                         with self.server.sqlite3_users_db() as connection:
                             cursor = connection.cursor()
                             cursor.execute('''
-                                INSERT INTO users (id, username, email, password, phone, pincode)
-                                VALUES (?, ?, ?, ?, ?, ?)
-                            ''', (id, username, email, hash_pashword, phone, pincode))
+                                INSERT INTO users (id, name, email, password, phone, pincode, pan_card_no)
+                                VALUES (?, ?, ?, ?, ?, ?, ?)
+                            ''', (id, name, email, hash_pashword, phone, pincode, pan_card_no))
                             connection.commit()
 
                             connection.commit()

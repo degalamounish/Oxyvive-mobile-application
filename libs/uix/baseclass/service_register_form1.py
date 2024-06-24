@@ -139,6 +139,8 @@ class ServiceRegisterForm1(MDScreen):
         service_provider_password = self.ids.service_provider_password.text
         service_provider_phoneno = self.ids.service_provider_phoneno.text
         service_provider_address = self.ids.service_provider_address.text
+        service_provider_pan_card_no = self.ids.service_provider_pan_card_no.text
+        service_provider_gst_no = self.ids.service_provider_gst_no.text
         random_code = self.generate_random_code()
         print(random_code)
 
@@ -170,10 +172,20 @@ class ServiceRegisterForm1(MDScreen):
             self.ids.service_provider_address.error = True
             self.ids.service_provider_address.helper_text = "This field is required."
             self.ids.service_provider_address.required = True
+        elif not service_provider_pan_card_no or len(service_provider_pan_card_no) != 10:
+            self.ids.service_provider_pan_card_no.error = True
+            self.ids.service_provider_pan_card_no.helper_text = "This field is required."
+            self.ids.service_provider_pan_card_no.required = True
+        elif not service_provider_gst_no or len(service_provider_gst_no) != 15:
+            self.ids.service_provider_gst_no.error = True
+            self.ids.service_provider_gst_no.helper_text = "This field is required."
+            self.ids.service_provider_gst_no.required = True
 
         else:
             service_register_data = {'id': random_code, 'name': service_provider_name, 'email': service_provider_email,
                                      'phone': service_provider_phoneno, 'address': service_provider_address,
+                                     'pan_card_no': service_provider_pan_card_no,
+                                     'gst_no': service_provider_gst_no,
                                      'password': hash_pashword, }
             with open("service_register_data.json", "w") as json_file:
                 json.dump(service_register_data, json_file)
@@ -198,12 +210,14 @@ class ServiceRegisterForm1(MDScreen):
                     else:
                         print("table")
                         app_tables.oxi_users.add_row(
-                            oxi_username=service_provider_name,
+                            oxi_name=service_provider_name,
                             oxi_id=random_code,
                             oxi_email=service_provider_email,
                             oxi_password=hash_pashword,
                             oxi_phone=int(service_provider_phoneno),
                             oxi_address=service_provider_address,
+                            oxi_pan_card_no=service_provider_pan_card_no,
+                            oxi_gst_no=service_provider_gst_no,
                             oxi_usertype='service provider')
 
                         self.manager.push("service_register_form2")
