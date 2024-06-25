@@ -33,5 +33,4 @@ class Profile(MDScreen):
 
     def profile_back(self):
         self.manager.push_replacement("client_services","right")
-        screen = self.manager.get_screen('client_services')
-        screen.ids.nav_drawer.set_state("close")
+

@@ -1,21 +1,15 @@
-import json
 import sqlite3
-import threading
 from datetime import datetime, timedelta
-from anvil.tables import app_tables
-from kivy.clock import Clock
-from kivy.core.window import Window
+
+from kivy.metrics import dp
 from kivy.properties import StringProperty, ObjectProperty
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.screenmanager import SlideTransition
-from kivymd.app import MDApp
-from kivymd.uix.button import MDFlatButton, MDRaisedButton
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.card import MDCard
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.label import MDLabel
-from kivymd.uix.pickers import MDDatePicker
+from kivymd.uix.pickers import MDTimePicker
 from kivymd.uix.screen import MDScreen
-
-from server import Server
 
 # Create the BookSlot table if it doesn't exist
 
@@ -34,296 +28,182 @@ cursor.execute('''
 conn.commit()
 
 
-# Builder.load_file("slot_booking.kv")
+class AddTask(MDBoxLayout):
+    manager = ObjectProperty()
+
+    def show_start_time_picker(self):
+        screen = self.manager.get_screen('slot_booking')
+        screen.show_start_time_picker()
+
+    def show_end_time_picker(self):
+        screen = self.manager.get_screen('slot_booking')
+        screen.show_end_time_picker()
+
+    def add_task(self):
+        screen = self.manager.get_screen('slot_booking')
+        screen.add_task()
 
 
-class CButton(MDRaisedButton):
-    label_text = StringProperty("")
-    slot_time = None
+class TaskCard(MDCard):
+    description = StringProperty()
+    title = StringProperty()
+    time = StringProperty()
+    start_time = StringProperty()
+    end_time = StringProperty()
 
-    def __init__(self, **kwargs):
-        super(CButton, self).__init__(**kwargs)
+    def update_position(self):
+        if self.start_time and self.end_time:
+            start_dt = datetime.strptime(self.start_time, "%I:%M %p")
+            end_dt = datetime.strptime(self.end_time, "%I:%M %p")
+            duration = (end_dt - start_dt).seconds / 3600  # duration in hours
 
-        self.CButton_pressed = False
-        self.default_md_bg_color = self.md_bg_color  # Store the default background color
-        self.default_line_color = self.line_color  # Store the default line color
-        self.default_label_color = (0.5, 0.5, 0.5, 1)
+            self.height = dp(100) * duration
 
-
-    def Slot_Timing(self):
-        CButton.slot_time = self.text
-        # Reset the colors of all buttons to their default state
-        for button in self.parent.children:
-            if isinstance(button, CButton):
-                button.md_bg_color = button.default_md_bg_color
-                button.line_color = button.default_line_color
-                button.text_color = (0, 0, 0, 0.7)
-
-        # Set the colors of the current button
-        self.md_bg_color = (1, 0, 0, 0.8)  # Set background color
-        self.line_color = (0, 0, 0, 0.8)  # Set line color
-        self.text_color = (1, 1, 1, 1)
-        self.CButton_pressed = True
-        print(f"Selected time: {self.slot_time}")
-
-    pass
+            start_hour = start_dt.hour + start_dt.minute / 60
+            pos_hint_y = 1 - (start_hour - 7) / 12  # Assuming 7 AM start
+            self.pos_hint = {"x": 0, "top": pos_hint_y}
 
 
-class Alert_Label(MDLabel):
-    pass
-
-
-class Slot_Booking(MDScreen):
-    time_slots = ['9am - 11am', '11am - 1pm', '1pm - 3pm', '3pm - 5pm', '5pm - 7pm', '7pm - 9pm']
+class TaskSchedulerScreen(MDScreen):
 
     def __init__(self, **kwargs):
-        super(Slot_Booking, self).__init__(**kwargs)
-        Window.bind(on_keyboard=self.on_keyboard)
-        threading.Thread(target=self.slot_days).start()
-        self.book_slot_pressed = False
-        self.server = Server()
+        super().__init__(**kwargs)
+        self.dialog = None
+        self.current_date_button = None
 
-    def on_keyboard(self, instance, key, scancode, codepoint, modifier):
-        if key == 27:  # Keycode for the back button on Android
-            self.on_back_button()
-            return True
-        return False
+    def on_enter(self, *args):
+        self.update_date()
+        self.update_date_labels()
 
-    def on_back_button(self, instance):
-        self.manager.push_replacement("servicer_details", "right")
-        self.ids.CButton.clear_widgets()
-        # reset all the buttons
-        for button_id in ['button1', 'button2', 'button3', 'button4']:
-            button = self.ids[button_id]
-            button.elevation = 1
-            button.md_bg_color = (1, 1, 1, 1)
-            button.line_color = (0, 0, 0, 0)
-        # reset all the labels
-        for label_id in ['day1', 'day2', 'day3', 'day4', 'date1', 'date2', 'date3', 'date4']:
-            label = self.ids[label_id]
-            label.color = (0, 0, 0, .7)
-        self.ids.available_slots_alert.text = "Choose a Day"
-        print("Back To Hospital Page")
+    def back_screen(self):
+        self.manager.push_replacement('available_services')
 
-    # Book slot button logic
-    date_list = []
+    def update_date(self):
+        now = datetime.now()
+        day_name = now.strftime("%A")
+        date_str = now.strftime("%B %d, %Y")
 
-    def slot_days(self):
-        # Initialize empty lists to store dates and weekdays
-        day_list = []
-        # Get today's date
-        today_date = datetime.now()
-        # extracting Upcoming 4 days
-        for i in range(0, 4):
-            # Calculate the date for the next day in the loop
-            next_date = today_date + timedelta(days=i)
-            # Append the date to the date list
-            self.date_list.append(next_date.strftime('%d-%m-%Y'))
-            # Append the weekday to the day list
-            day_list.append(next_date.strftime('%A'))
-        # Now you have all dates in date_list and all weekdays in day_list
-        dates = [date.split('-')[0] for date in self.date_list]
-        print("Weekdays:", day_list)
-        print("Dates:", self.date_list)
-        day_button = ['day1', 'day2', 'day3', 'day4']
-        date_button = ['date1', 'date2', 'date3', 'date4']
-        # 4 buttons label gets updated
-        for day_label, day, date_label, date in zip(day_button, day_list, date_button, dates):
-            self.ids[day_label].text = day
-            self.ids[date_label].text = date
+        self.ids.day_label.text = day_name
+        self.ids.date_label.text = date_str
 
-    # logic for slot available for selected date
-    time_list = ['09:00 AM', '11:00 AM', '01:00 PM', '03:00 PM', '05:00 PM', '07:00 PM']
+    def update_date_labels(self):
+        now = datetime.now()
+        date_box = self.ids.date_box
+        date_box.clear_widgets()
 
-    def Book_Slot(self, button_instance, day, date, day_instance, date_instance):
+        for i in range(8):  # Current day + next 7 days
 
-        self.book_slot_pressed = True
-        self.selected_day = day  # Store the selected day
+            date = now + timedelta(days=i)
+            date_button = MDRaisedButton(
+                text=date.strftime("%a\n%d"),
+                halign="center",
+                size_hint=(None, None),
+                size=(dp(50), dp(50)),
+                pos_hint={"center_y": .5},
+                md_bg_color=(1, 1, 1, 1) if i != 0 else (1, 0, 0, 1),  # Default today button in red
+                text_color=(0, 0, 0, 1),
+                on_release=self.on_date_button_press
+            )
+            if i == 0:
+                self.current_date_button = date_button  # Set today button as the current button
+            date_box.add_widget(date_button)
 
-        for d in self.date_list:
-            # Extract the day part from the date in Dates list
-            day_part = d.split('-')[0]
-            # Compare the day part with the given date
-            if day_part == date:
-                self.selected_date = d
-                break  # Stop iterating if a match is found
+    def on_date_button_press(self, instance):
+        # Reset previous button color to white
+        if self.current_date_button:
+            self.current_date_button.md_bg_color = (1, 1, 1, 1)
 
-        # Check if CButton widget exists before clearing it
-        self.ids.CButton.clear_widgets()
-        # reset all the buttons
-        for button_id in ['button1', 'button2', 'button3', 'button4']:
-            button = self.ids[button_id]
-            button.elevation = 1
-            button.md_bg_color = (1, 1, 1, 1)
-            button.line_color = (0, 0, 0, 0)
-        # reset all the labels
-        for label_id in ['day1', 'day2', 'day3', 'day4', 'date1', 'date2', 'date3', 'date4']:
-            label = self.ids[label_id]
-            label.color = (0, 0, 0, .7)
+        # Set new button color to red
+        instance.md_bg_color = (1, 0, 0, 1)
+        self.current_date_button = instance  # Update the current button reference
 
-        # Set  color for the clicked button
-        button_instance.md_bg_color = (1, 0, 0, .8)
-
-        button_instance.line_color = (0, 0, 0, 0.8)
-        day_instance.color = (1, 1, 1, 1)
-        date_instance.color = (1, 1, 1, 1)
-
-        # If selected  date is equal to today's date
-        if date == (datetime.now().strftime('%d')):
-
-            # Get current time in 12-hour format with AM/PM
-            current_time_str = datetime.now().strftime("%I:%M %p")
-            print("Current time:", current_time_str)
-            # Convert current time to a comparable format
-            current_time_obj = datetime.strptime(current_time_str, "%I:%M %p")
-            upper_limit = datetime.strptime('07:00 PM', "%I:%M %p")
-            # Extract slot time for book_slot tabel
-            book_times = self.get_book_times(self.selected_date)
-            print(book_times)
-            today_list = self.time_list.copy()  # Make a copy of time_list
-            # Show slots which are available before '07:00 PM'
-            updated_today_day_list = self.filter_booked_times(today_list, book_times)
-            # check current time is less the upper limit time
-            if current_time_obj < upper_limit:
-                # Iterate over the time list and print times that come after the current time
-                # Update the label
-                self.ids.available_slots_alert.text = "Available Slots"
-                # list of slots available
-                for time_str in updated_today_day_list:
-                    time_obj = datetime.strptime(time_str, "%I:%M %p")
-                    if time_obj > current_time_obj:
-                        # add button widget
-                        custom = CButton(label_text=time_str)
-                        self.ids.CButton.add_widget(custom)
-            else:
-                # if current time is more than '07:00 PM'
-                self.ids.available_slots_alert.text = f"Oops! No more slots available on {day}"
-        else:
-            # Extract slot time for book_slot tabel
-            book_times = self.get_book_times(self.selected_date)
-            print(book_times)
-            next_day_list = self.time_list.copy()  # Make a copy of time_list
-            # Show slots which are available
-            updated_next_day_list = self.filter_booked_times(next_day_list, book_times)
-            # Update the label
-            self.ids.available_slots_alert.text = "Available Slots"
-            # selected date is not equal to Current date then
-            for time_str in updated_next_day_list:
-                # add button widget
-                custom = CButton(label_text=time_str)
-                self.ids.CButton.add_widget(custom)
-
-    def filter_booked_times(self, time_list, book_times):
-        updated_list = time_list.copy()  # Make a copy to avoid modifying the original list
-        for time_slot in updated_list:
-            count_time_slot = book_times.count(time_slot)
-            if count_time_slot == 2:
-                updated_list.remove(time_slot)
-        return updated_list
-
-    def get_book_times(self, selected_date):
-        date_format = "%d-%m-%Y"  # Day-Month-Year
-        date_object = datetime.strptime(selected_date, date_format)
-        date_only = date_object.date()
-        book_slot = app_tables.oxi_book_slot.search(oxi_book_date=date_only)
-        book_times = [row['book_time'] for row in book_slot]
-        return book_times
-
-    def pay_now(self, instance, *args):
-        cbutton_pressed = any(
-            button.CButton_pressed for button in self.ids.CButton.children if isinstance(button, CButton))
-        if self.book_slot_pressed and cbutton_pressed:
-            print("Date:", self.selected_date)
-            print("Time:", CButton.slot_time)
-
-            with open('user_data.json', 'r') as file:
-                user_info = json.load(file)
-            user_info['slot_date'] = self.selected_date
-            user_info['slot_time'] = CButton.slot_time
-            with open("user_data.json", "w") as json_file:
-                json.dump(user_info, json_file)
-            self.manager.current_heroes = []
-            self.manager.push("payment_page")
-        elif not self.book_slot_pressed and cbutton_pressed:
-            self.show_validation_dialog("Select Date")
-            print("Select Date")
-        elif self.book_slot_pressed and not cbutton_pressed:
-            self.show_validation_dialog("Select Time")
-            print("Select Time")
-        else:
-            self.show_validation_dialog("Select Date and Time")
-            print("Select Date and Time")
-
-    def select_timings(self, button, label_text):
-        self.session_time = label_text
-        print(self.session_time)
-        selected_slot = label_text
-        for slot in Slot_Booking.time_slots:
-            if slot == selected_slot:
-                self.ids[slot].md_bg_color = (1, 1, 1, 1)
-            else:
-                self.ids[slot].md_bg_color = (1, 0, 0, 1)
-
-    def slot_date_picker(self):
-        current_date = datetime.now().date()
-        date_dialog = MDDatePicker(year=current_date.year, month=current_date.month, day=current_date.day,
-                                   size_hint=(None, None), size=(150, 150))
-        date_dialog.bind(on_save=self.slot_save, on_cancel=self.slot_cancel)
-        date_dialog.open()
-
-    def slot_save(self, instance, value, date_range):
-        # the date string in "year-month-day" format
-        date_object = datetime.strptime(str(value), "%Y-%m-%d")
-        # Format the date as "day-month-year"
-        formatted_date = date_object.strftime("%d-%m-%Y")
-        book_slot = app_tables.oxi_book_slot.search(book_date=formatted_date)
-        book_times = [row['book_time'] for row in book_slot]
-        print(formatted_date, book_times)
-        for slots in Slot_Booking.time_slots:
-            self.ids[slots].disabled = False
-            if not book_times:
-                print(book_times)
-                for slots in Slot_Booking.time_slots:
-                    self.ids[slots].disabled = False
-            elif book_times:
-                for slots in book_times:
-                    self.ids[slots].disabled = True
-            else:
-                pass
-        self.ids.date_choosed.text = formatted_date
-
-    def slot_cancel(self, instance, value):
-        print("cancel")
-
-    # def pay_now(self, instance, *args):
-    #     self.manager.push("payment_page")
-    # session_date = self.ids.date_choosed.text
-    # # Extract the username from menu_profile
-    # screen = self.manager.get_screen('client_services')
-    # username = screen.ids.username.text
-    # if len(session_date) == 10 and hasattr(self, 'session_time') and self.session_time:
-    #     print(username, session_date, self.session_time)
-    #     self.manager.load_screen("payment_page")
-    #     current_screen = self.manager.get_screen('payment_page')
-    #     current_screen.ids.user_name.text = username
-    #     current_screen.ids.session_date.text = session_date
-    #     current_screen.ids.session_time.text = self.session_time
-    #     self.manager.push("payment_page")
-    # elif len(session_date) == 13 and hasattr(self, 'session_time') and self.session_time:
-    #     self.show_validation_dialog("Select Date")
-    # elif hasattr(self, 'session_time') == False and len(session_date) == 10:
-    #     self.show_validation_dialog("Select Time")
-    # else:
-    #     self.show_validation_dialog("Select Date and Time")
-
-    def show_validation_dialog(self, message):
-        # Create the dialog asynchronously
-        Clock.schedule_once(lambda dt: self._create_dialog(message), 0)
-
-    def _create_dialog(self, message):
-        dialog = MDDialog(
-            text=f"{message}",
-            elevation=0,
-            buttons=[MDFlatButton(text="OK", on_release=lambda x: dialog.dismiss())],
+    def show_add_task_dialog(self):
+        self.dialog = MDDialog(
+            title="Add session",
+            type="custom",
+            content_cls=AddTask(manager=self.manager),
         )
-        dialog.open()
+        self.dialog.open()
+
+    def show_start_time_picker(self, *args):
+        self.dialog.content_cls.ids.end_time.text=''
+        time_dialog = MDTimePicker()
+        time_dialog.bind(on_save=self.on_start_time_save)
+        time_dialog.open()
+
+    def on_start_time_save(self, instance, time):
+        if self.is_valid_time(time):
+            self.dialog.content_cls.ids.start_time.text = time.strftime("%I:%M %p")
+        else:
+            self.show_invalid_time_alert()
+
+    def show_end_time_picker(self, *args):
+        time_dialog = MDTimePicker()
+        time_dialog.bind(on_save=self.on_end_time_save)
+        time_dialog.open()
+
+    def on_end_time_save(self, instance, time):
+        start_time_str = self.dialog.content_cls.ids.start_time.text
+        if not start_time_str:
+            self.show_invalid_time_alert("Please select the start time first.")
+            return
+
+        start_time = datetime.strptime(start_time_str, '%I:%M %p').time()
+        if self.is_valid_time(time) and self.is_time_range_valid(start_time, time):
+            self.dialog.content_cls.ids.end_time.text = time.strftime("%I:%M %p")
+        else:
+            self.show_invalid_time_alert("End time must be after start time and within the range 7 PM.")
+
+    def is_valid_time(self, time):
+        start_time = datetime.strptime('07:00 AM', '%I:%M %p').time()
+        end_time = datetime.strptime('07:00 PM', '%I:%M %p').time()
+        return start_time <= time <= end_time
+
+    def is_time_range_valid(self, start_time, end_time):
+        return start_time < end_time <= datetime.strptime('07:00 PM', '%I:%M %p').time()
+
+    def show_invalid_time_alert(self, message="Please select a time between 7 AM and 7 PM."):
+        invalid_time_dialog = MDDialog(
+            text=message,
+            buttons=[
+                MDRaisedButton(
+                    text="OK",
+                    on_release=lambda x: invalid_time_dialog.dismiss()
+                ),
+            ],
+        )
+        invalid_time_dialog.open()
+
+    def add_task(self, *args):
+        content = self.dialog.content_cls
+        task_title = content.ids.task_title.text
+        start_time = content.ids.start_time.text
+        end_time = content.ids.end_time.text
+        task_description = content.ids.task_description.text
+
+        # Validate input fields
+        if not task_title:
+            self.show_invalid_time_alert("Please enter the task title.")
+            return
+        if not start_time:
+            self.show_invalid_time_alert("Please select the start time.")
+            return
+        if not end_time:
+            self.show_invalid_time_alert("Please select the end time.")
+            return
+        if not task_description:
+            self.show_invalid_time_alert("Please enter the task description.")
+            return
+        task_card = TaskCard(
+            title=task_title,
+            start_time=start_time,
+            end_time=end_time,
+            description=task_description,
+            md_bg_color=(1, 0, 0, 0.5),  # Light Green
+        )
+
+        task_card.update_position()
+
+        self.ids.task_layout.add_widget(task_card)
+
+        self.dialog.dismiss()

@@ -1,323 +1,284 @@
-<CButton>:
-    size_hint: None, None
-    size: dp(100), dp(40) # Adjusted size
-    halign: "left"
-    pos_hint: {'x': 0, 'top': 1}
-#    pos_hint: {'right': 1, 'y': 0}
-    md_bg_color: 1, 1, 1, 1
-    elevation: 1
-    color_mode: "custom"
-    line_color: 0,0,0,0.1
-#    on_release: root.Slot_Timing(slot_timing.text,slot_timing)
-    on_release: root.Slot_Timing()
-    text:root.label_text
-#    MDLabel:
-#        id: slot_timing
-#        text: root.label_text
-#        font_name: "Roboto"
-#        halign: "center"
-#        font_size: sp(14)
-#        color: 0.5, 0.5, 0.5, 1
-#        theme_text_color: "Custom"
+<TaskSchedulerScreen>:
 
-#<Alert_Label>:
-#    text: "Oops! No more slots available for Today"
-#    font_name: "Roboto"
-#    size_hint_x: 1
-#    halign: "center"
-#    valign: "top"
-#    bold: True
-#    color: 1, 0, 0, 1
-#    pos_hint: {"top": 1, "center_x": 0.5}
-
-
-<Slot_Booking>:
-    previous_button: None
-    BoxLayout:
+    MDBoxLayout:
         orientation: 'vertical'
+        MDBoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: dp(60)
+            padding:dp(15),dp(0),dp(20),dp(0)
+            MDIconButton:
+                icon: "arrow-left"
+                pos_hint: {"center_y": .5}
+                user_font_size: "20sp"
+                theme_text_color: "Custom"
+                text_color: rgba(34, 34, 34, 255)
+                on_release:root.back_screen()
+                halign:'left'
+            MDLabel:
+                text: "Schedule Appointment"
+                font_name: "Roboto-Bold"
+                font_size: "20sp"
+                #pos_hint: {"center_x": .56, "center_y": .94}
+                color: rgba(34, 34, 34, 255)
+                halign:'center'
 
-        MDIconButton:
-            icon: "arrow-left"
-            pos_hint: {"center_y": .91}
-            user_font_size: "20sp"
-            theme_text_color: "Custom"
-            text_color: rgba(71, 92, 119, 255)
-            on_release:
-                root.on_back_button(self)
+        MDBoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: dp(60)
+            padding: dp(20),dp(20),dp(20),dp(0)
+            spacing:dp(10)
 
-        ScrollView:
-            GridLayout:
-                cols: 1
-                padding: dp(25)
-                size_hint_y: None
-                height: self.minimum_height
-                BoxLayout:
-                    orientation: 'vertical'
-                    spacing: 10
+            MDLabel:
+                id: day_label
+                text: ""
+                font_style: "H4"
+                # halign: "center"
+                color:1,0,0,1
+
+            MDLabel:
+                id: date_label
+                text: ""
+                font_style: "Subtitle1"
+                # halign: "center"
+                color:1,0,0,1
+
+        MDBoxLayout:
+            size_hint_y: None
+            height: dp(80)
+            ScrollView:
+                adaptive_width:True
+                MDBoxLayout:
+                    id: date_box
+                    adaptive_width:True
+                    orientation: 'horizontal'
                     size_hint_y: None
-                    height: dp(150)
-                    padding: dp(0)
+                    height: dp(80)
+                    spacing: dp(10)
+                    padding: dp(20), dp(0), dp(20), dp(0)
+                    pos_hint_y:{'center_y':1}
 
-                    MDLabel:
-                        text: "Select Appointment Day"
-#                        font_name: "Roboto"
-                        font_style:'Subtitle2'
-                        font_size:'16dp'
-                        size_hint_x: 1
-                        bold: True
-                        color: 0, 0, 0, 1
-                        pos_hint: {"top": 1, "center_x": 0.5}
-
-                    GridLayout:
-                        cols: 4
-                        spacing: dp(15)
-                        size_hint_y: None
-                        pos_hint: {"center_x": 0.5, "x": 0}
-                        padding: dp(0),dp(10),dp(0),dp(10)
-                        pos_hint: {"center_y": .5, "center_x": 0.5}
-                        height: self.minimum_height
-
-                        MDRaisedButton:
-                            id: button1
-                            size_hint: None, None
-                            valign: "center"
-                            size: dp(70), dp(70)
-                            md_bg_color: 1, 1, 1, 1
-#                                        line_color: 1, 0, 0, 1
-#                                        line_width: "1dp"
-                            elevation: 1
-                            on_release: root.Book_Slot(self,day1.text,date1.text,day1,date1)
-                            BoxLayout:
-                                orientation: "vertical"
-                                padding: dp(5)
-                                spacing: dp(10)
-                                Label:
-                                    id: day1
-                                    text: ""
-                                    bold: True
-                                    halign: "center"
-                                    font_size:'14dp'
-                                    font_style:'Subtitle2'
-                                    color: 0, 0, 0, 0.7
-                                    height: self.texture_size[1]
-                                Label:
-                                    id: date1
-                                    text: ""
-                                    bold: True
-                                    halign: "center"
-                                    font_size:'20dp'
-                                    color: 0, 0, 0, 0.7
-                                    height: self.texture_size[1]
-                        MDRaisedButton:
-                            id: button2
-                            size_hint: None, None
-                            valign: "center"
-                            size: dp(70), dp(70)
-                            md_bg_color: 1, 1, 1, 1
-#                                        line_color: 1, 0, 0, 1
-#                                        line_width: "0dp"
-                            elevation: 1.5
-                            on_release: root.Book_Slot(self,day2.text,date2.text,day2,date2)
-                            BoxLayout:
-                                orientation: "vertical"
-                                padding: dp(5)
-                                spacing: dp(10)
-                                Label:
-                                    id: day2
-                                    text: ""
-                                    bold: True
-                                    halign: "center"
-                                    font_size:'14dp'
-                                    font_style:'Subtitle2'
-                                    color: 0, 0, 0, 0.7
-                                    height: self.texture_size[1]
-                                Label:
-                                    id: date2
-                                    text: ""
-                                    bold: True
-                                    halign: "center"
-                                    font_size:'20dp'
-                                    color: 0, 0, 0, 0.7
-                                    height: self.texture_size[1]
-
-                        MDRaisedButton:
-                            id: button3
-                            size_hint: None, None
-                            valign: "center"
-                            size: dp(70), dp(70)
-                            md_bg_color: 1, 1, 1, 1
-#                                        line_color: 1, 0, 0, 1
-#                                        line_width: "1dp"
-                            elevation: 1
-                            on_release: root.Book_Slot(self,day3.text,date3.text,day3,date3)
-                            BoxLayout:
-                                orientation: "vertical"
-                                padding: dp(5)
-                                spacing: dp(10)
-                                Label:
-                                    id: day3
-                                    text: ""
-                                    bold: True
-                                    halign: "center"
-                                    font_size:'14dp'
-                                    font_style:'Subtitle2'
-                                    color: 0, 0, 0, 0.7
-                                    height: self.texture_size[1]
-                                Label:
-                                    id: date3
-                                    text: ""
-                                    bold: True
-                                    halign: "center"
-                                    font_size:'20dp'
-                                    color: 0, 0, 0, 0.7
-                                    height: self.texture_size[1]
-                        MDRaisedButton:
-                            id: button4
-                            size_hint: None, None
-                            valign: "center"
-                            size: dp(70), dp(70)
-                            md_bg_color: 1, 1, 1, 1
-#                                        line_color: 1, 0, 0, 1
-#                                        line_width: "1dp"
-                            elevation: 1
-                            on_release: root.Book_Slot(self,day4.text,date4.text,day4,date4)
-                            BoxLayout:
-                                orientation: "vertical"
-                                padding: dp(5)
-                                spacing: dp(10)
-                                Label:
-                                    id: day4
-                                    text: ""
-                                    bold: True
-                                    halign: "center"
-                                    font_size:'14dp'
-                                    font_style:'Subtitle2'
-                                    color: 0, 0, 0, 0.7
-                                    height: self.texture_size[1]
-                                Label:
-                                    id: date4
-                                    text: ""
-                                    bold: True
-                                    halign: "center"
-                                    font_size:"20dp"
-                                    color: 0, 0, 0, 0.7
-                                    height: self.texture_size[1]
-                BoxLayout:
-                    orientation: 'vertical'
-                    spacing: 0
+        FloatLayout:
+            MDScrollView:
+                GridLayout:
+                    cols:2
                     size_hint_y: None
-                    MDLabel:
-                        text: "Select Available Slots"
-#                        font_name: "Roboto"
-                        font_style:'Subtitle2'
-                        font_size:'16dp'
-                        size_hint_x: 1
-                        bold: True
-                        color: 0, 0, 0, 1
-                        pos_hint: {"top": 1, "center_x": 0.5}
-                BoxLayout:
-                    orientation: 'vertical'
-                    spacing: 0
-                    size_hint_y: None
-                    height: card.height
+                    height: dp(1230)  # Timeline height for 12 hours with each hour taking 50dp
+                    padding: dp(10)
 
-                    MDCard:
-                        id:card
+                    MDBoxLayout:
                         orientation: 'vertical'
-                        size_hint: None, None
-                        spacing: 5
-                        padding: dp(0),dp(0),dp(0),dp(0)
-                        size: "280dp",text_box.height + box_main.height
-                        size_hint: (1, 1)
-                        elevation: 1
-                        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                        size_hint_x: None
+                        width: dp(120)
 
-                        BoxLayout:
-                            id: text_box
-                            orientation: 'horizontal'
-                            padding: dp(2)
+                        canvas.before:
+                            Color:
+                                rgba: 0.7, 0.7, 0.7, 1
+                            Line:
+                                points: [dp(25), self.top, dp(25), self.y]
+                                width: 1.5
+
+                        MDBoxLayout:
                             size_hint_y: None
-                            height: "60dp"
-                            pos_hint: {"top": 1}
+                            height: dp(100)
+                            padding:'25dp','0dp','0dp','0dp'
 
                             MDLabel:
-                                id: available_slots_alert
-                                text: "Choose a Day"
-#                                font_name: "Roboto"
-                                size_hint_x: 1
-                                font_style:'Subtitle2'
-                                font_size:'16dp'
-                                halign: "center"
-                                bold: True
-                                color: 0, 0, 0, 1
-                                canvas:
-                                    Color:
-                                        rgba: 0, 0, 0, 1
-                                    Line:
-                                        points: [self.x, self.y - 2, self.x + self.width, self.y - 2]
-                                        width: 1
+                                text:'7:00 am'
+                                pos_hint:{'center_y':1}
 
-                        BoxLayout:
-                            id: box_main
-                            orientation: 'vertical'
-                            spacing: 0
+                        MDBoxLayout:
                             size_hint_y: None
-                            padding: dp(10),dp(0),dp(10),dp(0)
-                            height: child.height-30
-                            BoxLayout:
-                                id: child
-                                size_hint_y: None
-                                height:CButton.height
-                                size_hint_x: 1
-                                pos_hint: {"center_x": 0.5, "center_y": 0}
-#                                GridLayout:
-#                                    cols: 3
-#                                    spacing: dp(10)
-#                                    size_hint_y: None
-#                                    pos_hint: {"center_x": 0.5, "x": 0}
-#                                    height: self.minimum_height
-#                                    id:CButton
-                                ScrollView:
-                                    size_hint_y: None
-                                    height: '130dp'
-                                    bar_width: 0
-                                    MDBoxLayout:
-                                        id:CButton
-                                        adaptive_width: True
-                                        spacing: '15dp'
-                                        padding:'50dp'
+                            height: dp(100)
+                            padding:'25dp','0dp','0dp','0dp'
+                            MDLabel:
+                                text:'8:00 am'
+                                pos_hint:{'center_y':1}
 
+                        MDBoxLayout:
+                            size_hint_y: None
+                            height: dp(100)
+                            padding:'25dp','0dp','0dp','0dp'
+                            MDLabel:
+                                text:'9:00 am'
+                                pos_hint:{'center_y':1}
 
+                        MDBoxLayout:
+                            size_hint_y: None
+                            height: dp(100)
 
+                            padding:'25dp','0dp','0dp','0dp'
+                            MDLabel:
+                                text:'10:00 am'
+                                pos_hint:{'center_y':1}
 
+                        MDBoxLayout:
+                            size_hint_y: None
+                            height: dp(100)
 
-                MDBoxLayout:
-                    size_hint_y: None
-                    MDRaisedButton:
-                        id: book_slot
-                        text:  "Apply"
-                        size_hint_x: 1
+                            padding:'25dp','0dp','0dp','0dp'
+                            MDLabel:
+                                text:'11:00 am'
+                                pos_hint:{'center_y':1}
+
+                        MDBoxLayout:
+                            size_hint_y: None
+                            height: dp(100)
+                            padding:'25dp','0dp','0dp','0dp'
+                            MDLabel:
+                                text:'12:00 pm'
+                                pos_hint:{'center_y':1}
+
+                        MDBoxLayout:
+                            size_hint_y: None
+                            height: dp(100)
+                            padding:'25dp','0dp','0dp','0dp'
+                            MDLabel:
+                                text:'1:00 pm'
+                                pos_hint:{'center_y':1}
+
+                        MDBoxLayout:
+                            size_hint_y: None
+                            height: dp(100)
+                            padding:'25dp','0dp','0dp','0dp'
+                            MDLabel:
+                                text:'2:00 pm'
+                                pos_hint:{'center_y':1}
+
+                        MDBoxLayout:
+                            size_hint_y: None
+                            height: dp(100)
+                            padding:'25dp','0dp','0dp','0dp'
+                            MDLabel:
+                                text:'3:00 pm'
+                                pos_hint:{'center_y':1}
+
+                        MDBoxLayout:
+                            size_hint_y: None
+                            height: dp(100)
+                            padding:'25dp','0dp','0dp','0dp'
+                            MDLabel:
+                                text:'4:00 pm'
+                                pos_hint:{'center_y':1}
+
+                        MDBoxLayout:
+                            size_hint_y: None
+                            height: dp(100)
+                            padding:'25dp','0dp','0dp','0dp'
+                            MDLabel:
+                                text:'5:00 pm'
+                                pos_hint:{'center_y':1}
+
+                        MDBoxLayout:
+                            size_hint_y: None
+                            height: dp(100)
+                            padding:'25dp','0dp','0dp','0dp'
+                            MDLabel:
+                                text:'6:00 pm'
+                                pos_hint:{'center_y':1}
+
+                        MDBoxLayout:
+                            size_hint_y: None
+                            height: dp(0)
+                            padding:'25dp','0dp','0dp','0dp'
+                            MDLabel:
+                                text:'7:00 pm'
+                                pos_hint:{'center_y':1}
+
+                    FloatLayout:
+                        id: task_layout
                         size_hint_y: None
-                        height: dp(60)
-                        md_bg_color: 1, 0, 0, 1
-                        text_color: 1, 1, 1, 1
-                        font_style:'Subtitle2'
+                        height: dp(1200)  # Match the height of the timeline
+                        # padding: dp(10)
+                        md_bg_color: 0.87, 0.96, 0.88, 1
 
-                        on_release:
-                            root.pay_now(self)
-#                Button:
-#                    id: book_slot
-#                    text: "Pay Now"
-#                    size_hint_y:.1
-#                    background_color: 0, 0, 0, 0
-#                    font_name: "Roboto"
-#                    bold: True
-#                    on_release:
-#                        root.pay_now(self)
-#                    canvas.before:
-#                        Color:
-#                            rgb: rgba(255, 0, 0, 255)
-#                        RoundedRectangle:
-#                            size: self.size
-#                            pos: self.pos
-#                            radius: [0]
+
+            MDFloatingActionButton:
+                icon: "plus"
+                pos: self.parent.width - self.width - dp(16), dp(16)
+                on_release: root.show_add_task_dialog()
+                elevation_normal: 8
+
+<TaskCard@MDCard>:
+    size_hint: None, None
+    width: dp(270)
+    orientation: 'vertical'
+    padding: dp(10)
+    radius: [10,]
+    on_start_time: root.update_position()
+    on_end_time: root.update_position()
+    MDGridLayout:
+        cols:1
+        pos_hint_y:{'top':1}
+        MDLabel:
+            text: f'{root.start_time}-{root.end_time}'
+            theme_text_color: "Secondary"
+            size_hint_y: None
+            height: self.texture_size[1]
+
+        MDLabel:
+            text: root.title
+            theme_text_color: "Primary"
+            font_style: "H6"
+            size_hint_y: None
+            height: self.texture_size[1]
+
+        MDLabel:
+            text: root.description
+            theme_text_color: "Secondary"
+            size_hint_y: None
+            font_size:'14sp'
+            height: self.texture_size[1]
+
+
+<AddTask>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: dp(250)
+    pos_hint:{'top':1}
+    MDBoxLayout:
+        orientation: 'vertical'
+        pos_hint:{'top':1}
+        MDTextField:
+            id: task_title
+            hint_text: "Task Title"
+            mode: "rectangle"
+        GridLayout:
+            cols:2
+            spacing: dp(10)
+            size_hint_y:None
+            height:start_time.height+ 10
+            MDTextField:
+                id: start_time
+                hint_text: "Start Time "
+                readonly: True
+                mode: "rectangle"
+                icon_right: "clock-time-nine-outline"
+                on_focus:if self.focus:root.show_start_time_picker()
+
+            MDTextField:
+                id: end_time
+                hint_text: "End Time "
+                readonly: True
+                mode: "rectangle"
+                icon_right: "clock-time-nine-outline"
+                on_focus:if self.focus:root.show_end_time_picker()
+        MDTextField:
+            id: task_description
+            hint_text: "Task Description"
+            mode: "rectangle"
+            radius:[20,]
+        MDBoxLayout:
+            size_hint_y: None
+            spacing:'10dp'
+            padding:'5dp'
+            MDRaisedButton:
+                text: "CANCEL"
+                on_release: root.dialog.dismiss()
+
+            MDRaisedButton:
+                text: "ADD"
+                on_release: root.add_task()
+
+

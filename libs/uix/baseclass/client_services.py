@@ -1,8 +1,10 @@
 import base64
+import io
 import json
 import os
 
 import anvil
+from PIL.Image import Image
 from anvil.tables import app_tables
 from kivy.animation import Animation
 from kivy.clock import Clock
@@ -116,7 +118,18 @@ class Client_services(MDScreen):
             user_info = json.load(file)
         self.ids.username.text = f"{user_info['username']}"
         self.ids.email.text = f"{user_info['email']}"
-        profile_texture = base64.b64decode(user_info['profile'])
+        try:
+            profile_texture = base64.b64decode(user_info['profile'])
+        except:
+            # Load the image
+            image_path = 'images/profile.jpg'
+            image = Image.open(image_path)
+
+            # Convert the image to a byte array
+            img_byte_arr = io.BytesIO()
+            image.save(img_byte_arr, format='PNG')
+            img_byte_arr = img_byte_arr.getvalue()
+            profile_texture=img_byte_arr
         profile_image_path = "profile_image.png"
         with open(profile_image_path, "wb") as profile_image_file:
             profile_image_file.write(profile_texture)
@@ -134,7 +147,6 @@ class Client_services(MDScreen):
     def logout(self):
         self.manager.current_heroes = []
         self.manager.push_replacement("login", "right")
-        self.ids.nav_drawer.set_state("close")
         with open('user_data.json', 'r') as file:
             user_info = json.load(file)
         user_info['username'] = ""
