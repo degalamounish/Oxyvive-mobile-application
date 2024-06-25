@@ -29,6 +29,11 @@
         "object": "Client_services()",
         "kv": "libs/uix/kv/client_services.kv"
     },
+    "available_services": {
+        "import": "from libs.uix.baseclass.available_services import AvailableService",
+        "object": "AvailableService()",
+        "kv": "libs/uix/kv/available_services.kv"
+    },
     "menu_profile": {
         "import": "from libs.uix.baseclass.menu_profile import Profile",
         "object": "Profile()",
@@ -60,8 +65,8 @@
         "kv": "libs/uix/kv/hospital_booking.kv"
     },
     "slot_booking": {
-        "import": "from libs.uix.baseclass.slot_booking import Slot_Booking",
-        "object": "Slot_Booking()",
+        "import": "from libs.uix.baseclass.slot_booking import TaskSchedulerScreen",
+        "object": "TaskSchedulerScreen()",
         "kv": "libs/uix/kv/slot_booking.kv"
     },
     "payment_page": {

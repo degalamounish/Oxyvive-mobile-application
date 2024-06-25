@@ -14,6 +14,9 @@ class ShotApp(MDApp):
         Window.softinput_mode = "below_target"
 
     def build(self):
+        self.theme_cls.theme_style = 'Light'
+        self.theme_cls.primary_palette = 'Red'
+
         self.root = Root()
         self.root.push("main_sc")
 

@@ -138,7 +138,6 @@ class ItemConfirm(OneLineAvatarIconListItem):
         screen = self.manager.get_screen("client_location")
 
 
-
 class ClientLocation(MDScreen):
     API_KEY = "7060ef7890c44bb48d75f2d12c66a466"
 
@@ -147,6 +146,9 @@ class ClientLocation(MDScreen):
         self.dialog = None
         self.longitude = None
         self.latitude = None
+        # self.gps = gps
+        # self.gps.configure(on_location=self.on_location())
+        # Clock.schedule_once(self.start_gps)
         self.geocoder = OpenCageGeocode(self.API_KEY)
         self.custom_modal_view = None
 
@@ -249,3 +251,5 @@ class ClientLocation(MDScreen):
         self.hide_modal_view()
         self.manager.push_replacement('client_services')
 
+    def next_screen(self):
+        self.manager.push_replacement('available_services')

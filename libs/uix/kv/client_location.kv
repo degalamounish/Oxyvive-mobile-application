@@ -68,8 +68,9 @@
                     text: "Plan your appointment"
                     font_name: "Roboto-Bold"
                     font_size: "20sp"
-                    pos_hint: {"center_x": .5, "center_y": .5}
+                    #pos_hint: {"center_x": .5, "center_y": .5}
                     color: rgba(34, 34, 34, 255)
+                    halign:'center'
             CustomButton:
                 size_hint_y: None
                 size_hint_x:None
@@ -151,3 +152,4 @@
                         md_bg_color: 0, 0, 0, 1
                         pos_hint: {'center_x': .5, 'center_y': .1}
                         size_hint: (1, 1)
+                        on_release:root.next_screen()
