@@ -136,6 +136,7 @@ class Client_services(MDScreen):
         self.ids.image.source = profile_image_path
 
     def on_pre_enter(self):
+
         self.change()
         images = ['images/1.jpg', 'images/2.png', 'images/3.webp', 'images/gym.png']
         for i in images:
@@ -146,6 +147,7 @@ class Client_services(MDScreen):
 
     def logout(self):
         self.manager.current_heroes = []
+        self.ids.bottom_nav.switch_tab('home screen')
         self.manager.push_replacement("login", "right")
         with open('user_data.json', 'r') as file:
             user_info = json.load(file)
@@ -161,7 +163,7 @@ class Client_services(MDScreen):
             json.dump(logged_in_data, json_file)
 
     def home(self):
-        self.ids.nav_drawer.set_state("close")
+        self.ids.bottom_nav.switch_tab('home screen')
 
     def location_screen(self):
         self.manager.current_heroes = []

@@ -235,11 +235,17 @@
 <AddTask>:
     orientation: 'vertical'
     size_hint_y: None
-    height: dp(250)
+    height: dp(320)
     pos_hint:{'top':1}
     MDBoxLayout:
         orientation: 'vertical'
         pos_hint:{'top':1}
+        MDTextField:
+            id: selected_date
+            readonly: True
+            text:root.date
+            hint_text: "Date"
+            mode: "rectangle"
         MDTextField:
             id: task_title
             hint_text: "Task Title"
@@ -275,7 +281,7 @@
             padding:'5dp'
             MDRaisedButton:
                 text: "CANCEL"
-                on_release: root.dialog.dismiss()
+                on_release: root.task_dismiss()
 
             MDRaisedButton:
                 text: "ADD"
