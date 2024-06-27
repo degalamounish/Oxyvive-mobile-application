@@ -1,12 +1,9 @@
 import threading
-
 import requests
 from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.core.window import Window
-from kivy.graphics import Color, Ellipse, Line
 from kivy.metrics import dp
-from kivy.properties import NumericProperty
 from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.behaviors import DragBehavior
 from kivy.uix.modalview import ModalView
@@ -26,7 +23,20 @@ class CustomModalView(DragBehavior, ModalView):
         self.background = 'rgba(0, 0, 0, 0)'
         self.overlay_color = (0, 0, 0, 0)
         self.size_hint = (None, None)
-        self.size = (Window.width, Window.height - dp(150))
+        self.height = Window.height - dp(149)# Initial height is set to 400dp
+        self.update_width()  # Set initial width
+        self.update_position()  # Set initial position
+        Window.bind(on_resize=self.on_window_resize)  # Bind resize event
+
+    def on_window_resize(self, instance, width, height):
+        self.update_width()
+        self.update_position()
+
+    def update_width(self):
+        self.width = Window.width
+
+    def update_position(self):
+        self.pos = (0, 0)  # Position the modal view at the bottom of the screen
 
     def on_touch_down(self, touch):
         if self.collide_point(*touch.pos):
@@ -52,6 +62,9 @@ class CustomModalView(DragBehavior, ModalView):
     def dismiss_modal(self):
         self.dismiss()
 
+    def open(self, *args):
+        self.update_position()
+        return super().open(*args)
 
 class CustomButtonMap(MDFloatingActionButton):
     def set_size(self, *args):
@@ -89,8 +102,8 @@ class CustomMapView(MapView):
     def deferred_update(self, dt):
         self.update_marker_position()
         self.update_text_field()
-        screen = self.manager.get_screen("client_location")
-        screen.hide_modal_view()
+        # screen = self.manager.get_screen("client_location")
+        # screen.hide_modal_view()
 
     def center_marker(self, *args):
         self.static_marker.center_x = self.center_x

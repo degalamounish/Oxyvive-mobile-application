@@ -175,7 +175,7 @@ class Signup(MDScreen):
                         id = len(rows) + 1
                         app_tables.oxi_users.add_row(
                             oxi_id=str(id),
-                            oxi_name=name,
+                            oxi_username=name,
                             oxi_email=email,
                             oxi_password=hash_pashword,
                             oxi_phone=float(phone),

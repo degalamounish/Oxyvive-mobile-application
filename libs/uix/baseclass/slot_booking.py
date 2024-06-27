@@ -1,11 +1,16 @@
 import sqlite3
 from datetime import datetime, timedelta
 
+from kivy.animation import Animation
+from kivy.core.window import Window
 from kivy.metrics import dp
 from kivy.properties import StringProperty, ObjectProperty
+from kivy.uix.behaviors import DragBehavior
+from kivy.uix.modalview import ModalView
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.button import MDRaisedButton, MDFlatButton
 from kivymd.uix.card import MDCard
+from kivymd.uix.chip import MDChip
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.label import MDLabel
 from kivymd.uix.pickers import MDTimePicker
@@ -28,28 +33,75 @@ cursor.execute('''
 conn.commit()
 
 
-class AddTask(MDBoxLayout):
-    manager = ObjectProperty()
-    date = StringProperty()
+class CButton(MDFlatButton):
+    label_text = StringProperty("")
+    slot_time = None
 
     def __init__(self, **kwargs):
+        super(CButton, self).__init__(**kwargs)
+
+        self.CButton_pressed = False
+        self.default_md_bg_color = self.md_bg_color  # Store the default background color
+        self.default_line_color = self.line_color  # Store the default line color
+
+    def Slot_Timing(self, slot_timing):
+        CButton.slot_time = slot_timing
+        # Reset the colors of all buttons to their default state
+        for button in self.parent.children:
+            if isinstance(button, CButton):
+                button.md_bg_color = button.default_md_bg_color
+                button.line_color = button.default_line_color
+
+        # Set the colors of the current button
+        self.md_bg_color = (1, 0, 0, 0.1)  # Set background color
+        self.line_color = (1, 0, 0, 0.5)  # Set line color
+        self.CButton_pressed = True
+        print(f"Selected time: {slot_timing}")
+
+
+class CustomModalView(ModalView):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.background = 'rgba(0, 0, 0, 0.2)'
+        self.overlay_color = (0, 0, 0, .5)
+        self.size_hint = (None, None)
+        self.attach_to = TaskSchedulerScreen()
+        self.height = dp(300)
+        self.update_width()  # Set initial width
+        self.update_position()  # Set initial position
 
-    def show_start_time_picker(self):
-        screen = self.manager.get_screen('slot_booking')
-        screen.show_start_time_picker()
 
-    def show_end_time_picker(self):
-        screen = self.manager.get_screen('slot_booking')
-        screen.show_end_time_picker()
+        Window.bind(on_resize=self.on_window_resize)  # Bind resize event
 
-    def add_task(self):
-        screen = self.manager.get_screen('slot_booking')
-        screen.add_task()
+    def on_window_resize(self, instance, width, height):
+        self.update_width()
+        self.update_position()
 
-    def task_dismiss(self):
-        screen = self.manager.get_screen('slot_booking')
-        screen.task_dismiss()
+    def update_width(self):
+        self.width = Window.width
+
+    def update_position(self):
+        self.pos = (0, 0)  # Position the modal view at the bottom of the screen
+
+    def open(self, *args):
+        self.update_position()
+        return super().open(*args)
+
+    def display_time_slots(self, time_slots):
+        self.ids.time_slot_box.clear_widgets()
+        for slot in time_slots:
+            button = CButton(text=slot)
+            button.bind(on_press=self.on_button_press)
+            self.ids.time_slot_box.add_widget(button)
+
+    def on_button_press(self, instance):
+        instance.Slot_Timing(instance.text)
+
+    def dismiss_modal(self):
+        self.dismiss()
+
+    def payment_screen(self):
+        pass
 
 
 class TaskCard(MDCard):
@@ -79,12 +131,17 @@ class TaskSchedulerScreen(MDScreen):
         self.dialog = None
         self.selected_date = datetime.now().date()
         self.current_date_button = None
+        self.custom_modal_view = None
+        self.time_slots = ['9am - 11am', '11am - 1pm', '1pm - 3pm', '3pm - 5pm', '5pm - 7pm', '7pm - 9pm']
 
     def on_enter(self, *args):
         self.update_date()
         self.update_date_labels()
+        self.filter_time_slots()
 
     def back_screen(self):
+        self.custom_modal_view.ids.time_slot_box.clear_widgets()
+        self.hide_modal_view()
         self.manager.push_replacement('available_services')
 
     def update_date(self):
@@ -136,66 +193,44 @@ class TaskSchedulerScreen(MDScreen):
         # Example output
         print(f"Selected Date: {self.selected_date}")
 
-    def show_add_task_dialog(self):
-
-        self.dialog = MDDialog(
-            title="Add session",
-            type="custom",
-            content_cls=AddTask(manager=self.manager, date=str(self.selected_date)),
-        )
-        self.dialog.open()
-
-    def show_start_time_picker(self, *args):
-        self.dialog.content_cls.ids.end_time.text = ''
-        time_dialog = MDTimePicker()
-        time_dialog.bind(on_save=self.on_start_time_save)
-        time_dialog.open()
-
-    def on_start_time_save(self, instance, time):
-        if self.is_valid_time(time):
-            self.dialog.content_cls.ids.start_time.text = time.strftime("%I:%M %p")
+    def show_add_task_dialog(self, value):
+        if value:
+            self.show_modal_view()
         else:
-            self.show_invalid_time_alert()
+            pass
 
-    def show_end_time_picker(self, *args):
-        time_dialog = MDTimePicker()
-        time_dialog.bind(on_save=self.on_end_time_save)
-        time_dialog.open()
+        pass
 
-    def on_end_time_save(self, instance, time):
-        start_time_str = self.dialog.content_cls.ids.start_time.text
-        if not start_time_str:
-            self.show_invalid_time_alert("Please select the start time first.")
-            return
+    def show_modal_view(self):
+        if not self.custom_modal_view:
+            self.custom_modal_view = CustomModalView()
 
-        start_time = datetime.strptime(start_time_str, '%I:%M %p').time()
-        if self.is_valid_time(time) and self.is_time_range_valid(start_time, time):
-            self.dialog.content_cls.ids.end_time.text = time.strftime("%I:%M %p")
+        filtered_slots = self.filter_time_slots()
+        self.custom_modal_view.display_time_slots(filtered_slots)
+
+        anim = Animation(opacity=1, duration=0.3)
+        anim.start(self.custom_modal_view)
+        self.custom_modal_view.open()
+
+    def hide_modal_view(self):
+        if self.custom_modal_view:
+            anim = Animation(opacity=0, duration=0.3)
+            anim.bind(on_complete=lambda *x: self.custom_modal_view.dismiss())
+            anim.start(self.custom_modal_view)
+
+    def filter_time_slots(self):
+        now = datetime.now()
+        filtered_slots = []
+        if self.selected_date == now.date():
+            current_time = now.time()
+            for slot in self.time_slots:
+                start_time_str, end_time_str = slot.split(' - ')
+                start_time = datetime.strptime(start_time_str, '%I%p').time()
+                if start_time > current_time:
+                    filtered_slots.append(slot)
         else:
-            self.show_invalid_time_alert("End time must be after start time and within the range 7 PM.")
-
-    def is_valid_time(self, time):
-        start_time = datetime.strptime('07:00 AM', '%I:%M %p').time()
-        end_time = datetime.strptime('07:00 PM', '%I:%M %p').time()
-        return start_time <= time <= end_time
-
-    def is_time_range_valid(self, start_time, end_time):
-        return start_time < end_time <= datetime.strptime('07:00 PM', '%I:%M %p').time()
-
-    def show_invalid_time_alert(self, message="Please select a time between 7 AM and 7 PM."):
-        invalid_time_dialog = MDDialog(
-            text=message,
-            buttons=[
-                MDRaisedButton(
-                    text="OK",
-                    on_release=lambda x: invalid_time_dialog.dismiss()
-                ),
-            ],
-        )
-        invalid_time_dialog.open()
-
-    def task_dismiss(self):
-        self.dialog.dismiss()
+            filtered_slots = self.time_slots
+        return filtered_slots
 
     def add_task(self, *args):
         content = self.dialog.content_cls

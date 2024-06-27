@@ -1,3 +1,66 @@
+<CustomModalView>
+    id: custom_modal_view
+    size_hint: None, None
+    pos_hint: {'center_x': .5, 'y': 0}
+    auto_dismiss: True
+    opacity: 0
+    MDGridLayout:
+        cols:1
+        md_bg_color: 1, 1, 1, 1
+        MDBoxLayout:
+            size_hint: 1, None
+            height: dp(40)
+            MDLabel:
+                text: 'Available Slots'
+                halign: 'center'
+                valign: 'center'
+                font_style:'Subtitle2'
+                font_size:'18sp'
+        MDGridLayout:
+            cols: 3
+            id: time_slot_box
+            padding:dp(25)
+            spacing:dp(20)
+            pos_hint:{'center_x':.5,'center_y':.5}
+            adaptive_size:True
+        MDGridLayout:
+            cols:2
+            size_hint: 1, None
+            height: dp(30)
+            padding:dp(25)
+            spacing:dp(10)
+            MDRaisedButton:
+                text:'Cancel'
+                valign:'center'
+                halign:'left'
+                on_release:root.dismiss_modal()
+            MDRaisedButton:
+                text:'Book Now'
+                valign:'center'
+                halign:'right'
+                pos_hint_x:{'center_x':1}
+                on_release:root.payment_screen()
+
+<CButton>:
+    size_hint: None, None
+    size: dp(90), dp(40) # Adjusted size
+    halign: "left"
+    pos_hint: {'x': 0, 'top': 1}
+#    pos_hint: {'right': 1, 'y': 0}
+    md_bg_color: 1, 1, 1, 1
+    elevation: 0
+    color_mode: "custom"
+    line_color: 0,0,0,0.1
+    on_release: root.Slot_Timing(slot_timing.text)
+    MDLabel:
+        id: slot_timing
+        text: root.label_text
+        font_name: "Roboto"
+        halign: "center"
+        font_size: sp(14)
+        color: 0.5, 0.5, 0.5, 1
+        theme_text_color: "Custom"
+
 <TaskSchedulerScreen>:
 
     MDBoxLayout:
@@ -197,7 +260,7 @@
             MDFloatingActionButton:
                 icon: "plus"
                 pos: self.parent.width - self.width - dp(16), dp(16)
-                on_release: root.show_add_task_dialog()
+                on_release: root.show_add_task_dialog(self)
                 elevation_normal: 8
 
 <TaskCard@MDCard>:
