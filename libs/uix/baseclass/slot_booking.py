@@ -30,6 +30,10 @@ conn.commit()
 
 class AddTask(MDBoxLayout):
     manager = ObjectProperty()
+    date = StringProperty()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
     def show_start_time_picker(self):
         screen = self.manager.get_screen('slot_booking')
@@ -42,6 +46,10 @@ class AddTask(MDBoxLayout):
     def add_task(self):
         screen = self.manager.get_screen('slot_booking')
         screen.add_task()
+
+    def task_dismiss(self):
+        screen = self.manager.get_screen('slot_booking')
+        screen.task_dismiss()
 
 
 class TaskCard(MDCard):
@@ -69,6 +77,7 @@ class TaskSchedulerScreen(MDScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.dialog = None
+        self.selected_date = datetime.now().date()
         self.current_date_button = None
 
     def on_enter(self, *args):
@@ -87,13 +96,13 @@ class TaskSchedulerScreen(MDScreen):
         self.ids.date_label.text = date_str
 
     def update_date_labels(self):
-        now = datetime.now()
+        self.now = datetime.now()
         date_box = self.ids.date_box
         date_box.clear_widgets()
 
         for i in range(8):  # Current day + next 7 days
 
-            date = now + timedelta(days=i)
+            date = self.now + timedelta(days=i)
             date_button = MDRaisedButton(
                 text=date.strftime("%a\n%d"),
                 halign="center",
@@ -116,17 +125,28 @@ class TaskSchedulerScreen(MDScreen):
         # Set new button color to red
         instance.md_bg_color = (1, 0, 0, 1)
         self.current_date_button = instance  # Update the current button reference
+        # Convert button text to a datetime.date object using current year and month
+        try:
+            day = int(instance.text.split('\n')[1])
+            self.selected_date = datetime(self.now.year, self.now.month, day).date()
+        except ValueError:
+            self.selected_date = None
+            print("Error parsing selected date.")
+
+        # Example output
+        print(f"Selected Date: {self.selected_date}")
 
     def show_add_task_dialog(self):
+
         self.dialog = MDDialog(
             title="Add session",
             type="custom",
-            content_cls=AddTask(manager=self.manager),
+            content_cls=AddTask(manager=self.manager, date=str(self.selected_date)),
         )
         self.dialog.open()
 
     def show_start_time_picker(self, *args):
-        self.dialog.content_cls.ids.end_time.text=''
+        self.dialog.content_cls.ids.end_time.text = ''
         time_dialog = MDTimePicker()
         time_dialog.bind(on_save=self.on_start_time_save)
         time_dialog.open()
@@ -173,6 +193,9 @@ class TaskSchedulerScreen(MDScreen):
             ],
         )
         invalid_time_dialog.open()
+
+    def task_dismiss(self):
+        self.dialog.dismiss()
 
     def add_task(self, *args):
         content = self.dialog.content_cls

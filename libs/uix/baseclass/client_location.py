@@ -1,15 +1,18 @@
+import threading
+
 import requests
 from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.core.window import Window
+from kivy.graphics import Color, Ellipse, Line
 from kivy.metrics import dp
+from kivy.properties import NumericProperty
 from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.behaviors import DragBehavior
 from kivy.uix.modalview import ModalView
 from kivy_garden.mapview import MapView, MapMarker
 from kivymd.uix.button import MDFloatingActionButton
 from kivymd.uix.dialog import MDDialog
-from kivymd.uix.label import MDLabel
 from kivymd.uix.list import OneLineIconListItem, IconLeftWidget, OneLineAvatarIconListItem, OneLineAvatarListItem
 from kivymd.uix.screen import MDScreen
 from opencage.geocoder import OpenCageGeocode
@@ -71,13 +74,27 @@ class CustomMapView(MapView):
         self.add_widget(self.static_marker)
         self.update_marker_position()
         self.geocoder = OpenCageGeocode("7060ef7890c44bb48d75f2d12c66a466")
+        self.search_event = None
+        self.cache_size_limit = 100  # Adjust as needed
+        self.cache = {}
+        # Make sure the marker is centered
+        Clock.schedule_once(self.center_marker, 0)
 
     def on_map_relocated(self, zoom, coord):
         super().on_map_relocated(zoom, coord)
+        if self.search_event:
+            self.search_event.cancel()
+        self.search_event = Clock.schedule_once(self.deferred_update, 0)
+
+    def deferred_update(self, dt):
         self.update_marker_position()
         self.update_text_field()
         screen = self.manager.get_screen("client_location")
         screen.hide_modal_view()
+
+    def center_marker(self, *args):
+        self.static_marker.center_x = self.center_x
+        self.static_marker.center_y = self.center_y
 
     def update_marker_position(self):
         scatter = self._scatter
@@ -91,22 +108,38 @@ class CustomMapView(MapView):
         lon = map_source.get_lon(zoom, (x - scatter.x) / scale - self.delta_x)
         lat = map_source.get_lat(zoom, (y - scatter.y) / scale - self.delta_y)
 
+        print(f"Updating marker position to lat: {lat}, lon: {lon}")
         self.static_marker.lat = lat
         self.static_marker.lon = lon
 
     def update_text_field(self):
         lat = self.static_marker.lat
         lon = self.static_marker.lon
-        self.update_coordinate_text_field(lat, lon)
+        coord_key = (lat, lon)
+        if coord_key in self.cache:
+            self.update_coordinate_text_field(lat, lon, self.cache[coord_key])
+        else:
+            print(f"Fetching address for lat: {lat}, lon: {lon}")
+            threading.Thread(target=self.fetch_address, args=(lat, lon)).start()
 
-    def update_coordinate_text_field(self, lat, lon):
+    def fetch_address(self, lat, lon):
         results = self.geocoder.reverse_geocode(lat, lon)
         if results and len(results) > 0:
             formatted_address = results[0].get('formatted')
             if formatted_address:
-                screen = self.manager.get_screen("client_location")
-                screen.ids.autocomplete.text = formatted_address
-                pass
+                self.cache[(lat, lon)] = formatted_address
+                Clock.schedule_once(lambda dt: self.update_coordinate_text_field(lat, lon, formatted_address))
+                self.manage_cache_size()
+
+    def update_coordinate_text_field(self, lat, lon, address):
+        print(f"Updating text field with address: {address}")
+        screen = self.manager.get_screen("client_location")
+        screen.ids.autocomplete.text = address
+
+    def manage_cache_size(self):
+        if len(self.cache) > self.cache_size_limit:
+            oldest_key = next(iter(self.cache))
+            del self.cache[oldest_key]
 
     def on_touch_up(self, touch):
         if touch.grab_current == self:
@@ -143,6 +176,7 @@ class ClientLocation(MDScreen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.search_event = None
         self.dialog = None
         self.longitude = None
         self.latitude = None
@@ -161,32 +195,43 @@ class ClientLocation(MDScreen):
         self.show_modal_view()
 
     def search_location(self, instance, text):
+        if self.search_event:
+            self.search_event.cancel()
+        self.search_event = Clock.schedule_once(lambda dt: self.perform_search(text), 0.2)
+
+    def perform_search(self, text):
         if text:
-            url = f"https://api.opencagedata.com/geocode/v1/json?q={text}&key={self.API_KEY}"
-            response = requests.get(url)
-            if response.status_code == 200:
-                data = response.json()
-                results = data.get("results", [])
+            threading.Thread(target=self.fetch_location_data, args=(text,), daemon=True).start()
+
+    def fetch_location_data(self, text):
+        url = f"https://api.opencagedata.com/geocode/v1/json?q={text}&key={self.API_KEY}"
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            results = data.get("results", [])
+            self.display_search_results(results)
+        else:
+            print("Failed to fetch results.")
+
+    def display_search_results(self, results):
+        def update_results():
+            if self.custom_modal_view:
+                self.custom_modal_view.ids.search_results.clear_widgets()
                 if results:
-                    if self.custom_modal_view:
-                        self.custom_modal_view.ids.search_results.clear_widgets()
-                        for result in results:
-                            formatted_address = result.get("formatted")
-                            if formatted_address:
-                                item = OneLineIconListItem(IconLeftWidget(
-                                    icon="map-marker"
-                                ), text=formatted_address)
-                                item.bind(on_release=self.on_location_selected)
-                                self.custom_modal_view.ids.search_results.add_widget(item)
+                    for result in results:
+                        formatted_address = result.get("formatted")
+                        if formatted_address:
+                            item = OneLineIconListItem(IconLeftWidget(icon="map-marker"), text=formatted_address)
+                            item.bind(on_release=self.on_location_selected)
+                            self.custom_modal_view.ids.search_results.add_widget(item)
                 else:
                     print("No results found.")
-            else:
-                print("Failed to fetch results.")
-        else:
-            print("Please enter a location to search.")
+
+        Clock.schedule_once(lambda dt: update_results())
 
     def on_location_selected(self, instance):
-        self.root.ids.autocomplete.text = instance.text
+        self.ids.autocomplete.text = instance.text
+        self.hide_modal_view()
 
     def on_location(self, **kwargs):
         self.latitude = kwargs['lat']
@@ -252,4 +297,7 @@ class ClientLocation(MDScreen):
         self.manager.push_replacement('client_services')
 
     def next_screen(self):
+        self.manager.load_screen('available_services')
+        screen = self.manager.get_screen('available_services')
+        screen.location = self.ids.autocomplete.text
         self.manager.push_replacement('available_services')
