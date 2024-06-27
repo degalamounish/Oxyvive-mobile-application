@@ -105,7 +105,7 @@
                 size_hint_x: 1
                 mode:'round'
                 on_text: root.search_location(self, self.text)
-                on_focus: root.on_text_field_focus(self, self.focus)
+                on_focus: if self.focus:root.on_text_field_focus(self, self.focus)
                 line_color_focus:0,0,0,1
                 text_color_focus:0,0,0,1
                 fill_color_normal:1,1,1,1

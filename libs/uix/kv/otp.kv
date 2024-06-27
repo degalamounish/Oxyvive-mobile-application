@@ -1,0 +1,103 @@
+<Otp>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: [dp(20), dp(20)]
+        spacing: dp(20)
+
+        Widget:
+            size_hint_y: 1
+
+        MDBoxLayout:
+            orientation: 'vertical'
+            spacing: dp(20)
+            padding: [dp(10), dp(15)]
+            size_hint: 1, None
+            height: self.minimum_height
+
+            MDLabel:
+                text: "OTP Verification"
+                font_style: "H4"
+                halign: "center"
+                size_hint_y: None
+                height: dp(40)
+                theme_text_color: "Primary"
+
+            MDBoxLayout:
+                orientation: 'horizontal'
+                size_hint: 1, None
+                height: dp(40)
+                MDLabel:
+                    id: otp_message
+                    text: "We have sent you an OTP on "
+                    size_hint_x: 1
+                    theme_text_color: "Primary"
+                    font_size: "14sp"
+                MDLabel:
+                    id: user_contact
+                    text: root.user_input  # Access the property directly
+                    size_hint_x: 1
+                    theme_text_color: "Primary"
+                    font_size: "16sp"
+                MDIconButton:
+                    icon: "pencil"
+                    on_release: root.edit_user_input()
+                    pos_hint: {'center_y': 0.5}  # Adjusted position
+
+            MDTextField:
+                id: otp_input
+                hint_text: "  OTP"
+                mode: "rectangle"
+                icon_right: "key"
+                icon_right_color: rgba(1, 0, 0, 1)  # Red icon color
+                size_hint: 1, None
+                height: dp(40)
+                pos_hint: {'center_x': 0.5}
+                font_size: "14sp"
+                on_text_validate: root.check_otp()
+                line_color_focus: [1, 0, 0, 1]
+                hint_text_color_focus: [1, 0, 0, 1]
+                canvas.before:
+                    Color:
+                        rgba: [75/255, 75/255, 75/255, 1]
+
+
+            MDBoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: None
+                height: dp(30)
+                spacing: dp(8)
+                padding: [0, dp(5)]
+                MDLabel:
+                    text: "Still not received OTP?"
+                    size_hint_x: None
+                    width: dp(80)
+                    theme_text_color: "Secondary"
+                    font_size: "12sp"
+                MDRaisedButton:
+                    text: "Get via call"
+                    size_hint_x: None
+                    width: dp(60)
+                    on_release: root.get_otp_call(root.user_input)
+                    font_size: "12sp"
+                    md_bg_color: 1, 0, 0, 1  # Custom red color
+                    text_color: 1, 1, 1, 1
+                MDRaisedButton:
+                    text: "Resend OTP"
+                    size_hint_x: None
+                    width: dp(50)
+                    on_release: root.resend_otp(root.user_input)
+                    md_bg_color: 1, 0, 0, 1  # Custom red color
+                    text_color: 1, 1, 1, 1
+
+
+            MDRaisedButton:
+                text: "Verify OTP"
+                size_hint_y: None
+                size_hint_x: 1
+                height: dp(40)
+                md_bg_color: 1, 0, 0, 1  # Custom red color
+                text_color: 1, 1, 1, 1
+                on_release: root.check_otp()
+
+        Widget:
+            size_hint_y: 1
