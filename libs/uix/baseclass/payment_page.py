@@ -30,6 +30,8 @@ class Payment(MDScreen):
 
     def on_back_button(self):
         self.manager.push("slot_booking", "right")
+        self.ids.session_date.text = ''
+        self.ids.session_time.text = ''
         with open('user_data.json', 'r') as file:
             user_info = json.load(file)
         user_info['slot_date'] = ""
@@ -42,8 +44,8 @@ class Payment(MDScreen):
             with open('user_data.json', 'r') as file:
                 user_info = json.load(file)
             self.ids.user_name.text = user_info.get('username', '')
-            self.ids.session_date.text = user_info.get('slot_date', '')
-            self.ids.session_time.text = user_info.get('slot_time', '')
+            # self.ids.session_date.text = user_info.get('slot_date', '')
+            # self.ids.session_time.text = user_info.get('slot_time', '')
         except (FileNotFoundError, json.JSONDecodeError) as e:
             print(f"Error reading user_data.json: {e}")
 

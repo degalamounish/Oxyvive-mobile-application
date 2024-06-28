@@ -1,8 +1,8 @@
-<CustomModalView>
+<CustomModalView2>
     id: custom_modal_view
     size_hint: None, None
     pos_hint: {'center_x': .5, 'y': 0}
-    auto_dismiss: True
+    auto_dismiss: False
     opacity: 0
     MDGridLayout:
         cols:1
@@ -148,29 +148,12 @@
                             padding:'25dp','0dp','0dp','0dp'
 
                             MDLabel:
-                                text:'7:00 am'
-                                pos_hint:{'center_y':1}
-
-                        MDBoxLayout:
-                            size_hint_y: None
-                            height: dp(100)
-                            padding:'25dp','0dp','0dp','0dp'
-                            MDLabel:
-                                text:'8:00 am'
-                                pos_hint:{'center_y':1}
-
-                        MDBoxLayout:
-                            size_hint_y: None
-                            height: dp(100)
-                            padding:'25dp','0dp','0dp','0dp'
-                            MDLabel:
                                 text:'9:00 am'
                                 pos_hint:{'center_y':1}
 
                         MDBoxLayout:
                             size_hint_y: None
                             height: dp(100)
-
                             padding:'25dp','0dp','0dp','0dp'
                             MDLabel:
                                 text:'10:00 am'
@@ -179,7 +162,6 @@
                         MDBoxLayout:
                             size_hint_y: None
                             height: dp(100)
-
                             padding:'25dp','0dp','0dp','0dp'
                             MDLabel:
                                 text:'11:00 am'
@@ -188,6 +170,7 @@
                         MDBoxLayout:
                             size_hint_y: None
                             height: dp(100)
+
                             padding:'25dp','0dp','0dp','0dp'
                             MDLabel:
                                 text:'12:00 pm'
@@ -196,6 +179,7 @@
                         MDBoxLayout:
                             size_hint_y: None
                             height: dp(100)
+
                             padding:'25dp','0dp','0dp','0dp'
                             MDLabel:
                                 text:'1:00 pm'
@@ -243,10 +227,26 @@
 
                         MDBoxLayout:
                             size_hint_y: None
-                            height: dp(0)
+                            height: dp(100)
                             padding:'25dp','0dp','0dp','0dp'
                             MDLabel:
                                 text:'7:00 pm'
+                                pos_hint:{'center_y':1}
+
+                        MDBoxLayout:
+                            size_hint_y: None
+                            height: dp(100)
+                            padding:'25dp','0dp','0dp','0dp'
+                            MDLabel:
+                                text:'8:00 pm'
+                                pos_hint:{'center_y':1}
+
+                        MDBoxLayout:
+                            size_hint_y: None
+                            height: dp(0)
+                            padding:'25dp','0dp','0dp','0dp'
+                            MDLabel:
+                                text:'9:00 pm'
                                 pos_hint:{'center_y':1}
 
                     FloatLayout:
@@ -293,61 +293,5 @@
             size_hint_y: None
             font_size:'14sp'
             height: self.texture_size[1]
-
-
-<AddTask>:
-    orientation: 'vertical'
-    size_hint_y: None
-    height: dp(320)
-    pos_hint:{'top':1}
-    MDBoxLayout:
-        orientation: 'vertical'
-        pos_hint:{'top':1}
-        MDTextField:
-            id: selected_date
-            readonly: True
-            text:root.date
-            hint_text: "Date"
-            mode: "rectangle"
-        MDTextField:
-            id: task_title
-            hint_text: "Task Title"
-            mode: "rectangle"
-        GridLayout:
-            cols:2
-            spacing: dp(10)
-            size_hint_y:None
-            height:start_time.height+ 10
-            MDTextField:
-                id: start_time
-                hint_text: "Start Time "
-                readonly: True
-                mode: "rectangle"
-                icon_right: "clock-time-nine-outline"
-                on_focus:if self.focus:root.show_start_time_picker()
-
-            MDTextField:
-                id: end_time
-                hint_text: "End Time "
-                readonly: True
-                mode: "rectangle"
-                icon_right: "clock-time-nine-outline"
-                on_focus:if self.focus:root.show_end_time_picker()
-        MDTextField:
-            id: task_description
-            hint_text: "Task Description"
-            mode: "rectangle"
-            radius:[20,]
-        MDBoxLayout:
-            size_hint_y: None
-            spacing:'10dp'
-            padding:'5dp'
-            MDRaisedButton:
-                text: "CANCEL"
-                on_release: root.task_dismiss()
-
-            MDRaisedButton:
-                text: "ADD"
-                on_release: root.add_task()
 
 
