@@ -1,135 +1,545 @@
+
 <Payment>:
-    BoxLayout:
+    MDBoxLayout:
         orientation: 'vertical'
+        MDBoxLayout:
+            orientation: 'horizontal'
+            padding: '10dp'
+            spacing: '10dp'
+            size_hint_y: None
+            height: self.minimum_height
+            MDIconButton:
+                icon: 'arrow-left'
+                on_release: root.manager.push_replacement('slot_booking')  # Simulates the back button
+            MDLabel:
+                text: 'Book Appointment'
+                theme_text_color: 'Primary'
+                font_style: 'H6'
+                halign: 'center'
+                size_hint_x: None
+                width: dp(250)
 
-        MDIconButton:
-            icon: "arrow-left"
-            pos_hint: {"center_y": .91}
-            user_font_size: "20sp"
-            theme_text_color: "Custom"
-            text_color: rgba(71, 92, 119, 255)
-            on_release: root.on_back_button()
-
-        ScrollView:
-            GridLayout:
+        MDScrollView:
+            id:scroll_view
+            MDGridLayout:
                 cols: 1
-                spacing: dp(10)
-                padding: dp(10)
                 size_hint_y: None
                 height: self.minimum_height
+                #padding: dp(20)
+                id: scroll_grid
+
+                MDCard:
+                    orientation: 'horizontal'
+                    size_hint_y:None
+                    height:dp(150)
+                    padding:dp(20),dp(20),dp(0),dp(20)
+                    radius: [10, 10, 10, 10]
+                    elevation: 0
+
+                    FitImage:
+                        id:s_image
+                        source: 'images/1.png.jpeg'
+                        size_hint: None, None
+                        size: '60dp', '60dp'
+                        radius: [150]
+                        pos_hint: {'top': 1}
+                    MDBoxLayout:
+                        orientation: 'vertical'
+                        padding:dp(20),dp(0),dp(20),dp(0)
+                        spacing:dp(5)
+                        MDLabel:
+                            id:service_name
+                            text: 'Dr. Prem.B'
+                            font_style: 'Subtitle1'
+                        MDLabel:
+                            id:service_type
+                            text: 'Dermatologist'
+                            font_style: 'Body2'
+                            theme_text_color: 'Secondary'
+                        MDBoxLayout:
+                            orientation: 'horizontal'
+                            adaptive_height: True
+                            MDIcon:
+                                icon: 'thumb-up'
+                                theme_text_color: 'Custom'
+                                text_color: 'green'
+                                icon_size: '8dp'
+                            MDLabel:
+                                id:likes
+                                text: '83%'
+                                font_style: 'Body2'
+                            MDIcon:
+                                icon: 'message'
+                                theme_text_color: 'Custom'
+                                text_color: 'green'
+                                icon_size: '8dp'
+                            MDLabel:
+                                id:message
+                                text: '8 Patient Stories'
+                                font_style: 'Body2'
+                        MDLabel:
+                            id:review
+                            text: 'Highly Recommended for Doctor Friendliness'
+                            font_style: 'Caption'
+                            theme_text_color: 'Secondary'
+                MDSeparator:
+                    size_hint_y:None
+                    height:dp(10)
+                MDCard:
+                    orientation: 'vertical'
+                    padding: '20dp'
+                    spacing: '20dp'
+                    adaptive_height: True
+                    MDLabel:
+                        text: 'Appointment time'
+                        font_style: 'Subtitle1'
+                        theme_text_color: 'Hint'
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                        adaptive_height: True
+                        spacing: dp(20)
+                        MDLabel:
+                            id:slot_time
+                            text: 'Mon, 01 Jul 05:30 PM'
+                            font_style: 'Subtitle2'
+                        MDSeparator:
+                            orientation: 'vertical'
+                            size_hint_y: None
+                            height: dp(30)
+                        MDLabel:
+                            id:time_left
+                            text: 'in 7 hours and 13 minutes'
+                            font_style: 'Body2'
+                            theme_text_color: 'Secondary'
+                MDSeparator:
+                    size_hint_y:None
+                    height:dp(10)
+                MDCard:
+                    orientation: 'vertical'
+                    padding: '20dp'
+                    spacing: '20dp'
+                    adaptive_height: True
+                    MDLabel:
+                        text: 'Clinic Details'
+                        font_style: 'Subtitle1'
+                        theme_text_color: 'Hint'
+                    MDLabel:
+                        id:service_address
+                        text: 'Skin Xperts Super Speciality Skin Hair and Laser Clinics, 62, 8th B Main Road, Jayanagar 4 Block'
+                        font_style: 'Body2'
+                        adaptive_height: True
+                    MDSeparator:
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                        size_hint_y:None
+                        height:dp(30)
+                        MDLabel:
+                            text: '[color=#6200EA]Oxivive Promise[/color] - Appointment confirmed instantly'
+                            markup: True
+                            font_style: 'Body2'
+                            valign: 'center'
+                MDSeparator:
+                    size_hint_y:None
+                    height:dp(10)
+                MDCard:
+                    orientation: 'vertical'
+                    padding: '20dp'
+                    adaptive_height: True
+                    MDLabel:
+                        text: 'Choose a mode of payment'
+                        font_style: 'Subtitle1'
+                        theme_text_color: 'Primary'
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                        adaptive_height: True
+                        MDCheckbox:
+                            group: 'payment'
+                            active: True
+                        MDLabel:
+                            text: 'Pay Online'
+                        MDLabel:
+                            id:fee
+                            text: f'{total_fee.text}'
+                            halign: 'right'
+                    MDSeparator:
+
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                        adaptive_height: True
+                        MDCheckbox:
+                            group: 'payment'
+                            active: True
+                            disabled:True
+                        MDLabel:
+                            text: 'Pay At Clinic'
+                            theme_text_color:'Hint'
+                        MDLabel:
+                            text: f'{total_fee.text}'
+                            halign: 'right'
+                            theme_text_color:'Hint'
+                MDSeparator:
+                    size_hint_y:None
+                    height:dp(10)
+                MDBoxLayout:
+                    id:bill
+                    orientation: "vertical"
+                    padding:dp(20)
+                    spacing: dp(20)
+                    adaptive_height: True
+
+                    MDCard:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: dp(100)
+                        padding:dp(10)
+                        spacing: dp(10)
+                        style:'outlined'
+                        line_color:1, 0, 0, 0.5
+                        FitImage:
+                            source: 'images/offer.webp'
+                            size_hint: None, None
+                            size: '80dp', '80dp'
+                            pos_hint: {'center_y':.5}
+                        MDBoxLayout:
+                            orientation:'vertical'
+                            size_hint_y: None
+                            padding: dp(10)
+                            spacing:dp(10)
+                            height: '60dp'
+                            pos_hint: {'center_y':.5}
+                            MDLabel:
+                                text: "Apply Coupon"
+                                font_style: "Subtitle1"
+                                halign: "left"
+                            MDLabel:
+                                text: 'Unlock with offers with coupon codes '
+                                font_style: 'Subtitle1'
+                                font_size:'14sp'
+                                theme_text_color: 'Hint'
+                                halign: "left"
+
+
+
+                        MDFlatButton:
+                            text: "APPLY"
+                            theme_text_color: 'Custom'
+                            text_color:1,0,0,1
+                            on_release:pass
+                            pos_hint: {"center_y": 0.5}
+
+                    MDLabel:
+                        text: "Bill Details"
+                        font_style: "H6"
+                        halign: "left"
+                        size_hint_y: None
+                        height: self.texture_size[1]
+
+
+
+                    MDBoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: self.minimum_height
+                        padding: [0, dp(10), 0, dp(10)]
+
+                        MDLabel:
+                            text: "Consultation Fee"
+                            halign: "left"
+                            theme_text_color: 'Hint'
+
+
+                        MDLabel:
+                            id:c_fee
+                            text: "₹999"
+                            halign: "right"
+
+                    MDBoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: self.minimum_height
+                        padding: [0, dp(10), 0, dp(10)]
+
+                        MDLabel:
+                            text: "Service Fee & Tax"
+                            halign: "left"
+                            theme_text_color: 'Hint'
+
+
+                        MDLabel:
+                            id:tax
+                            text: "₹49"
+                            strikethrough: True
+                            halign: "right"
+                            size_hint_x:None
+                            width:dp(40)
+                            theme_text_color: 'Hint'
+
+                        MDLabel:
+                            id:tax_status
+                            text: "FREE"
+                            theme_text_color: 'Custom'
+                            text_color: 'green'
+                            halign: "right"
+                    MDLabel:
+                        id:fee_note
+                        text: "We care for you & provide a free booking"
+                        theme_text_color: 'Custom'
+                        text_color: 'green'
+                        halign: "left"
+                        valign:'top'
+                        font_size:'14sp'
+                    MDBoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: self.minimum_height
+                        padding: [0, dp(10), 0, dp(10)]
+
+                        MDLabel:
+                            text: "Discount/Coupon"
+                            halign: "left"
+                            theme_text_color: 'Hint'
+
+                        MDLabel:
+                            id:coupon
+                            text: "Nothing"
+                            strikethrough: True
+                            halign: "right"
+                            size_hint_x:None
+                            width:dp(100)
+                            theme_text_color: 'Hint'
+
+                    MDSeparator:
+
+                    MDBoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: self.minimum_height
+                        padding: [0, dp(10), 0, dp(10)]
+
+                        MDLabel:
+                            text: "Total Payable"
+                            font_style: "H6"
+                            halign: "left"
+
+                        MDLabel:
+                            id:total_fee
+                            text: "₹999"
+                            font_style: "H6"
+                            halign: "right"
+                    MDBoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: dp(30)
+                        padding: [0, dp(10), 0, dp(10)]
+                        pos_hint: {'center_x': 0.5}
+                        md_bg_color:0, 1, 0, .2
+                        canvas.before:
+                            Color:
+                                rgba: 0, 1, 0, 2
+                            Line:
+                                rectangle: (self.x, self.y, self.width, self.height)
+                                dash_length: 8
+                                dash_offset: 8
+
+                        MDLabel:
+                            text: f"You have saved {tax.text} on this appointment"
+                            theme_text_color: 'Custom'
+                            text_color: 'green'
+                            halign: "center"
+                MDSeparator:
+                    size_hint_y:None
+                    height:dp(10)
+
+                MDBoxLayout:
+                    orientation: "vertical"
+                    padding: dp(20)
+                    spacing: dp(20)
+                    adaptive_height: True
+
+                    MDCard:
+                        orientation: 'vertical'
+                        adaptive_height: True
+                        md_bg_color: 1, 1, 1, 1
+                        style: 'outlined'
+                        line_color: 1, 0, 0, 0.5
+                        MDBoxLayout:
+                            orientation: 'horizontal'
+                            adaptive_height: True
+                            padding: dp(10)
+                            spacing:dp(20)
+                            MDLabel:
+                                text: 'Oxivive Promise'
+                                bold: True
+                                font_style: 'H5'
+                                theme_text_color: "Custom"
+                                text_color: 1, 0, 0, 1
+                                halign: 'center'
+                                size_hint_y: None
+                                md_bg_color:1,0,0,.2
+                                height: dp(40)
+                        MDBoxLayout:
+                            orientation: 'horizontal'
+                            adaptive_height: True
+                            padding: dp(10),dp(0),dp(0),dp(0)
+                            spacing:dp(30)
+                            MDCheckbox:
+                                active: True
+                                disabled: True
+                                halign:'left'
+                                size_hint_x:None
+                                width:dp(30)
+                            MDLabel:
+                                text: 'Appointment confirmed instantly with the doctor'
+                                theme_text_color: "Primary"
+                                halign:'left'
+                        MDBoxLayout:
+                            orientation: 'horizontal'
+                            adaptive_height: True
+                            padding: dp(10),dp(0),dp(0),dp(0)
+                            spacing:dp(30)
+                            MDCheckbox:
+                                active: True
+                                disabled: True
+                                halign:'left'
+                                size_hint_x:None
+                                width:dp(30)
+                            MDLabel:
+                                text: 'We assure we will connect you to the doctor. If your consultation does not happen for unforeseen reasons, we will give you 100% money back.'
+                                theme_text_color: "Primary"
+                                halign:'left'
+                        MDBoxLayout:
+                            orientation: 'horizontal'
+                            adaptive_height: True
+                            padding: dp(10),dp(0),dp(0),dp(0)
+                            spacing:dp(30)
+                            MDCheckbox:
+                                active: True
+                                disabled: True
+                                halign:'left'
+                                size_hint_x:None
+                                width:dp(30)
+                            MDLabel:
+                                text: '24/7 live chat support to address all your queries.'
+                                theme_text_color: "Primary"
+                                halign:'left'
+
+                    MDSeparator:
+                        size_hint_y: None
+                        height: dp(10)
+                    MDBoxLayout:
+                        orientation: "vertical"
+                        padding: dp(10)
+                        spacing: dp(20)
+                        adaptive_height: True
+
+                        MDBoxLayout:
+                            orientation: 'vertical'
+                            adaptive_height: True
+                            padding: dp(10)
+                            spacing:dp(30)
+                            MDLabel:
+                                text: 'Safety measures followed by Clinic'
+                                bold: True
+                                font_style: 'H6'
+                                theme_text_color: "Primary"
+                                halign: 'left'
+                                size_hint_y: None
+                                height: self.texture_size[1]
+                            MDLabel:
+                                text: '* Mask Mandatory'
+                                font_style: 'Body1'
+                                theme_text_color: "Secondary"
+                                halign: 'left'
+                            MDLabel:
+                                text: '* Temperature check at entrance'
+                                font_style: 'Body1'
+                                theme_text_color: "Secondary"
+                                halign: 'left'
+                            MDLabel:
+                                text: '* Sanitization of the visitors'
+                                font_style: 'Body1'
+                                theme_text_color: "Secondary"
+                                halign: 'left'
+                            MDLabel:
+                                text: '* Social distance maintained'
+                                font_style: 'Body1'
+                                theme_text_color: "Secondary"
+                                halign: 'left'
+        MDCard:
+            orientation: 'horizontal'
+            padding: dp(20)
+            size_hint_y: None
+            height: '60dp'
+            radius:[0]
+            md_bg_color:1,0,0,.2
+            FitImage:
+                source: 'images/1.png.jpeg'
+                size_hint: None, None
+                size: '40dp', '40dp'
+                radius: [150]
+                pos_hint: {'center_y':.5}
+            MDBoxLayout:
+                orientation:'vertical'
+                size_hint_y: None
+                padding: dp(10)
+                height: '60dp'
+                pos_hint: {'center_y':.5}
                 MDLabel:
-                    text: "Payment Method"
-                    font_name: "Roboto-Bold"
-                    theme_text_color: "Custom"
-                    text_color: 0, 0, 0, 1
-                    font_style: "H6"
-                    font_size: "24sp"
-                    halign: "center"
-                    valign: "middle"
-                    size_hint_y: None
-                    height: dp(40)
+                    text: 'In-Clinic Appointment for '
+                    font_style: 'Subtitle1'
+                    font_size:'12sp'
+                    theme_text_color: 'Hint'
+                MDLabel:
+                    id:username
+                    text: 'Praveen Kumar'
+                    font_style: 'Body1'
+                    text_color:0,0,0,1
+            MDTextButton:
+                text: 'CHANGE'
+                theme_text_color:'Custom'
+                text_color:1,0,0,1
+                on_release:pass
 
-                    canvas.before:
-                        Color:
-                            rgba: 0.5, 0.5, 0.5, 1
-                        Line:
-                            points: self.x, self.y, self.x + self.width, self.y
-                            width: 3
+        MDCard:
+            orientation: 'horizontal'
+            padding: '20dp'
+            size_hint_y: None
+            height: '60dp'
+            MDBoxLayout:
+                orientation:'vertical'
+                padding:dp(5)
+                pos_hint:{'center_y':.5}
+                size_hint_y: None
+                height: '60dp'
+                MDLabel:
+                    id:bill_fee
+                    text: f'{total_fee.text}'
+                    font_style: 'Subtitle1'
+#                    halign:'left'
+#                    pos_hint:{'center_x':.52,'center_y':.4}
+                MDTextButton:
+                    text: 'View Bill'
+                    theme_text_color:'Custom'
+                    text_color:1,0,0,1
+                    on_release:root.view_bill()
+            MDFillRoundFlatButton:
+                text: 'Pay & Confirm Book'
+                pos_hint: {'center_x': 0.5,'center_y':.5}
+                on_release:root.open_payment_gateway()
 
-
-                MDBoxLayout:
-                    orientation: 'horizontal'
-                    size_hint_y: None
-                    height: dp(30)
-                    pos_hint: {"center_x": 0.5}
-
-                    MDIcon:
-                        icon: "account"
-                        theme_text_color: "Custom"
-                        text_color: 1, 0, 0, 1
-                        size_hint_x: None
-                        width: dp(24)
-
-                    MDLabel:
-                        id: user_name
-                        text: "Name"
-                        font_name: "Roboto"
-                        theme_text_color: "Custom"
-                        text_color: 0, 0, 0, 1
-
-                MDBoxLayout:
-                    orientation: 'horizontal'
-                    size_hint_y: None
-                    height: dp(30)
-                    pos_hint: {"center_x": 0.5}
-
-                    MDIcon:
-                        icon: "calendar-month-outline"
-                        theme_text_color: "Custom"
-                        text_color: 1, 0, 0, 1
-                        size_hint_x: None
-                        width: dp(24)
-
-                    MDLabel:
-                        id: session_date
-                        text: ""
-                        font_name: "Roboto"
-                        theme_text_color: "Custom"
-                        text_color: 0, 0, 0, 1
-
-                MDBoxLayout:
-                    orientation: 'horizontal'
-                    size_hint_y: None
-                    height: dp(30)
-                    pos_hint: {"center_x": 0.5}
-
-                    MDIcon:
-                        icon: "clock"
-                        theme_text_color: "Custom"
-                        text_color: 1, 0, 0, 1
-                        size_hint_x: None
-                        width: dp(24)
-
-                    MDLabel:
-                        id: session_time
-                        text: ""
-                        font_name: "Roboto"
-                        theme_text_color: "Custom"
-                        text_color: 0, 0, 0, 1
-
-                MDBoxLayout:
-                    orientation: 'horizontal'
-                    size_hint_y: None
-                    height: dp(30)
-                    pos_hint: {"center_x": 0.5}
-
-                    MDIcon:
-                        icon: "currency-rupee"
-                        theme_text_color: "Custom"
-                        text_color: 1, 0, 0, 1
-                        size_hint_x: None
-                        width: dp(24)
-
-                    MDLabel:
-                        text: "999.00"
-                        font_name: "Roboto"
-                        theme_text_color: "Custom"
-                        text_color: 0, 0, 0, 1
-
-        Button:
-            id: pay
-            text: "Make Payment"
-            size_hint_y:.1
-            size_hint_y: .1
-            background_color: 0, 0, 0, 0
-            font_name: "Roboto"
-            bold: True
-            on_release:
-                root.open_payment_gateway()
-            canvas.before:
-                Color:
-                    rgb: rgba(255, 0, 0, 255)
-                RoundedRectangle:
-                    size: self.size
-                    pos: self.pos
-                    radius: [0]
+#        Button:
+#            id: pay
+#            text: "Make Payment"
+#            size_hint_y: .1
+#            background_color: 0, 0, 0, 0
+#            font_name: "Roboto"
+#            bold: True
+#            on_release:
+#                root.open_payment_gateway()
+#            canvas.before:
+#                Color:
+#                    rgb: 1, 0, 0, 1
+#                RoundedRectangle:
+#                    size: self.size
+#                    pos: self.pos
+#                    radius: [0]

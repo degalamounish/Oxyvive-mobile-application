@@ -1,55 +1,17 @@
-
-<CardItem>
-    size_hint_y: None
-    height: "150dp"
-    padding: "4dp"
-    radius: 12
-    on_release:root.schedule_screen()
-    ripple_behavior: True
-
-    FitImage:
-        source: "avatar.jpg"
-        radius: root.radius
-        size_hint_x: None
-        width: root.height
-
-    MDBoxLayout:
-        orientation: "vertical"
-        adaptive_height: True
-        spacing: "6dp"
-        padding: "12dp", 0, 0, 0
-        pos_hint: {"center_y": .5}
-
-        MDLabel:
-            text: root.servicer_name
-            font_style: "H5"
-            bold: True
-            adaptive_height: True
-
-        MDLabel:
-            text: root.subtitle
-            theme_text_color: "Hint"
-            adaptive_height: True
-
-
 <AvailableService>:
-    MDSliverAppbar:
-        background_color: "red"
-        toolbar_cls:root.silver_tool_bar
+    BoxLayout:
+        orientation: 'vertical'
 
-        MDSliverAppbarHeader:
+        SliverToolbar:
+            id: silver_tool_bar
+            title: "Available Services"
+            left_action_items: [["arrow-left", lambda x: root.go_back()]]
+            elevation: 10
 
-            MDRelativeLayout:
-
-                MapView:
-                    id: map_view
-                    lat: 0
-                    lon: 0
-                    zoom: 3
-
-        MDSliverAppbarContent:
-            id: content
-            orientation: "vertical"
-            padding: "12dp"
-            spacing: "12dp"
-            adaptive_height: True
+        ScrollView:
+            MDBoxLayout:
+                id: content
+                orientation: "vertical"
+                padding: "12dp"
+                spacing: "12dp"
+                adaptive_height: True

@@ -138,7 +138,7 @@ class Client_services(MDScreen):
     def on_pre_enter(self):
 
         self.change()
-        images = ['images/1.jpg', 'images/2.png', 'images/3.webp', 'images/gym.png']
+        images = ['images/1.png', 'images/2.png', 'images/3.png', 'images/gym.png']
         for i in images:
             environment_img = CustomImageTile(
                 source=i
