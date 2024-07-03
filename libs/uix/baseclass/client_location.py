@@ -1,5 +1,7 @@
 import threading
-import requests
+
+import googlemaps
+from googlemaps import Client as GoogleMapsClient
 from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -7,12 +9,11 @@ from kivy.metrics import dp
 from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.behaviors import DragBehavior
 from kivy.uix.modalview import ModalView
-from kivy_garden.mapview import MapView, MapMarker
+from kivy_garden.mapview import MapView, MapMarker, MapSource
 from kivymd.uix.button import MDFloatingActionButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.list import OneLineIconListItem, IconLeftWidget, OneLineAvatarIconListItem, OneLineAvatarListItem
 from kivymd.uix.screen import MDScreen
-from opencage.geocoder import OpenCageGeocode
 from plyer import gps
 
 
@@ -23,7 +24,7 @@ class CustomModalView(DragBehavior, ModalView):
         self.background = 'rgba(0, 0, 0, 0)'
         self.overlay_color = (0, 0, 0, 0)
         self.size_hint = (None, None)
-        self.height = Window.height - dp(149)# Initial height is set to 400dp
+        self.height = Window.height - dp(149)  # Initial height is set to 400dp
         self.update_width()  # Set initial width
         self.update_position()  # Set initial position
         Window.bind(on_resize=self.on_window_resize)  # Bind resize event
@@ -66,6 +67,7 @@ class CustomModalView(DragBehavior, ModalView):
         self.update_position()
         return super().open(*args)
 
+
 class CustomButtonMap(MDFloatingActionButton):
     def set_size(self, *args):
         self.size = (dp(40), dp(40))
@@ -80,18 +82,21 @@ class StaticMapMarker(MapMarker):
 
 class CustomMapView(MapView):
     manager = ObjectProperty()
+    API_KEY = "AIzaSyAQhYOzS2RNq5CQOvCyuLhGqivDombb2Jo"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.static_marker = StaticMapMarker(lat=self.lat, lon=self.lon)
         self.add_widget(self.static_marker)
         self.update_marker_position()
-        self.geocoder = OpenCageGeocode("7060ef7890c44bb48d75f2d12c66a466")
+        self.geocoder = GoogleMapsClient(key=self.API_KEY)
         self.search_event = None
         self.cache_size_limit = 100  # Adjust as needed
         self.cache = {}
-        # Make sure the marker is centered
         Clock.schedule_once(self.center_marker, 0)
+        # Set Google Maps as the map source
+        self.map_source = MapSource(google_maps_api_key=self.API_KEY, source='google',
+                                    attribution='Google Maps')
 
     def on_map_relocated(self, zoom, coord):
         super().on_map_relocated(zoom, coord)
@@ -102,8 +107,6 @@ class CustomMapView(MapView):
     def deferred_update(self, dt):
         self.update_marker_position()
         self.update_text_field()
-        # screen = self.manager.get_screen("client_location")
-        # screen.hide_modal_view()
 
     def center_marker(self, *args):
         self.static_marker.center_x = self.center_x
@@ -136,9 +139,9 @@ class CustomMapView(MapView):
             threading.Thread(target=self.fetch_address, args=(lat, lon)).start()
 
     def fetch_address(self, lat, lon):
-        results = self.geocoder.reverse_geocode(lat, lon)
-        if results and len(results) > 0:
-            formatted_address = results[0].get('formatted')
+        results = self.geocoder.reverse_geocode((lat, lon))
+        if results:
+            formatted_address = results[0]['formatted_address']
             if formatted_address:
                 self.cache[(lat, lon)] = formatted_address
                 Clock.schedule_once(lambda dt: self.update_coordinate_text_field(lat, lon, formatted_address))
@@ -185,7 +188,7 @@ class ItemConfirm(OneLineAvatarIconListItem):
 
 
 class ClientLocation(MDScreen):
-    API_KEY = "7060ef7890c44bb48d75f2d12c66a466"
+    API_KEY = "AIzaSyAQhYOzS2RNq5CQOvCyuLhGqivDombb2Jo"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -193,11 +196,9 @@ class ClientLocation(MDScreen):
         self.dialog = None
         self.longitude = None
         self.latitude = None
-        # self.gps = gps
-        # self.gps.configure(on_location=self.on_location())
-        # Clock.schedule_once(self.start_gps)
-        self.geocoder = OpenCageGeocode(self.API_KEY)
+        self.geocoder = googlemaps.Client(key=self.API_KEY)
         self.custom_modal_view = None
+        self.gps_active = False
 
     def on_pre_enter(self):
         Clock.schedule_once(self.open_modal, 1)
@@ -214,17 +215,11 @@ class ClientLocation(MDScreen):
 
     def perform_search(self, text):
         if text:
-            threading.Thread(target=self.fetch_location_data, args=(text,), daemon=True).start()
+            threading.Thread(target=self.fetch_location_data, args=(text,)).start()
 
     def fetch_location_data(self, text):
-        url = f"https://api.opencagedata.com/geocode/v1/json?q={text}&key={self.API_KEY}"
-        response = requests.get(url)
-        if response.status_code == 200:
-            data = response.json()
-            results = data.get("results", [])
-            self.display_search_results(results)
-        else:
-            print("Failed to fetch results.")
+        results = self.geocoder.geocode(text)
+        self.display_search_results(results)
 
     def display_search_results(self, results):
         def update_results():
@@ -232,7 +227,7 @@ class ClientLocation(MDScreen):
                 self.custom_modal_view.ids.search_results.clear_widgets()
                 if results:
                     for result in results:
-                        formatted_address = result.get("formatted")
+                        formatted_address = result.get("formatted_address")
                         if formatted_address:
                             item = OneLineIconListItem(IconLeftWidget(icon="map-marker"), text=formatted_address)
                             item.bind(on_release=self.on_location_selected)
@@ -245,21 +240,6 @@ class ClientLocation(MDScreen):
     def on_location_selected(self, instance):
         self.ids.autocomplete.text = instance.text
         self.hide_modal_view()
-
-    def on_location(self, **kwargs):
-        self.latitude = kwargs['lat']
-        self.longitude = kwargs['lon']
-        print(f"Latitude: {self.latitude}, Longitude: {self.longitude}")
-        self.update_map_to_current_location()
-
-    def fetch_location_details(self, instance):
-        self.start_gps()
-
-    def start_gps(self, *args):
-        gps.start()
-
-    def stop_gps(self):
-        gps.stop()
 
     def update_map_to_current_location(self):
         if self.latitude is not None and self.longitude is not None:
@@ -296,7 +276,6 @@ class ClientLocation(MDScreen):
                 items=[
                     Item(text="Myself", source="images/profile.jpg", manager=self.manager),
                     ItemConfirm(text="Choose another contact", manager=self.manager),
-
                 ],
             )
         self.dialog.open()
@@ -314,3 +293,31 @@ class ClientLocation(MDScreen):
         screen = self.manager.get_screen('available_services')
         screen.location = self.ids.autocomplete.text
         self.manager.push_replacement('available_services')
+
+    def fetch_location_details(self, instance):
+        if not self.gps_active:
+            self.start_gps()
+        else:
+            self.stop_gps()
+
+    def start_gps(self):
+        try:
+            gps.configure(on_location=self.on_location_received)
+            gps.start()
+            self.gps_active = True
+            print("GPS started successfully.")
+        except NotImplementedError:
+            print("GPS is not available on this platform.")
+
+    def stop_gps(self):
+        gps.stop()
+        self.gps_active = False
+        print("GPS stopped.")
+
+    def on_location_received(self, **kwargs):
+        self.latitude = kwargs.get('lat')
+        self.longitude = kwargs.get('lon')
+        print(f"Latitude: {self.latitude}, Longitude: {self.longitude}")
+        self.update_map_to_current_location()
+        self.hide_modal_view()
+

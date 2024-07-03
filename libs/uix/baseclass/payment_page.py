@@ -12,15 +12,20 @@ import anvil
 from server import Server
 
 
-
 class Payment(MDScreen):
+    servicer_id = None
+    date = None
+    time_left = None
+
     def __init__(self, **kwargs):
         super(Payment, self).__init__(**kwargs)
+        self.tax = None
         Window.bind(on_keyboard=self.on_keyboard)
         self.server = Server()
 
     def on_pre_enter(self):
         self.change()
+        self.servicer_details()
 
     def on_keyboard(self, instance, key, scancode, codepoint, modifier):
         if key == 27:  # Keycode for the back button on Android
@@ -43,7 +48,7 @@ class Payment(MDScreen):
         try:
             with open('user_data.json', 'r') as file:
                 user_info = json.load(file)
-            self.ids.user_name.text = user_info.get('username', '')
+            # self.ids.user_name.text = user_info.get('username', '')
             # self.ids.session_date.text = user_info.get('slot_date', '')
             # self.ids.session_time.text = user_info.get('slot_time', '')
         except (FileNotFoundError, json.JSONDecodeError) as e:
@@ -145,6 +150,7 @@ class Payment(MDScreen):
         # back_button.bind(on_press=self.back_to_app)
         # layout.add_widget(back_button)
         #
+
     # def open_payment_gateway(self, payment_url):
     #     # Replace this with actual code to open the payment gateway URL
     #     print(f"Opening Razorpay payment gateway: {payment_url}")
@@ -161,7 +167,7 @@ class Payment(MDScreen):
     #     back_button.bind(on_press=self.back_to_app)
     #     layout.add_widget(back_button)
 
-        # return layout
+    # return layout
 
     # def on_pay_button_pressed(self, instance):
     #     client = razorpay.Client(api_key="YOUR_API_KEY", api_secret="YOUR_API_SECRET")
@@ -186,3 +192,40 @@ class Payment(MDScreen):
             buttons=[MDFlatButton(text="OK", on_release=lambda x: dialog.dismiss())],
         )
         dialog.open()
+
+    def servicer_details(self):
+        details = app_tables.oxiclinics.get(oxiclinics_id=self.servicer_id)
+
+        if not details:
+            details = app_tables.oxiwheels.get(oxiwheels_id=self.servicer_id)
+            if not details:
+                details = app_tables.oxigyms.get(oxigyms_id=self.servicer_id)
+
+        if not details:
+            print("Service ID not found in any table")
+            return
+
+        # Convert details to a dictionary
+        details = dict(details)
+
+        # Display the details based on which table the details were found in
+        if 'oxiclinics_address' in details:
+            self.ids.service_name.text = details.get('oxiclinics_Name', 'N/A')
+            self.ids.service_type.text = 'OxiClinic'
+            self.ids.service_address.text = details.get('oxiclinics_address', 'N/A')
+        elif 'oxiwheels_address' in details:
+            self.ids.service_name.text = details.get('oxiwheels_Name', 'N/A')
+            self.ids.service_type.text = 'OxiWheel'
+            self.ids.service_address.text = details.get('oxiwheels_address', 'N/A')
+        elif 'oxigyms_address' in details:
+            self.ids.service_name.text = details.get('oxigyms_Name', 'N/A')
+            self.ids.service_type.text = 'OxiGym'
+            self.ids.service_address.text = details.get('oxigyms_address', 'N/A')
+        else:
+            self.ids.service_address.text = 'N/A'
+
+    def view_bill(self):
+        scroll_view = self.ids.scroll_view
+        bill_card = self.ids.bill
+        scroll_view.scroll_to(bill_card)
+        

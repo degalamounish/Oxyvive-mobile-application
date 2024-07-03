@@ -41,37 +41,30 @@ class CButton(MDFlatButton):
         self.default_line_color = self.line_color  # Store the default line color
 
     def Slot_Timing(self, slot_timing):
-        if slot_timing in CButton.selected_slots:
-            # Deselect slot
-            CButton.selected_slots.remove(slot_timing)
-            self.md_bg_color = self.default_md_bg_color
-            self.line_color = self.default_line_color
-            self.CButton_pressed = False
-        else:
-            # Select slot
-            CButton.selected_slots.append(slot_timing)
-            self.md_bg_color = (1, 0, 0, 0.1)  # Light red background color
-            self.line_color = (1, 0, 0, 0.5)  # Darker red line color
-            self.CButton_pressed = True
-        print(f"Selected times: {CButton.selected_slots}")
+        # CButton.slot_time = slot_timing
+        # CButton.selected_slots = [slot_timing]
+        # Reset the colors of all buttons to their default state
+        for button in self.parent.children:
+            if isinstance(button, CButton):
+                button.md_bg_color = button.default_md_bg_color
+                button.line_color = button.default_line_color
 
-    def toggle_selection(self):
-        self.selected = not self.selected
-        if self.selected:
-            self.md_bg_color = (1, 0, 0, 0.1)  # Light red background color
-            self.line_color = (1, 0, 0, 0.5)  # Darker red line color
-        else:
-            self.md_bg_color = self.default_md_bg_color
-            self.line_color = self.default_line_color
-        print(f"Selected: {self.selected}")
+        # Set the colors of the current button
+        self.md_bg_color = (1, 0, 0, 0.1)  # Set background color
+        self.line_color = (1, 0, 0, 0.5)  # Set line color
+        slot_time = self.text
+        CButton.slot_time = slot_time
+        CButton.selected_slots = [slot_time]
+        self.CButton_pressed = True
+        print(f"Selected time: {CButton.slot_time}")
+        print('slots :', CButton.selected_slots)
 
-    def on_release(self):
-        self.toggle_selection()
 
 
 class CustomModalView2(ModalView):
     manager = ObjectProperty()
     date = StringProperty()
+    servicer_id = StringProperty()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -114,14 +107,61 @@ class CustomModalView2(ModalView):
         self.dismiss()
         CButton.selected_slots = []
 
+    from datetime import datetime, timedelta
+
+    from datetime import datetime, timedelta
+
+    def generate_datetime(self, date_str, time_slot):
+        # Parse the date string
+        date = datetime.strptime(date_str, '%Y-%m-%d')
+
+        # Parse the start time from the time slot
+        start_time_str = time_slot.split(' - ')[0]
+        start_time = datetime.strptime(start_time_str, '%I%p').time()
+
+        # Combine the parsed date and start time
+        combined_datetime = datetime.combine(date, start_time)
+
+        return combined_datetime
+
+    def format_date_and_time_left(self, selected_date, selected_slot):
+        # Convert the selected date to the desired string format
+        formatted_date = selected_date.strftime('%a, %d %b %I:%M %p')
+
+        # Combine selected date and slot start time to create a datetime object
+        slot_start = self.generate_datetime(selected_date.strftime('%Y-%m-%d'), selected_slot)
+
+        # Calculate time left from the current time
+        now = datetime.now()
+        if slot_start < now:
+            slot_start += timedelta(days=1)  # If the slot is earlier in the day, assume it's for the next day
+
+        time_left = slot_start - now
+        hours, remainder = divmod(time_left.total_seconds(), 3600)
+        minutes = remainder // 60
+        time_left_str = f'in {int(hours)} hours and {int(minutes)} minutes'
+
+        return formatted_date, time_left_str
+
+    # Example usage
+
     def payment_screen(self):
         self.dismiss()
         self.manager.load_screen('payment_page')
         screen = self.manager.get_screen('payment_page')
-        print(str(self.date))
-        screen.ids.session_date.text = str(self.date)
         selected_slots_str = "\n".join(filter(None, CButton.selected_slots))
-        screen.ids.session_time.text = selected_slots_str
+        print(selected_slots_str)
+        date_str = self.date  # Example date string
+        selected_slot = selected_slots_str
+
+        selected_date = self.generate_datetime(date_str, selected_slot)
+        formatted_date, time_left_str = self.format_date_and_time_left(selected_date, selected_slot)
+        print("Formatted Date:", formatted_date)
+        print("Time Left:", time_left_str)
+        print(str(self.date))
+        screen.servicer_id = self.servicer_id
+        screen.ids.slot_time.text = formatted_date
+        screen.ids.time_left.text = time_left_str
         self.manager.push_replacement('payment_page')
         CButton.selected_slots = []
 
@@ -226,6 +266,7 @@ class TaskSchedulerScreen(MDScreen):
         filtered_slots = self.filter_time_slots()
         self.custom_modal_view.display_time_slots(filtered_slots, self.hiding_slots)
         self.custom_modal_view.date = str(self.selected_date)
+        self.custom_modal_view.servicer_id = self.servicer_id
 
         anim = Animation(opacity=1, duration=0.3)
         anim.start(self.custom_modal_view)
