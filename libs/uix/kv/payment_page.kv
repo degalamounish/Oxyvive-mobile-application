@@ -38,7 +38,7 @@
 
                     FitImage:
                         id:s_image
-                        source: 'images/1.png.jpeg'
+                        source: 'images/1.png'
                         size_hint: None, None
                         size: '60dp', '60dp'
                         radius: [150]
@@ -144,6 +144,7 @@
                 MDCard:
                     orientation: 'vertical'
                     padding: '20dp'
+                    spacing:dp(20)
                     adaptive_height: True
                     MDLabel:
                         text: 'Choose a mode of payment'
@@ -189,34 +190,35 @@
 
                     MDCard:
                         orientation: "horizontal"
-                        size_hint_y: None
-                        height: dp(100)
+                        adaptive_height: True
                         padding:dp(10)
                         spacing: dp(10)
                         style:'outlined'
                         line_color:1, 0, 0, 0.5
                         FitImage:
+
                             source: 'images/offer.webp'
                             size_hint: None, None
                             size: '80dp', '80dp'
                             pos_hint: {'center_y':.5}
                         MDBoxLayout:
                             orientation:'vertical'
-                            size_hint_y: None
                             padding: dp(10)
                             spacing:dp(10)
-                            height: '60dp'
+                            adaptive_height: True
                             pos_hint: {'center_y':.5}
                             MDLabel:
                                 text: "Apply Coupon"
                                 font_style: "Subtitle1"
                                 halign: "left"
+                                adaptive_height: True
                             MDLabel:
                                 text: 'Unlock with offers with coupon codes '
                                 font_style: 'Subtitle1'
                                 font_size:'14sp'
                                 theme_text_color: 'Hint'
                                 halign: "left"
+                                adaptive_height: True
 
 
 
@@ -361,12 +363,14 @@
                         adaptive_height: True
                         md_bg_color: 1, 1, 1, 1
                         style: 'outlined'
+                        padding: dp(20)
                         line_color: 1, 0, 0, 0.5
+
                         MDBoxLayout:
                             orientation: 'horizontal'
                             adaptive_height: True
                             padding: dp(10)
-                            spacing:dp(20)
+                            spacing: dp(20)
                             MDLabel:
                                 text: 'Oxivive Promise'
                                 bold: True
@@ -375,53 +379,57 @@
                                 text_color: 1, 0, 0, 1
                                 halign: 'center'
                                 size_hint_y: None
-                                md_bg_color:1,0,0,.2
                                 height: dp(40)
+                                md_bg_color: 1, 0, 0, .2
+
                         MDBoxLayout:
                             orientation: 'horizontal'
                             adaptive_height: True
-                            padding: dp(10),dp(0),dp(0),dp(0)
-                            spacing:dp(30)
+                            padding: dp(10), dp(10), dp(0), dp(0)
+                            spacing: dp(30)
                             MDCheckbox:
                                 active: True
                                 disabled: True
-                                halign:'left'
-                                size_hint_x:None
-                                width:dp(30)
+                                size_hint_x: None
+                                width: dp(30)
                             MDLabel:
                                 text: 'Appointment confirmed instantly with the doctor'
                                 theme_text_color: "Primary"
-                                halign:'left'
+                                halign: 'left'
+                                adaptive_height: True
+
                         MDBoxLayout:
                             orientation: 'horizontal'
                             adaptive_height: True
-                            padding: dp(10),dp(0),dp(0),dp(0)
-                            spacing:dp(30)
+                            padding: dp(10), dp(10), dp(0), dp(0)
+                            spacing: dp(30)
                             MDCheckbox:
                                 active: True
                                 disabled: True
-                                halign:'left'
-                                size_hint_x:None
-                                width:dp(30)
+                                size_hint_x: None
+                                width: dp(30)
                             MDLabel:
                                 text: 'We assure we will connect you to the doctor. If your consultation does not happen for unforeseen reasons, we will give you 100% money back.'
                                 theme_text_color: "Primary"
-                                halign:'left'
+                                halign: 'left'
+                                adaptive_height: True
+
                         MDBoxLayout:
                             orientation: 'horizontal'
                             adaptive_height: True
-                            padding: dp(10),dp(0),dp(0),dp(0)
-                            spacing:dp(30)
+                            padding: dp(10), dp(10), dp(0), dp(0)
+                            spacing: dp(30)
                             MDCheckbox:
                                 active: True
                                 disabled: True
-                                halign:'left'
-                                size_hint_x:None
-                                width:dp(30)
+                                size_hint_x: None
+                                width: dp(30)
                             MDLabel:
                                 text: '24/7 live chat support to address all your queries.'
                                 theme_text_color: "Primary"
-                                halign:'left'
+                                halign: 'left'
+                                adaptive_height: True
+
 
                     MDSeparator:
                         size_hint_y: None
@@ -473,7 +481,7 @@
             radius:[0]
             md_bg_color:1,0,0,.2
             FitImage:
-                source: 'images/1.png.jpeg'
+                source: 'images/profile.jpg'
                 size_hint: None, None
                 size: '40dp', '40dp'
                 radius: [150]
@@ -525,7 +533,7 @@
             MDFillRoundFlatButton:
                 text: 'Pay & Confirm Book'
                 pos_hint: {'center_x': 0.5,'center_y':.5}
-                on_release:root.open_payment_gateway()
+                on_release:root.payment_id()
 
 #        Button:
 #            id: pay

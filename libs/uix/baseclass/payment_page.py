@@ -1,5 +1,8 @@
 import json
+import random
+import string
 import webbrowser
+from datetime import datetime
 
 import razorpay
 from anvil.tables import app_tables
@@ -9,6 +12,7 @@ from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 from kivy.clock import Clock
 import anvil
+from kivymd.uix.textfield import MDTextField
 from server import Server
 
 
@@ -19,6 +23,10 @@ class Payment(MDScreen):
 
     def __init__(self, **kwargs):
         super(Payment, self).__init__(**kwargs)
+
+        self.confirm_cancel_dialog = None
+        self.payment_id_field = None
+        self.dialog = None
         self.tax = None
         Window.bind(on_keyboard=self.on_keyboard)
         self.server = Server()
@@ -35,8 +43,6 @@ class Payment(MDScreen):
 
     def on_back_button(self):
         self.manager.push("slot_booking", "right")
-        self.ids.session_date.text = ''
-        self.ids.session_time.text = ''
         with open('user_data.json', 'r') as file:
             user_info = json.load(file)
         user_info['slot_date'] = ""
@@ -48,9 +54,6 @@ class Payment(MDScreen):
         try:
             with open('user_data.json', 'r') as file:
                 user_info = json.load(file)
-            # self.ids.user_name.text = user_info.get('username', '')
-            # self.ids.session_date.text = user_info.get('slot_date', '')
-            # self.ids.session_time.text = user_info.get('slot_time', '')
         except (FileNotFoundError, json.JSONDecodeError) as e:
             print(f"Error reading user_data.json: {e}")
 
@@ -79,108 +82,119 @@ class Payment(MDScreen):
             self.open_payment_gateway(payment_url)
             self.show_validation_dialog("Payment Successful")
             anvil.server.connect("server_UY47LMUKBDUJMU4EA3RKLXCC-LP5NLIEYMCLMZ4NU")
-            # with open('user_data.json', 'r') as file:
-            #     user_info = json.load(file)
-            # email = user_info.get('email', '')
-            # user_name = user_info.get('username', '')
-            # book_date = user_info.get('slot_date', '')
-            # book_time = user_info.get('slot_time', '')
-            # user = app_tables.users.get(email=email)
-            # user_id = user['id']
-            # row = app_tables.book_slot.search()
-            # slot_id = len(row) + 1
-            # app_tables.book_slot.add_row(
-            #     slot_id=slot_id,
-            #     user_id=user_id,
-            #     username=user_name,
-            #     book_date=book_date,
-            #     book_time=book_time
-            # )
+
         except Exception as e:
             print("An error occurred while creating the order:", str(e))
 
     def open_payment_gateway(self):
-        with open('user_data.json', 'r') as file:
-            user_info = json.load(file)
-        email = user_info.get('email', '')
-        user_name = user_info.get('username', '')
-        book_date = user_info.get('slot_date', '')
-        book_time = user_info.get('slot_time', '')
+        with open('booking_data.json', 'r') as file:
+            booking_data = json.load(file)
+        oxi_id = booking_data.get('user_id', '')
+        servicer_id = booking_data.get('servicer_id', '')
+        book_date = booking_data.get('book_date', '')
+        book_time = booking_data.get('book_time', '')
+        date_time = booking_data.get('date_time', '')
 
         try:
             if self.server.is_connected():
-                user = app_tables.oxi_users.get(oxi_email=email)
-                user_id = user['oxi_id']
-                row = app_tables.oxi_book_slot.search()
-                slot_id = len(row) + 1
+
+                slot_id = self.generate_random_code()
+                date_object = datetime.strptime(book_date, '%Y-%m-%d').date()
                 app_tables.oxi_book_slot.add_row(
-                    oxi_serviceProvider_id=slot_id,
-                    oxi_client_id=user_id,
-                    oxi_service_type=user_name,
-                    oxi_book_date=book_date,
-                    oxi_book_time=book_time
+                    oxi_book_id=slot_id,
+                    oxi_servicer_id=servicer_id,
+                    oxi_id=oxi_id,
+                    oxi_book_date=date_object,
+                    oxi_book_time=book_time,
+                    oxi_date_time=date_time,
+                    oxi_payment_id=self.payment_id_field.text
                 )
+                self.show_validation_dialog("Your slot is successfully booked. You will receive an instant response from Oxivive.")
             else:
                 self.show_validation_dialog("No internet connection")
 
         except Exception as e:
             print(e)
             self.show_validation_dialog("Error processing user data")
-        # Replace this with actual code to open the payment gateway URL
+
+    def payment_id(self):
+        Clock.schedule_once(lambda dt: self.payment_id_dialog(), 0)
         print(f"Opening Razorpay payment gateway")
-        website_url = 'https://rzp.io/l/iJyrLCI'
+        website_url = 'http://razorpay.me/@oxivivelifecareprivatelimited'
         webbrowser.open(website_url)
-        # # Create the Razorpay checkout URL
-        # razorpay_key_id = 'rzp_test_kOpS7Ythlfb1Ho'
-        # razorpay_checkout_url = f'https://checkout.razorpay.com/v1/checkout.js?key={razorpay_key_id}'
-        # webbrowser(razorpay_checkout_url)
 
-        # Open the Razorpay checkout in a WebView
-        # webbrowser.create_window('Razorpay Checkout', razorpay_checkout_url, width=800, height=600, resizable=True)
-        #
-        # # payment_page page logic
-        # layout = BoxLayout(orientation='vertical')
-        #
-        # # Create a WebView to display the Razorpay payment page
-        # webview = WebView(url='payment_url', size_hint=(1, 1))
-        # layout.add_widget(webview)
-        #
-        # # Add a back button
-        # back_button = Button(text='Back to App', size_hint=(1, 0.1))
-        # back_button.bind(on_press=self.back_to_app)
-        # layout.add_widget(back_button)
-        #
+    def payment_id_dialog(self):
+        self.payment_id_field = MDTextField(
+            hint_text="Payment ID",
+            mode="rectangle"
+        )
 
-    # def open_payment_gateway(self, payment_url):
-    #     # Replace this with actual code to open the payment gateway URL
-    #     print(f"Opening Razorpay payment gateway: {payment_url}")
-    #
-    #     # payment_page page logic
-    #     layout = BoxLayout(orientation='vertical')
-    #
-    #     # Create a WebView to display the Razorpay payment page
-    #     webview = WebView(url='payment_url', size_hint=(1, 1))
-    #     layout.add_widget(webview)
-    #
-    #     # Add a back button
-    #     back_button = Button(text='Back to App', size_hint=(1, 0.1))
-    #     back_button.bind(on_press=self.back_to_app)
-    #     layout.add_widget(back_button)
+        self.dialog = MDDialog(
+            title="Enter Payment ID",
+            type="custom",
+            content_cls=self.payment_id_field,
+            auto_dismiss=False,  # Prevent dismissing on outside click
+            buttons=[
+                MDFlatButton(
+                    text="CANCEL",
+                    on_release=self.confirm_cancel_dialog_open
+                ),
+                MDFlatButton(
+                    text="OK",
+                    on_release=self.validate_and_print_payment_id
+                ),
+            ],
+        )
+        self.dialog.open()
 
-    # return layout
+    def confirm_cancel_dialog_open(self, *args):
+        if not self.confirm_cancel_dialog:
+            self.confirm_cancel_dialog = MDDialog(
+                title="Cancel Confirmation",
+                text="If you paid, paste the Payment ID. Otherwise, click OK to cancel your booking.",
+                auto_dismiss=False,  # Prevent dismissing on outside click
+                buttons=[
+                    MDFlatButton(
+                        text="CANCEL",
+                        on_release=self.dismiss_confirm_cancel_dialog
+                    ),
+                    MDFlatButton(
+                        text="OK",
+                        on_release=self.close_dialog
+                    ),
+                ],
+            )
+        self.confirm_cancel_dialog.open()
 
-    # def on_pay_button_pressed(self, instance):
-    #     client = razorpay.Client(api_key="YOUR_API_KEY", api_secret="YOUR_API_SECRET")
-    #
-    #     order = client.order.create(amount=10000, currency="INR")
-    #
-    #     client.payment.launch(order_id=order["id"])
-    #
-    #     client.payment.on("success", self.on_payment_success)
-    #
-    # def on_payment_success(self, payment):
-    #     self.label.text = "Payment successful!"
+    def dismiss_confirm_cancel_dialog(self, *args):
+        if self.confirm_cancel_dialog:
+            self.confirm_cancel_dialog.dismiss()
 
+    def close_dialog(self, *args):
+        if self.dialog:
+            self.dialog.dismiss()
+        if self.confirm_cancel_dialog:
+            self.confirm_cancel_dialog.dismiss()
+
+    def validate_and_print_payment_id(self, *args):
+        payment_id = self.payment_id_field.text
+        if not payment_id.strip():
+            alert_dialog = MDDialog(
+                title="Alert",
+                text="Please enter Payment ID. Without entering Payment ID, your slot is not booked.",
+                auto_dismiss=False,  # Prevent dismissing on outside click
+                buttons=[
+                    MDFlatButton(
+                        text="OK",
+                        on_release=lambda x: alert_dialog.dismiss()
+                    )
+                ]
+            )
+            alert_dialog.open()
+        else:
+            print(f"Payment ID entered: {payment_id}")
+            self.dialog.dismiss()
+            self.open_payment_gateway()
     def show_validation_dialog(self, message):
         # Create the dialog asynchronously
         Clock.schedule_once(lambda dt: self._create_dialog(message), 0)
@@ -228,4 +242,10 @@ class Payment(MDScreen):
         scroll_view = self.ids.scroll_view
         bill_card = self.ids.bill
         scroll_view.scroll_to(bill_card)
-        
+
+    def generate_random_code(self):
+        prefix = "BI"
+        random_numbers = ''.join(random.choices(string.digits, k=5))
+        code = prefix + random_numbers
+
+        return code

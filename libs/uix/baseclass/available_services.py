@@ -1,5 +1,6 @@
 import requests
 from anvil.tables import app_tables, query as q
+from kivy.core.window import Window
 from kivy.properties import ObjectProperty
 from kivy.uix.image import Image
 from kivy.uix.boxlayout import BoxLayout
@@ -10,6 +11,7 @@ from kivymd.uix.card import MDCard
 from kivymd.uix.label import MDLabel
 from kivymd.uix.button import MDRaisedButton, MDFillRoundFlatButton
 from kivymd.uix.boxlayout import MDBoxLayout
+
 
 class SliverToolbar(MDTopAppBar):
     manager = ObjectProperty()
@@ -27,7 +29,14 @@ class AvailableService(MDScreen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        Window.bind(on_keyboard=self.on_keyboard)
         self.pincodes = None
+
+    def on_keyboard(self, instance, key, scancode, codepoint, modifier):
+        if key == 27:  # Keycode for the back button on Android
+            self.go_back()
+            return True
+        return False
 
     def go_back(self):
         self.manager.push_replacement('client_location')
@@ -127,7 +136,7 @@ class AvailableService(MDScreen):
                 text="Book",
                 md_bg_color=(1, 0, 0, 1),
                 text_color=(1, 1, 1, 1),
-                pos_hint={"center_x":0.5, "center_y": 0.5},
+                pos_hint={"center_x": 0.5, "center_y": 0.5},
                 size=("80dp", "36dp"),
                 on_release=lambda x, s=service: self.book_service(s)
             )
@@ -140,20 +149,32 @@ class AvailableService(MDScreen):
             self.ids.content.add_widget(card)
 
     def book_service(self, service):
+        servicer = dict(service)
+        self.manager.load_screen('slot_booking')
+        screen = self.manager.get_screen('slot_booking')
+        if 'oxiclinics_id' in servicer:
+            screen.servicer_id = servicer.get('oxiclinics_id')
+
+
+        elif 'oxiwheels_id' in servicer:
+            screen.servicer_id = servicer.get('oxiwheels_id')
+
+        elif 'oxigyms_id' in servicer:
+            screen.servicer_id = servicer.get('oxigyms_id')
+
+        else:
+            print('Please select service')
+
         self.manager.push_replacement('slot_booking')
         print(f"Booking service: {dict(service)}")
 
     def fetch_list_of_pincodes(self):
-        global lat, lng, pincodes, pincodes_list
-        api_key = "7060ef7890c44bb48d75f2d12c66a466"
-        username = 'mhpraveen1997'
-        address = self.location
-        base_url = 'https://api.opencagedata.com/geocode/v1/json'
+        global lat, lng
+        api_key = "AIzaSyAQhYOzS2RNq5CQOvCyuLhGqivDombb2Jo"
+        base_url = 'https://maps.googleapis.com/maps/api/geocode/json'
         params = {
-            'q': address,
+            'address': self.location,
             'key': api_key,
-            'pretty': 1,  # Pretty print the result
-            'no_annotations': 1  # Do not include additional information
         }
 
         response = requests.get(base_url, params=params)
@@ -161,32 +182,77 @@ class AvailableService(MDScreen):
         if response.status_code == 200:
             data = response.json()
             if data['results']:
-                # Extracting latitude and longitude
-                lat = data['results'][0]['geometry']['lat']
-                lng = data['results'][0]['geometry']['lng']
+                # Extracting latitude and longitude of the first result
+                lat = data['results'][0]['geometry']['location']['lat']
+                lng = data['results'][0]['geometry']['location']['lng']
                 print(f'Latitude: {lat}, Longitude: {lng}')
             else:
                 print('No results found')
+                return []
+
         else:
             print(f'Error: {response.status_code}')
+            return []
+
+        pincodes_list = set()  # Initialize pincodes_list as a set to avoid duplicates
 
         try:
-            url = f"http://api.geonames.org/findNearbyPostalCodesJSON?lat={lat}&lng={lng}&radius=30&username={username}"
-            response = requests.get(url)
-            response.raise_for_status()
-            data = response.json()
+            # Fetch postal codes using Place Details API
+            details_url = 'https://maps.googleapis.com/maps/api/place/details/json'
+            details_params = {
+                'place_id': data['results'][0]['place_id'],
+                'fields': 'address_components',
+                'key': api_key,
+            }
+            details_response = requests.get(details_url, params=details_params)
+            details_response.raise_for_status()
+            details_data = details_response.json()
 
-            if 'postalCodes' in data:
-                pincodes_list = [item['postalCode'] for item in data['postalCodes']]
-                print(pincodes_list)
-            else:
-                print('No pincodes found.')
+            if 'result' in details_data:
+                address_components = details_data['result']['address_components']
+                for component in address_components:
+                    if 'postal_code' in component['types']:
+                        pincodes_list.add(component['long_name'])
+
+            # Fetch nearby places postal codes using Nearby Search API
+            nearby_url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
+            nearby_params = {
+                'location': f'{lat},{lng}',
+                'radius': 30000,  # 30 km radius
+                'key': api_key,
+            }
+            nearby_response = requests.get(nearby_url, params=nearby_params)
+            nearby_response.raise_for_status()
+            nearby_data = nearby_response.json()
+
+            if 'results' in nearby_data:
+                for place in nearby_data['results']:
+                    place_id = place['place_id']
+                    place_details_response = requests.get(details_url, params={
+                        'place_id': place_id,
+                        'fields': 'address_components',
+                        'key': api_key,
+                    })
+                    place_details_response.raise_for_status()
+                    place_details_data = place_details_response.json()
+
+                    if 'result' in place_details_data:
+                        print(place_details_data)
+                        address_components = place_details_data['result']['address_components']
+                        for component in address_components:
+                            if 'postal_code' in component['types']:
+                                pincodes_list.add(component['long_name'])
+
+            pincodes_list = list(pincodes_list)
+            pincodes_list = [int(pincode) for pincode in pincodes_list]  # Convert to integers
+            print(pincodes_list)
+
         except requests.exceptions.RequestException as e:
             print(e)
         except KeyError:
             print("Unexpected response format.")
         except Exception as e:
             print(e)
-        pincodes = list(map(int, pincodes_list))
-        self.pincodes = pincodes
-        return pincodes
+
+        self.pincodes = pincodes_list
+        return pincodes_list

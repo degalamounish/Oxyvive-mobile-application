@@ -116,6 +116,7 @@ class Login(MDScreen):
                         password = str(user_anvil["oxi_password"])
                         phone = str(user_anvil["oxi_phone"])
                         pincode = str(user_anvil["oxi_pincode"])
+                        id = str(user_anvil['oxi_id'])
                         try:
                             profile_data = user_anvil['oxi_profile'].get_bytes()
                             profile_data = base64.b64encode(profile_data).decode('utf-8')
@@ -133,7 +134,7 @@ class Login(MDScreen):
                     self.manager.load_screen("menu_profile")
                     logged_in_data = {'logged_in': logged_in}
                     user_info = {'username': username, 'email': email, 'phone': phone, 'pincode': pincode,
-                                 'password': password, 'profile': profile_data}
+                                 'password': password, 'profile': profile_data,'id':id }
                     with open("logged_in_data.json", "w") as json_file:
                         json.dump(logged_in_data, json_file)
                     with open("user_data.json", "w") as json_file:

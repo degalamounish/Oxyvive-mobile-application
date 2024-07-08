@@ -1,3 +1,4 @@
+import json
 import sqlite3
 from datetime import datetime, timedelta
 
@@ -5,10 +6,11 @@ from anvil.tables import app_tables
 from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.metrics import dp
-from kivy.properties import StringProperty, ObjectProperty
+from kivy.properties import StringProperty, ObjectProperty, Clock
 from kivy.uix.modalview import ModalView
 from kivymd.uix.button import MDRaisedButton, MDFlatButton
 from kivymd.uix.card import MDCard
+from kivymd.uix.dialog import MDDialog
 from kivymd.uix.screen import MDScreen
 
 # Create the BookSlot table if it doesn't exist
@@ -58,7 +60,6 @@ class CButton(MDFlatButton):
         self.CButton_pressed = True
         print(f"Selected time: {CButton.slot_time}")
         print('slots :', CButton.selected_slots)
-
 
 
 class CustomModalView2(ModalView):
@@ -116,13 +117,27 @@ class CustomModalView2(ModalView):
         date = datetime.strptime(date_str, '%Y-%m-%d')
 
         # Parse the start time from the time slot
+
         start_time_str = time_slot.split(' - ')[0]
+
         start_time = datetime.strptime(start_time_str, '%I%p').time()
 
         # Combine the parsed date and start time
         combined_datetime = datetime.combine(date, start_time)
 
         return combined_datetime
+
+    def show_validation_dialog(self, message):
+        # Create the dialog asynchronously
+        Clock.schedule_once(lambda dt: self._create_dialog(message), 0)
+
+    def _create_dialog(self, message):
+        dialog = MDDialog(
+            text=f"{message}",
+            elevation=0,
+            buttons=[MDFlatButton(text="OK", on_release=lambda x: dialog.dismiss())],
+        )
+        dialog.open()
 
     def format_date_and_time_left(self, selected_date, selected_slot):
         # Convert the selected date to the desired string format
@@ -146,24 +161,41 @@ class CustomModalView2(ModalView):
     # Example usage
 
     def payment_screen(self):
-        self.dismiss()
-        self.manager.load_screen('payment_page')
-        screen = self.manager.get_screen('payment_page')
         selected_slots_str = "\n".join(filter(None, CButton.selected_slots))
-        print(selected_slots_str)
-        date_str = self.date  # Example date string
-        selected_slot = selected_slots_str
+        if not selected_slots_str:
+            self.show_validation_dialog('Please select one slot to book')
+        else:
+            self.dismiss()
+            self.manager.load_screen('payment_page')
+            screen = self.manager.get_screen('payment_page')
+            selected_slots_str = "\n".join(filter(None, CButton.selected_slots))
+            print(selected_slots_str)
+            date_str = self.date  # Example date string
+            selected_slot = selected_slots_str
 
-        selected_date = self.generate_datetime(date_str, selected_slot)
-        formatted_date, time_left_str = self.format_date_and_time_left(selected_date, selected_slot)
-        print("Formatted Date:", formatted_date)
-        print("Time Left:", time_left_str)
-        print(str(self.date))
-        screen.servicer_id = self.servicer_id
-        screen.ids.slot_time.text = formatted_date
-        screen.ids.time_left.text = time_left_str
-        self.manager.push_replacement('payment_page')
-        CButton.selected_slots = []
+            selected_date = self.generate_datetime(date_str, selected_slot)
+            formatted_date, time_left_str = self.format_date_and_time_left(selected_date, selected_slot)
+
+            print("Formatted Date:", formatted_date)
+            print("Time Left:", time_left_str)
+            print(str(self.date))
+            screen.servicer_id = self.servicer_id
+            screen.ids.slot_time.text = formatted_date
+            screen.ids.time_left.text = time_left_str
+
+            with open('user_data.json', 'r') as file:
+                user_info = json.load(file)
+
+            id = user_info['id']
+
+            booking_data = {'user_id': id, 'book_date': date_str, 'book_time': selected_slot,
+                            'servicer_id': self.servicer_id, 'date_time': formatted_date}
+
+            with open("booking_data.json", "w") as json_file:
+                json.dump(booking_data, json_file)
+
+            self.manager.push_replacement('payment_page')
+            CButton.selected_slots = []
 
 
 class TaskCard(MDCard):
@@ -179,7 +211,7 @@ class TaskCard(MDCard):
             end_dt = datetime.strptime(self.end_time, "%I:%M %p")
             duration = (end_dt - start_dt).seconds / 3600  # duration in hours
 
-            self.height = dp(100) * duration
+            self.height = dp(95) * duration
 
             start_hour = start_dt.hour + start_dt.minute / 60
             pos_hint_y = 1 - (start_hour - 9) / 12  # Assuming 7 AM start
@@ -187,6 +219,8 @@ class TaskCard(MDCard):
 
 
 class TaskSchedulerScreen(MDScreen):
+    servicer_id = None
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.dialog = None
@@ -194,7 +228,14 @@ class TaskSchedulerScreen(MDScreen):
         self.current_date_button = None
         self.custom_modal_view = None
         self.time_slots = ['9am - 11am', '11am - 1pm', '1pm - 3pm', '3pm - 5pm', '5pm - 7pm', '7pm - 9pm']
-        self.servicer_id = 'OC28857'  # Assuming a fixed servicer_id for demonstration
+        self.servicer_id = None  # Assuming a fixed servicer_id for demonstration
+        Window.bind(on_keyboard=self.on_keyboard)
+
+    def on_keyboard(self, instance, key, scancode, codepoint, modifier):
+        if key == 27:  # Keycode for the back button on Android
+            self.back_screen()
+            return True
+        return False
 
     def on_enter(self, *args):
         self.update_date()
@@ -204,9 +245,8 @@ class TaskSchedulerScreen(MDScreen):
         self.added_task()
 
     def back_screen(self):
-        self.ids.task_layout.clear_widgets()
-        self.hide_modal_view()
         self.manager.push_replacement('available_services')
+        self.hide_modal_view()
 
     def update_date(self):
         now = datetime.now()
@@ -281,8 +321,8 @@ class TaskSchedulerScreen(MDScreen):
     def get_booked_slots(self):
         servicer_id = self.servicer_id
         selected_date_str = self.selected_date
-        booked_slots = app_tables.oxi_book_slot.search(serviceProvider_id=servicer_id, oxi_book_date=selected_date_str)
-        return [slot['book_time'] for slot in booked_slots]
+        booked_slots = app_tables.oxi_book_slot.search(oxi_servicer_id=servicer_id, oxi_book_date=selected_date_str)
+        return [slot['oxi_book_time'] for slot in booked_slots]
 
     def filter_time_slots(self):
         now = datetime.now()
@@ -314,11 +354,11 @@ class TaskSchedulerScreen(MDScreen):
         self.ids.task_layout.clear_widgets()
         servicer_id = self.servicer_id
         selected_date_str = self.selected_date
-        booked_slots = app_tables.oxi_book_slot.search(serviceProvider_id=servicer_id, oxi_book_date=selected_date_str)
+        booked_slots = app_tables.oxi_book_slot.search(oxi_servicer_id=servicer_id, oxi_book_date=selected_date_str)
         for task in booked_slots:
-            client_name = task['username']
+            client_name = task['oxi_id']
             print(client_name)
-            time_slot = task['book_time']
+            time_slot = task['oxi_book_time']
             start_time, end_time = self.convert_time_slot(time_slot)
             print('start time :', start_time, 'end time :', end_time)
 

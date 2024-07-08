@@ -86,31 +86,40 @@ class CustomMapView(MapView):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.static_marker = StaticMapMarker(lat=self.lat, lon=self.lon)
+        self.static_marker = StaticMapMarker()
         self.add_widget(self.static_marker)
-        self.update_marker_position()
         self.geocoder = GoogleMapsClient(key=self.API_KEY)
         self.search_event = None
-        self.cache_size_limit = 100  # Adjust as needed
+        self.cache_size_limit = 100
         self.cache = {}
-        Clock.schedule_once(self.center_marker, 0)
-        # Set Google Maps as the map source
-        self.map_source = MapSource(google_maps_api_key=self.API_KEY, source='google',
-                                    attribution='Google Maps')
+        Clock.schedule_once(self.setup_map, 0)
 
-    def on_map_relocated(self, zoom, coord):
-        super().on_map_relocated(zoom, coord)
-        if self.search_event:
-            self.search_event.cancel()
-        self.search_event = Clock.schedule_once(self.deferred_update, 0)
+    def setup_map(self, dt):
+        self.map_source = MapSource(google_maps_api_key=self.API_KEY, source='google', attribution='Google Maps')
+        self.center_marker()
 
-    def deferred_update(self, dt):
+    def center_marker(self):
+        self.static_marker.lat = self.lat if hasattr(self, 'lat') else 0
+        self.static_marker.lon = self.lon if hasattr(self, 'lon') else 0
         self.update_marker_position()
         self.update_text_field()
 
-    def center_marker(self, *args):
-        self.static_marker.center_x = self.center_x
-        self.static_marker.center_y = self.center_y
+    def on_map_relocated(self, zoom, coord):
+        super().on_map_relocated(zoom, coord)
+        self.update_marker_position()
+        self.update_text_field()
+
+    def on_touch_up(self, touch):
+        if touch.grab_current == self:
+            touch.ungrab(self)
+            self._touch_count -= 1
+            if self._touch_count == 0:
+                self.update_marker_position()
+                screen = self.manager.get_screen("client_location")
+                if screen:
+                    screen.hide_modal_view()
+                return True
+        return super().on_touch_up(touch)
 
     def update_marker_position(self):
         scatter = self._scatter
@@ -124,7 +133,6 @@ class CustomMapView(MapView):
         lon = map_source.get_lon(zoom, (x - scatter.x) / scale - self.delta_x)
         lat = map_source.get_lat(zoom, (y - scatter.y) / scale - self.delta_y)
 
-        print(f"Updating marker position to lat: {lat}, lon: {lon}")
         self.static_marker.lat = lat
         self.static_marker.lon = lon
 
@@ -135,38 +143,25 @@ class CustomMapView(MapView):
         if coord_key in self.cache:
             self.update_coordinate_text_field(lat, lon, self.cache[coord_key])
         else:
-            print(f"Fetching address for lat: {lat}, lon: {lon}")
             threading.Thread(target=self.fetch_address, args=(lat, lon)).start()
 
     def fetch_address(self, lat, lon):
         results = self.geocoder.reverse_geocode((lat, lon))
         if results:
-            formatted_address = results[0]['formatted_address']
-            if formatted_address:
-                self.cache[(lat, lon)] = formatted_address
-                Clock.schedule_once(lambda dt: self.update_coordinate_text_field(lat, lon, formatted_address))
-                self.manage_cache_size()
+            formatted_address = results[0].get('formatted_address', 'Address not found')
+            self.cache[(lat, lon)] = formatted_address
+            Clock.schedule_once(lambda dt: self.update_coordinate_text_field(lat, lon, formatted_address))
+            self.manage_cache_size()
 
     def update_coordinate_text_field(self, lat, lon, address):
-        print(f"Updating text field with address: {address}")
         screen = self.manager.get_screen("client_location")
-        screen.ids.autocomplete.text = address
+        if screen:
+            screen.ids.autocomplete.text = address
 
     def manage_cache_size(self):
         if len(self.cache) > self.cache_size_limit:
             oldest_key = next(iter(self.cache))
             del self.cache[oldest_key]
-
-    def on_touch_up(self, touch):
-        if touch.grab_current == self:
-            touch.ungrab(self)
-            self._touch_count -= 1
-            if self._touch_count == 0:
-                self.update_marker_position()
-                screen = self.manager.get_screen("client_location")
-                screen.hide_modal_view()
-                return True
-        return super().on_touch_up(touch)
 
 
 class Item(OneLineAvatarListItem):
@@ -196,9 +191,17 @@ class ClientLocation(MDScreen):
         self.dialog = None
         self.longitude = None
         self.latitude = None
-        self.geocoder = googlemaps.Client(key=self.API_KEY)
+        self.geocoder = GoogleMapsClient(key=self.API_KEY)
         self.custom_modal_view = None
         self.gps_active = False
+        self.places_results = []  # Store the results for place details
+        Window.bind(on_keyboard=self.on_keyboard)
+
+    def on_keyboard(self, instance, key, scancode, codepoint, modifier):
+        if key == 27:  # Keycode for the back button on Android
+            self.back_button()
+            return True
+        return False
 
     def on_pre_enter(self):
         Clock.schedule_once(self.open_modal, 1)
@@ -218,7 +221,8 @@ class ClientLocation(MDScreen):
             threading.Thread(target=self.fetch_location_data, args=(text,)).start()
 
     def fetch_location_data(self, text):
-        results = self.geocoder.geocode(text)
+        results = self.geocoder.places_autocomplete(text)
+        self.places_results = results
         self.display_search_results(results)
 
     def display_search_results(self, results):
@@ -227,9 +231,9 @@ class ClientLocation(MDScreen):
                 self.custom_modal_view.ids.search_results.clear_widgets()
                 if results:
                     for result in results:
-                        formatted_address = result.get("formatted_address")
-                        if formatted_address:
-                            item = OneLineIconListItem(IconLeftWidget(icon="map-marker"), text=formatted_address)
+                        description = result.get("description")
+                        if description:
+                            item = OneLineIconListItem(IconLeftWidget(icon="map-marker"), text=description)
                             item.bind(on_release=self.on_location_selected)
                             self.custom_modal_view.ids.search_results.add_widget(item)
                 else:
@@ -238,15 +242,32 @@ class ClientLocation(MDScreen):
         Clock.schedule_once(lambda dt: update_results())
 
     def on_location_selected(self, instance):
-        self.ids.autocomplete.text = instance.text
+        selected_description = instance.text
+        selected_place = next((place for place in self.places_results if place["description"] == selected_description),
+                              None)
+        if selected_place:
+            place_id = selected_place['place_id']
+            threading.Thread(target=self.fetch_place_details, args=(place_id,)).start()
+
+    def fetch_place_details(self, place_id):
+        place_details = self.geocoder.place(place_id=place_id)
+        location = place_details['result']['geometry']['location']
+        self.latitude = location['lat']
+        self.longitude = location['lng']
+        Clock.schedule_once(lambda dt: self.update_ui_with_place_details(place_details), 0)
+
+    def update_ui_with_place_details(self, place_details):
+        self.ids.autocomplete.text = place_details['result']['formatted_address']
+        self.update_map_to_current_location()
         self.hide_modal_view()
 
     def update_map_to_current_location(self):
         if self.latitude is not None and self.longitude is not None:
-            map_view = self.root.ids.map_view
+            map_view = self.ids.map_view
             map_view.center_on(self.latitude, self.longitude)
             map_view.static_marker.lat = self.latitude
             map_view.static_marker.lon = self.longitude
+            map_view.zoom = 13
             map_view.update_marker_position()
 
     def on_text_field_focus(self, instance, value):
@@ -320,4 +341,3 @@ class ClientLocation(MDScreen):
         print(f"Latitude: {self.latitude}, Longitude: {self.longitude}")
         self.update_map_to_current_location()
         self.hide_modal_view()
-
