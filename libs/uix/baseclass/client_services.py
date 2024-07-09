@@ -9,6 +9,9 @@ from anvil.tables import app_tables
 from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.properties import StringProperty, ObjectProperty, DictProperty
+from kivy.uix import image
+from kivy.uix.screenmanager import Screen
+from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.hero import MDHeroFrom
 from kivymd.uix.imagelist import MDSmartTile
 from kivymd.uix.relativelayout import MDRelativeLayout
@@ -16,6 +19,93 @@ from kivymd.uix.screen import MDScreen
 
 from server import Server
 
+from kivy.uix.behaviors import ButtonBehavior
+from kivy.uix.image import Image
+
+
+import json
+import base64
+import io
+from kivy.uix.screenmanager import Screen
+from kivy.properties import ObjectProperty
+from kivy.graphics.texture import Texture
+from PIL import Image
+
+class Profile_screen(Screen):
+    scroll_view = ObjectProperty(None)
+
+    def __init__(self, **kwargs):
+        super(Profile_screen, self).__init__(**kwargs)
+
+    def on_kv_post(self, base_widget):
+        print("IDs dictionary:", self.ids)  # Debugging line
+        with open('user_data.json', 'r') as file:
+            user_info = json.load(file)
+        if 'username' in self.ids:
+            self.ids.username.text = user_info.get('username', '')
+        else:
+            print("Username ID not found")
+        if 'phone' in self.ids:
+            self.ids.phone.text = str(user_info.get('phone', ''))
+        else:
+            print("Email ID not found")
+
+    # def on_pre_enter(self, *args):
+    #     print("on_pre_enter called")
+    #     self.change()
+    #
+    #
+    # def change(self):
+
+
+
+    def go_back(self):
+        self.manager.current = 'client_services'
+
+    def notifications(self):
+        self.manager.load_screen("menu_notification")
+        self.manager.push_replacement("menu_notification")
+
+    def profile(self):
+        self.manager.load_screen("menu_profile")
+        self.manager.push_replacement("menu_profile")
+
+    def Bookings(self):
+        self.manager.load_screen("menu_bookings")
+        self.manager.push_replacement("menu_bookings")
+
+    def Reports(self):
+        self.manager.load_screen("menu_reports")
+        self.manager.push_replacement("menu_reports")
+
+    def Support(self):
+        self.manager.load_screen("menu_support")
+        self.manager.push_replacement("menu_support")
+
+    def Log_out(self):
+        self.manager.push_replacement("login", "right")
+        try:
+            with open('user_data.json', 'r') as file:
+                user_info = json.load(file)
+            user_info.update({
+                'username': "",
+                'email': "",
+                'phone': "",
+                'pincode': "",
+                'password': ""
+            })
+            with open("user_data.json", "w") as json_file:
+                json.dump(user_info, json_file)
+
+            logged_in_data = {'logged_in': False}
+            with open("logged_in_data.json", "w") as json_file:
+                json.dump(logged_in_data, json_file)
+        except FileNotFoundError:
+            print("user_data.json file not found.")
+        except json.JSONDecodeError:
+            print("Error decoding JSON file.")
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
 
 class NavigationDrawerScreen(MDScreen):
     pass
@@ -46,7 +136,7 @@ class HeroItem(MDHeroFrom):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.ids.tile.ids.image.ripple_duration_in_fast = 0.05
+        # self.ids.tile.ids.image.ripple_duration_in_fast = 0.05
 
     def on_transform_in(self, instance_hero_widget, duration):
         print('in')
@@ -110,8 +200,9 @@ class HeroItem(MDHeroFrom):
 class Client_services(MDScreen):
     def __init__(self, **kwargs):
         super(Client_services, self).__init__(**kwargs)
+
         self.server = Server()
-        self.change()
+        # self.change()
 
     def change(self):
         with open('user_data.json', 'r') as file:
@@ -123,7 +214,7 @@ class Client_services(MDScreen):
         except:
             # Load the image
             image_path = 'images/profile.jpg'
-            image = Image.open(image_path)
+            # image = Image.open(image_path)
 
             # Convert the image to a byte array
             img_byte_arr = io.BytesIO()
@@ -137,13 +228,13 @@ class Client_services(MDScreen):
 
     def on_pre_enter(self):
 
-        self.change()
-        images = ['images/1.png', 'images/2.png', 'images/3.png', 'images/gym.png']
+        # self.change()
+        images = ['images/1.jpg', 'images/2.png', 'images/3.webp', 'images/gym.png']
         for i in images:
             environment_img = CustomImageTile(
                 source=i
             )
-            self.ids.box3.add_widget(environment_img)
+            # self.ids.box3.add_widget(environment_img)
 
     def logout(self):
         self.manager.current_heroes = []

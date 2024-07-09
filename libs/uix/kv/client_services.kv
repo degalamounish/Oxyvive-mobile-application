@@ -1,3 +1,200 @@
+<Profile_screen>:
+    name: 'profile'
+    BoxLayout:
+        orientation: 'vertical'
+
+        MDTopAppBar:
+            title: 'Profile'
+            left_action_items: [['arrow-left', lambda x: root.go_back()]]
+            right_action_items: [['help-circle-outline', lambda x: app.show_help()]]
+            elevation: 5
+            md_bg_color: (1, 0, 0, 1) # Red color for the top bar
+
+        ScrollView:
+            MDBoxLayout:
+                orientation: 'vertical'
+                adaptive_height: True
+                padding: dp(10)
+                spacing: dp(10)
+                pos_hint: {'center_x': 0.5}
+
+                MDCard:
+                    size_hint: None, None
+                    size: "378dp", "120dp"
+                    elevation: 3
+                    radius: [20]
+                    padding: dp(20)
+                    pos_hint: {'center_x': 0.5}
+
+                    BoxLayout:
+                        spacing: dp(10)
+                        FitImage:
+                            source: 'images/photo.jpg'
+                            size_hint: None, None
+                            size: "80dp", "80dp"
+                            radius: [20]
+
+                        MDBoxLayout:
+                            orientation: 'vertical'
+                            adaptive_height: True
+                            padding: dp(30)
+                            spacing: dp(30)
+
+                            MDLabel:
+                                id: username
+                                text: "Username"
+                                theme_text_color: "Primary"
+                                font_style: "H6"
+
+                            MDLabel:
+                                id: phone
+                                text: "Phone"
+                                theme_text_color: "Secondary"
+                                font_style: "Body1"
+
+                MDCard:
+                    size_hint: None, None
+                    size: "378dp", "400dp"  # Reduce height to fit content
+                    elevation: 3
+                    radius: [20]
+                    orientation: 'vertical'
+                    padding: dp(10)
+                    pos_hint: {'center_x': 0.5}
+
+                    MDLabel:
+                        text: "Settings"
+                        theme_text_color: "Primary"
+                        font_style: "H6"
+                        halign: "center"
+                        pos_hint: {'center_x': 0.5, 'center_y': 1.5}
+                        size_hint: None, None
+                        size: "100dp", "50dp"
+                    MDSeparator:
+                        height: dp(1)
+
+                    MDBoxLayout:
+                        orientation: 'vertical'
+                        spacing: dp(10)
+                        padding: dp(10)
+
+                        # Profile Setting
+                        MDBoxLayout:
+                            orientation: 'horizontal'
+                            spacing: dp(10)
+
+                            IconLeftWidget:
+                                icon: 'account'
+
+                            MDLabel:
+                                text: "Profile"
+                                theme_text_color: "Primary"
+                                font_style: "Subtitle1"
+
+                            MDIconButton:
+                                icon: 'arrow-right'
+                                pos_hint: {'center_y': 0.5}
+                                on_release: root.profile()
+                        MDSeparator:
+                            height: dp(1)
+
+                        # Notifications Setting
+                        MDBoxLayout:
+                            orientation: 'horizontal'
+                            spacing: dp(10)
+
+                            IconLeftWidget:
+                                icon: 'bell'
+
+                            MDLabel:
+                                text: "Notifications"
+                                theme_text_color: "Primary"
+                                font_style: "Subtitle1"
+
+                            MDIconButton:
+                                icon: 'arrow-right'
+                                pos_hint: {'center_y': 0.5}
+                                on_release: root.notifications()
+                        MDSeparator:
+                            height: dp(1)
+
+                        # Bookings Setting
+                        MDBoxLayout:
+                            orientation: 'horizontal'
+                            spacing: dp(10)
+
+                            IconLeftWidget:
+                                icon: 'calendar-check'
+
+                            MDLabel:
+                                text: "Bookings"
+                                theme_text_color: "Primary"
+                                font_style: "Subtitle1"
+
+                            MDIconButton:
+                                icon: 'arrow-right'
+                                pos_hint: {'center_y': 0.5}
+                                on_release: root.Bookings()
+                        MDSeparator:
+                            height: dp(1)
+
+                        # Reports Setting
+                        MDBoxLayout:
+                            orientation: 'horizontal'
+                            spacing: dp(10)
+
+                            IconLeftWidget:
+                                icon: 'file-document'
+
+                            MDLabel:
+                                text: "Reports"
+                                theme_text_color: "Primary"
+                                font_style: "Subtitle1"
+
+                            MDIconButton:
+                                icon: 'arrow-right'
+                                pos_hint: {'center_y': 0.5}
+                                on_release: root.Reports()
+
+                        MDSeparator:
+                            height: dp(1)
+
+                        # Support Setting
+                        MDBoxLayout:
+                            orientation: 'horizontal'
+                            spacing: dp(10)
+
+                            IconLeftWidget:
+                                icon: 'lifebuoy'
+
+                            MDLabel:
+                                text: "Support"
+                                theme_text_color: "Primary"
+                                font_style: "Subtitle1"
+
+                            MDIconButton:
+                                icon: 'arrow-right'
+                                pos_hint: {'center_y': 0.5}
+                                on_release: root.Support()
+                        MDSeparator:
+                            height: dp(1)
+
+                        # Log-out Setting
+                        MDBoxLayout:
+                            orientation: 'horizontal'
+                            spacing: dp(10)
+
+                            IconLeftWidget:
+                                icon: 'logout'
+
+                            MDLabel:
+                                text: "Log-out"
+                                theme_text_color: "Primary"
+                                font_style: "Subtitle1"
+
+                            MDIconButton:
+                                icon: 'arrow-right'
+                                pos_hint: {'center_y': 0.5}
+                                on_release: root.Log_out()
 <CustomImageTile>:
     radius: 24
     box_radius: [0, 0, 24, 24]
@@ -316,116 +513,8 @@
 
                         MDBottomNavigationItem:
                             name: 'account screen'
+
                             text: 'Account'
                             icon: 'account'
-                            MDGridLayout:
-                                cols:1
-                                padding: dp(25), 0, dp(25), 0
-                                MDCard:
-                                    orientation: 'vertical'
-                                    size_hint: None, None
-                                    size: "268dp", "100dp"
-                                    elevation: 2
-                                    md_bg_color: 1, 1, 1, 1
-                                    BoxLayout:
-                                        size_hint_y: None
-                                        height: dp(90)
-                                        padding: "15dp"
-                                        BoxLayout:
-                                            size_hint: None, None
-                                            size: dp(60), dp(60)
-                                            FitImage:
-                                                id:image
-                                                source: "profile_image.png"
-                                                pos_hint: {"top": 1}
-                                                radius: 50
-                                        BoxLayout:
-                                            orientation: 'vertical'
-                                            padding: "5dp"
-                                            spacing: "5dp"
-                                            MDLabel:
-                                                id: username
-                                                text: "username"
-                                                font_name: "Roboto"
-                                                theme_text_color: "Secondary"
-                                                pos_hint: {'center_x': 0.5,'center_y': 0.2}
-                                            MDLabel:
-                                                id: email
-                                                text: "clientemail@gmail.com"
-                                                theme_text_color: "Hint"
-                                                font_name: "Roboto"
-                                                font_size:'12sp'
-                                                pos_hint: {'center_x': 0.5,'center_y': 0.1}
-
-                                BoxLayout:
-                                    orientation: 'vertical'
-                                    ScrollView:
-                                        MDList:
-                                            id: md_list
-                                            MDList:
-                                                OneLineIconListItem:
-                                                    text: "Home"
-                                                    on_release: root.home()
-                                                    IconLeftWidget:
-                                                        icon: "home"
-                                                        on_release: root.home()
-                                                OneLineIconListItem:
-                                                    text: "Profile"
-                                                    on_release:
-                                                        root.manager.current_heroes = []
-                                                        root.manager.push_replacement("menu_profile")
-                                                    IconLeftWidget:
-                                                        icon: "account-circle"
-                                                        on_release:
-                                                            root.manager.current_heroes = []
-                                                            root.manager.push_replacement("menu_profile")
-                                                OneLineIconListItem:
-                                                    text: "Notification"
-                                                    on_release:
-                                                        root.manager.current_heroes = []
-                                                        root.manager.push("menu_notification")
-                                                    IconLeftWidget:
-                                                        icon: "bell-outline"
-                                                        on_release:
-                                                            root.manager.current_heroes = []
-                                                            root.manager.push("menu_notification")
-
-                                                OneLineIconListItem:
-                                                    text: "Bookings"
-                                                    on_release:
-                                                        root.manager.current_heroes = []
-                                                        root.manager.push("menu_bookings")
-                                                    IconLeftWidget:
-                                                        icon: "book-account-outline"
-                                                        on_release:
-                                                            root.manager.current_heroes = []
-                                                            root.manager.push("menu_bookings")
-
-                                                OneLineIconListItem:
-                                                    text: "Reports"
-                                                    on_release:
-                                                        root.manager.current_heroes = []
-                                                        root.manager.push("menu_reports")
-                                                    IconLeftWidget:
-                                                        icon: "file-multiple"
-                                                        on_release:
-                                                            root.manager.current_heroes = []
-                                                            root.manager.push("menu_reports")
-
-                                                OneLineIconListItem:
-                                                    text: "Support"
-                                                    on_release:
-                                                        root.manager.current_heroes = []
-                                                        root.manager.push("menu_support")
-                                                    IconLeftWidget:
-                                                        icon: "book-information-variant"
-                                                        on_release:
-                                                            root.manager.current_heroes = []
-                                                            root.manager.push("menu_support")
-
-                                                OneLineIconListItem:
-                                                    text: "Logout"
-                                                    on_release: root.logout()
-                                                    IconLeftWidget:
-                                                        icon: "logout"
-                                                        on_release: root.logout()
+                            Profile_screen:
+                                manager : root.manager

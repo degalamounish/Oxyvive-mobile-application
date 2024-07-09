@@ -1,29 +1,240 @@
+MDTopAppBar:
+    pos_hint: { "center_y": 1}
+    title: "My Profile"
+    md_bg_color: 1, 0, 0, 1  # Red color for the background
+    left_action_items: [['arrow-left', lambda x: go_back()]]
+    right_action_items: [['bell', lambda x: app.notifications()], ['dots-vertical', lambda x: app.menu()]]
+
+<InvoiceLabel@Label>:
+    size_hint_y: None
+    height: 40
+    padding: [10, 10]
+    halign: 'left'
+    valign: 'middle'
+    text_size: self.size
+
+<InvoiceTextInput@TextInput>:
+    size_hint_y: None
+    height: 40
+    multiline: False
+
+<InvoiceButton@Button>:
+    size_hint_y: None
+    height: 40
+    md_bg_color: 0, 0.6, 0.8, 1
+    text_color: 1, 1, 1, 1
+
 <Report>:
-    MDFloatLayout:
-        md_bg_color: rgba(246, 250, 255, 255)
-        MDIconButton:
-            icon: "arrow-left"
-            pos_hint: {"center_y": .94}
-            user_font_size: "20sp"
-            theme_text_color: "Custom"
-            text_color: rgba(34, 34, 34, 255)
-            on_release: root.reports_back()
-        MDIconButton:
-            icon: "dots-vertical"
-            pos_hint: {"center_x": .93, "center_y": .94}
-            user_font_size: "20sp"
-            theme_text_color: "Custom"
-            text_color: rgba(34, 34, 34, 255)
-        MDLabel:
-            text: "Reports"
-            font_name: "Roboto-Bold"
-            font_size: "20sp"
-            pos_hint: {"center_x": .56, "center_y": .88}
-            color: rgba(34, 34, 34, 255)
-        MDLabel:
-            text: "No Reports updated"
-            font_size: "25sp"
-            halign:'center'
-            font_name: "Roboto"
-            pos_hint: {"center_x": .5, "center_y": .5}
-            color: rgba(94, 94, 94, 255)
+    BoxLayout:
+        orientation: 'vertical'
+        padding: [20, 20]
+        spacing: 20
+
+        MDTopAppBar:
+            title: "Report"
+            md_bg_color: 1, 0, 0, 1  # Red color for the background
+            left_action_items: [['arrow-left', lambda x: root.go_back()]]
+            right_action_items: [['bell', lambda x: app.notifications()], ['dots-vertical', lambda x: app.menu()]]
+
+        ScrollView:
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                padding: [20, 20]
+                spacing: 20
+
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: None
+                    height: 150
+                    padding: [10, 10]
+
+                    Image:
+                        id: company_logo
+                        source: 'images/shot.png'
+                        size_hint: None, None
+                        size: 100, 100
+
+                    BoxLayout:
+                        orientation: 'vertical'
+                        padding: [20, 0]
+
+                        Label:
+                            text: 'OXIVIVE'
+                            font_size: 24
+                            bold: True
+                            color: [0, 0, 0, 1]
+
+                        Label:
+                            id: company_description
+                            text: 'Anti-aging shot therapy'
+                            font_size: 18
+                            color: [0, 0, 0, 1]
+
+                GridLayout:
+                    cols: 2
+                    size_hint_y: None
+                    height: self.minimum_height
+                    row_default_height: 40
+                    spacing: 10
+
+                    Label:
+                        text: 'Patient Name:'
+                        bold: True
+                        font_size: 18
+                        color: [0, 0, 0, 1]
+                    InvoiceTextInput:
+                        id: patient_name
+                        font_size: 18
+
+                    Label:
+                        text: 'Doctor Name:'
+                        bold: True
+                        font_size: 18
+                        color: [0, 0, 0, 1]
+                    InvoiceTextInput:
+                        id: doctor_name
+                        font_size: 18
+
+                    Label:
+                        text: 'Service Type:'
+                        bold: True
+                        font_size: 18
+                        color: [0, 0, 0, 1]
+                    InvoiceTextInput:
+                        id: service_type
+                        font_size: 18
+
+                    Label:
+                        text: 'Session (out of 40):'
+                        bold: True
+                        font_size: 18
+                        color: [0, 0, 0, 1]
+                    InvoiceTextInput:
+                        id: session
+                        font_size: 18
+
+                    Label:
+                        text: 'Payable to:'
+                        bold: True
+                        font_size: 18
+                        color: [0, 0, 0, 1]
+                    InvoiceTextInput:
+                        id: payable_to
+                        font_size: 18
+
+                    Label:
+                        text: 'Bank Details:'
+                        bold: True
+                        font_size: 18
+                        color: [0, 0, 0, 1]
+                    InvoiceTextInput:
+                        id: bank_details
+                        font_size: 18
+
+                GridLayout:
+                    cols: 2
+                    size_hint_y: None
+                    height: self.minimum_height
+                    row_default_height: 40
+                    spacing: 10
+
+                    Label:
+                        text: 'Service Type'
+                        bold: True
+                        color: [1, 1, 1, 1]
+                        canvas.before:
+                            Color:
+                                rgba: 0, 0, 1, 1  # Blue color
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
+                    Label:
+                        text: 'Price'
+                        bold: True
+                        color: [1, 1, 1, 1]
+                        canvas.before:
+                            Color:
+                                rgba: 0, 0, 1, 1  # Blue color
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
+                    Label:
+                        text: 'Total'
+                        bold: True
+                        color: [1, 1, 1, 1]
+                        canvas.before:
+                            Color:
+                                rgba: 1, 0, 0, 1  # Red color
+                            Rectangle:
+                                pos: self.pos
+                                size: self.size
+
+                GridLayout:
+                    cols: 2
+                    size_hint_y: None
+                    height: self.minimum_height
+                    row_default_height: 40
+                    spacing: 10
+
+                    Label:
+                        text: 'Notes:'
+                        bold: True
+                        color: [0, 0, 0, 1]
+                    Label:
+                        text: 'We prioritize customer satisfaction. Our team of passionate skiers and snowboarders is dedicated to delivering exceptional service and ensuring your safety and enjoyment on the slopes.'
+                        color: [0, 0, 0, 1]
+                        halign: 'left'
+                        valign: 'middle'
+                        text_size: self.size
+
+                    Label:
+                        text: 'Sub Total:'
+                        bold: True
+                        color: [0, 0, 0, 1]
+                    Label:
+                        id: subtotal_label
+                        text: "$0.00"
+                        color: [0, 0, 0, 1]
+
+                    Label:
+                        text: 'CGST (8%):'
+                        bold: True
+                        color: [0, 0, 0, 1]
+                    Label:
+                        id: cgst_label
+                        text: "$0.00"
+                        color: [0, 0, 0, 1]
+
+                    Label:
+                        text: 'SGST (8%):'
+                        bold: True
+                        color: [0, 0, 0, 1]
+                    Label:
+                        id: sgst_label
+                        text: "$0.00"
+                        color: [0, 0, 0, 1]
+
+                    Label:
+                        text: 'Grand Total:'
+                        bold: True
+                        color: [0, 0, 0, 1]
+                    Label:
+                        id: grand_total_label
+                        text: "$0.00"
+                        color: [0, 0, 0, 1]
+
+        BoxLayout:
+            orientation: 'horizontal'
+            spacing: 10
+            size_hint_y: None
+            height: 50
+
+            InvoiceButton:
+                text: 'Save PDF'
+                on_press: root.save_pdf()
+
+            InvoiceButton:
+                text: 'Clear Fields'
+                on_press: root.clear_fields()

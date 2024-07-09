@@ -1,68 +1,441 @@
 <Profile>:
-    heroes_to:[]
-    MDFloatLayout:
-        md_bg_color: rgba(246, 250, 255, 255)
-        ProfileCard
-            size_hint_y: .65
-            pos_hint: {"center_y": .7}
-            elevation: 3
-            md_bg_color: 1, 1, 1, 1
-            radius: [0, 0, 20, 20]
-            MDIconButton:
-                icon: "arrow-left"
-                pos_hint: {"center_y": .91}
-                user_font_size: "20sp"
-                theme_text_color: "Custom"
-                text_color: rgba(34, 34, 34, 255)
-                on_release: root.profile_back()
-            MDIconButton:
-                icon: "dots-vertical"
-                pos_hint: {"center_x": .93, "center_y": .91}
-                user_font_size: "20sp"
-                theme_text_color: "Custom"
-                text_color: rgba(34, 34, 34, 255)
-            MDLabel:
-                text: "My Profile"
-                font_name: "Roboto-Bold"
-                font_size: "20sp"
-                pos_hint: {"center_x": .56, "center_y": .82}
-                color: rgba(34, 34, 34, 255)
-            MDFloatLayout:
-                orientation:'vertical'
+    MDTopAppBar:
+        pos_hint: {"center_x": 0.5, "center_y": 0.97}
+        title: "My Profile"
+        md_bg_color: 1, 0, 0, 1  # Red color for the background
+        left_action_items: [['arrow-left', lambda x: root.go_back()]]
+        right_action_items: [['bell', lambda x: root.notifications()], ['dots-vertical', lambda x: root.menu()]]
+    BoxLayout:
+        pos_hint: {"center_x": 0.5, "center_y":0.6}
+        padding: dp(20)
+        orientation: 'vertical'
+        size_hint_y: None
+        height: dp(350)
 
-                MDLabel:
-                    id: username
-                    text: "Username : username"
-                    font_name: "Roboto"
-                    pos_hint: {"center_x": .66,"center_y": 1.09}
-                    color: rgba(34, 34, 34, 255)
-                MDLabel:
-                    id: email
-                    text: "Email : clientemail@gmail.com"
-                    font_name: "Roboto"
-                    pos_hint: {"center_x": .66,"center_y": .97}
-                    color: rgba(34, 34, 34, 255)
-                MDLabel:
-                    id: phone
-                    text: "Phone no : 912*******"
-                    font_name: "Roboto"
-                    pos_hint: {"center_x": .66,"center_y": .85}
-                    color: rgba(34, 34, 34, 255)
-                MDLabel:
-                    id: pincode
-                    text: "Pincode : 56****"
-                    font_name: "Roboto"
-                    pos_hint: {"center_x": .66,"center_y": .73}
-                    color: rgba(34, 34, 34, 255)
-            MDFloatLayout:
-                md_bg_color: rgba(178, 178, 178, 255)
-                size_hint: .62, .002
-                pos_hint: {"center_x": .47, "center_y": .45}
-            MDFloatLayout:
-                md_bg_color: rgba(178, 178, 178, 255)
-                size_hint: .62, .002
-                pos_hint: {"center_x": .47, "center_y": .318}
-            MDFloatLayout:
-                md_bg_color: rgba(178, 178, 178, 255)
-                size_hint: .62, .002
-                pos_hint: {"center_x": .47, "center_y": .208}
+        FloatLayout:
+            pos_hint: {"center_x": 0.5, "center_y":1}
+            MDCard:
+                orientation: 'vertical'
+                pos_hint: {"center_x": 0.5,"center_y": 0.8}
+                size_hint_y:None
+                height: dp(180)  # Adjusted height for smaller window
+                elevation: 2
+                GridLayout:
+                    size_hint_y:None
+                    height: dp(150)
+                    pos_hint: {"center_x": 0.5,"center_y": 0.9}
+                    cols: 1
+                    padding: dp(20)
+                    spacing: dp(10)
+                    MDLabel:
+                        text: "Yathish P Gowda"
+                        font_style: "Caption"  # Apply Caption font style
+                        font_size: sp(30)  # Example: Font size of 20 sp (scalable pixels)
+                        halign: "center"
+                        height: 30  # Fixed height of 30 dp (density-independent pixels)
+                        pos_hint: {"center_x": 0.5,"center_y": 1}
+                        theme_text_color: "Primary"  # Changed to red
+
+            FitImage:
+                id: profile_image
+                source: "https://catholic-link.org/wp-content/uploads/2020/12/tim-marshall-K2u71wv2eI4-unsplash-300x300.jpg"
+                size_hint: None, None
+                size: dp(100), dp(100)
+                pos_hint: {"center_x": 0.5, "center_y": 1.1}
+                radius: 150, 150, 150, 150
+
+            MDIconButton:
+                icon: 'camera-plus'
+                size_hint: None, None
+                size: dp(24), dp(24)  # Adjusted size
+                theme_text_color: "Custom"
+                text_color: 1, 0, 0, 1  # Red icon color
+                pos_hint: {"center_x": 0.5, "center_y": 1}
+                on_release: root.select_image()
+    BoxLayout:
+        padding: dp(20)
+        MDCard:
+            orientation: 'vertical'
+            pos_hint: {"center_x": 0.5,"center_y": 0.32}
+            size_hint_y:None
+            height: dp(500)  # Adjusted height for smaller window
+            elevation: 2
+            BoxLayout:
+                pos_hint: {"center_x": 0.5, "center_y": 0.14}
+                orientation: 'vertical'
+                MDTabs:
+                    id: tabs
+                    tab_bar_height: "48dp"
+                    tab_indicator_anim: False
+                    background_color: 1, 0, 0, 1  # Red color for tabs background
+                    Tab:
+                        title: "Personal"
+                        icon: "account"
+                        BoxLayout:
+                            padding: dp(20)
+                            orientation: 'vertical'
+                            ScrollView:
+                                MDGridLayout:
+                                    cols: 1
+                                    adaptive_height: True
+                                    padding: dp(10)
+                                    spacing: dp(10)
+
+
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(username)
+                                        MDLabel:
+                                            text: "Username"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: username
+                                            text: "Enter your username"
+                                            size_hint_y: None
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(address)
+                                        MDLabel:
+                                            text: "Email"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: email
+                                            text: "Enter your email"
+                                            size_hint_y: None
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(phone)
+                                        MDLabel:
+                                            text: "Phone No"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: phone
+                                            text: "Enter your phone no"
+                                            size_hint_y: None
+
+                                    # Additional Personal Fields
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(address)
+                                        MDLabel:
+                                            text: "Address"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: address
+                                            text: "Enter your address"
+                                            size_hint_y: None
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(city)
+                                        MDLabel:
+                                            text: "City"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: city
+                                            text: "Enter your city"
+                                            size_hint_y: None
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(state)
+                                        MDLabel:
+                                            text: "State"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: state
+                                            text: "Enter your state"
+                                            size_hint_y: None
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(pincode)
+                                        MDLabel:
+                                            text: "Pin Code"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: pincode
+                                            text: "Enter your pincode"
+                                            size_hint_y: None
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(country)
+                                        MDLabel:
+                                            text: "Country"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: country
+                                            text: "Enter your country"
+                                            size_hint_y: None
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_date_picker()
+                                        MDLabel:
+                                            text: "DOB"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: dob
+                                            text: "Enter your dob"
+                                            size_hint_y: None
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(height)
+                                        MDLabel:
+                                            text: "Height"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: height
+                                            text: "Enter your height"
+                                            size_hint_y: None
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(weight)
+                                        MDLabel:
+                                            text: "Weight"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: weight
+                                            text: "Enter your weight"
+                                            size_hint_y: None
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(gender)
+                                        MDLabel:
+                                            text: "Gender"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: gender
+                                            text: "Enter your gender"
+                                            size_hint_y: None
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height: dp(50)
+                                        on_release: root.show_Blood_popup()
+                                        MDLabel:
+                                            text: "Blood group"
+                                            size_hint_y: None
+                                            color: 0, 0, 0, 0.5
+                                        MDLabel:
+                                            id: blood_group_label
+                                            text: "Enter your blood group"
+                                            size_hint_y: None
+
+                    Tab:
+                        title: "Medical"
+                        icon: "hospital-box"
+                        BoxLayout:
+                            orientation: 'vertical'
+                            ScrollView:
+                                MDGridLayout:
+                                    cols: 1
+                                    adaptive_height: True
+                                    padding: dp(10)
+                                    spacing: dp(10)
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(allergies)
+                                        MDLabel:
+                                            text: "Allergies"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: allergies
+                                            text: "Enter your allergies"
+                                            size_hint_y: None
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(current_medications)
+                                        MDLabel:
+                                            text: "Current Medications"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: current_medications
+                                            text: "Enter your current medications"
+                                            size_hint_y: None
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(past_medications)
+                                        MDLabel:
+                                            text: "Past Medications"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: past_medications
+                                            text: "Enter your past medications"
+                                            size_hint_y: None
+
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(chronic_diseases)
+                                        MDLabel:
+                                            text: "Chronic Diseases"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: chronic_diseases
+                                            text: "Enter your chronic diseases"
+                                            size_hint_y: None
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(injuries)
+                                        MDLabel:
+                                            text: "Injuries"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: injuries
+                                            text: "Enter your injuries"
+                                            size_hint_y: None
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(surgeries)
+                                        MDLabel:
+                                            text: "Surgeries"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: surgeries
+                                            text: "Enter your surgeries"
+                                            size_hint_y: None
+                    Tab:
+                        title: "Lifestyle"
+                        icon: "run"
+                        BoxLayout:
+                            orientation: 'vertical'
+                            ScrollView:
+                                MDGridLayout:
+                                    cols: 1
+                                    adaptive_height: True
+                                    padding: dp(10)
+                                    spacing: dp(10)
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(smoking_habits)
+                                        MDLabel:
+                                            text: "Smoking Habits"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: smoking_habits
+                                            text: "Enter your smoking habits"
+                                            size_hint_y: None
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(alcohol_consumption)
+                                        MDLabel:
+                                            text: "Alcohol Consumption"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: alcohol_consumption
+                                            text: "Enter your alcohol_consumption"
+                                            size_hint_y: None
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(activity_level)
+                                        MDLabel:
+                                            text: "Activity Level"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: activity_level
+                                            text: "Enter your activity level"
+                                            size_hint_y: None
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(food_preference)
+                                        MDLabel:
+                                            text: "Food Preference"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: food_preference
+                                            text: "Enter your food preference"
+                                            size_hint_y: None
+                                    MDCard:
+                                        orientation: "horizontal"
+                                        size_hint_y: None
+                                        height:dp(50)
+                                        on_release: root.show_popup(occupation)
+                                        MDLabel:
+                                            text: "Occupation"
+                                            size_hint_y: None
+                                            color: 0,0,0,0.5
+                                        MDLabel:
+                                            id: occupation
+                                            text: "Enter your occupation"
+                                            size_hint_y: None
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(60)
+                    padding: dp(20)
+                    spacing: dp(20)
+                    pos_hint: {"center_x": 0.5, "center_y": 0.01}
+                    orientation: 'horizontal'
+
+
+                    MDRoundFlatButton:
+                        id: save_button
+                        text: "Save"
+                        text_color: 1, 0, 0, 1
+                        line_color: 1, 0, 0, 1
+                        size_hint: 1, None  # Adjust size hint for width
+                        height: dp(40)  # Fixed height
+                        on_release: root.save_data()
+
+
