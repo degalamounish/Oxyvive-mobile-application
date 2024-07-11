@@ -19,7 +19,7 @@
         # Username input
         MDFloatLayout:
             size_hint: .7, .07
-            pos_hint: {"center_x": .5, "center_y": .83}
+            pos_hint: {"center_x": .5, "center_y": .86}
             MDTextField:
                 id: signup_name
                 hint_text: "Full Name"
@@ -41,7 +41,7 @@
         # Email input
         MDFloatLayout:
             size_hint: .7, .07
-            pos_hint: {"center_x": .5, "center_y": .74}
+            pos_hint: {"center_x": .5, "center_y": .78}
             MDTextField:
                 id: signup_email
                 hint_text: "Email"
@@ -62,7 +62,7 @@
         # Password input
         MDFloatLayout:
             size_hint: .7, .07
-            pos_hint: {"center_x": .5, "center_y": .65}
+            pos_hint: {"center_x": .5, "center_y": .70}
             MDTextField:
                 id: signup_password
                 hint_text: "Password"
@@ -98,7 +98,7 @@
         # Phone num input
         MDFloatLayout:
             size_hint: .7, .07
-            pos_hint: {"center_x": .5, "center_y": .56}
+            pos_hint: {"center_x": .5, "center_y": .62}
             MDTextField:
                 id: signup_phone
                 hint_text: "Phone no"
@@ -120,7 +120,7 @@
         # Pincode input
         MDFloatLayout:
             size_hint: .7, .07
-            pos_hint: {"center_x": .5, "center_y": .47}
+            pos_hint: {"center_x": .5, "center_y": .54}
             MDTextField:
                 id: signup_pincode
                 hint_text: "Pincode"
@@ -142,7 +142,7 @@
         # pan_card_no input
         MDFloatLayout:
             size_hint: .7, .07
-            pos_hint: {"center_x": .5, "center_y": .38}
+            pos_hint: {"center_x": .5, "center_y": .46}
             MDTextField:
                 id: signup_pan_card_no
                 hint_text: "PAN Number"
@@ -160,11 +160,49 @@
                     Color:
                         rgba: [75/255, 75/255, 75/255, 1]
 
+        MDCard:
+            orientation: 'vertical'
+            size_hint: .7, .07
+            pos_hint: {'center_x': 0.5,'center_y': 0.34}
+            padding: dp(0)
+            radius: [10,]
+            md_bg_color: [0.9, 0.9, 0.9, 1]  # Grey color
+
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: 1, None
+                height: "60dp"
+                padding: [dp(53), dp(0)]  # Adjust padding for better mobile view
+
+                MDIconButton:
+                    icon: 'cloud-upload'
+                    on_release: root.choose_profile_picture()
+                    theme_text_color: 'Custom'
+                    text_color: 1, 0, 0, 1
+                    # size_hint: None, None
+                    size: dp(45), dp(45)
+                    halign: 'center'
+                    size_hint_x: 1
+                    #padding: [10,0]
+                    spacing: dp(5)
+                    pos_hint: {'center_x': 0.7,'center_y': 0.3}
+
+
+                    MDLabel:
+                        id: signup_profile_pic
+                        text: 'Upload profile picture'
+                        font_name: "Roboto-Bold"
+                        font_size: "20sp"
+                        theme_text_color: 'Custom'
+                        text_color: 1, 0, 0, 1
+                        #halign: 'right'
+                        size_hint_x: 1
+                        pos_hint: {'center_x': 0,'center_y': 0.3}
         # signup button
         Button:
             text: "SIGNUP"
             size_hint: .66, .065
-            pos_hint: {"center_x": .5, "center_y": .27}
+            pos_hint: {"center_x": .5, "center_y": .25}
             background_color: 0, 0, 0, 0
             font_name: "Roboto"
             on_press: root.users(self)
@@ -180,7 +218,7 @@
         MDLabel:
             text: "or"
             color: rgba(74, 73, 73, 255)
-            pos_hint: {"center_y": .22}
+            pos_hint: {"center_y": .195}
             font_size: "13sp"
             font_name: "Roboto"
             halign: "center"
@@ -188,11 +226,11 @@
         MDFloatLayout:
             md_bg_color: rgba(178, 178, 178, 255)
             size_hint: .3, .002
-            pos_hint: {"center_x": .3, "center_y": .218}
+            pos_hint: {"center_x": .3, "center_y": .195}
         MDFloatLayout:
             md_bg_color: rgba(178, 178, 178, 255)
             size_hint: .3, .002
-            pos_hint: {"center_x": .7, "center_y": .218}
+            pos_hint: {"center_x": .7, "center_y": .195}
         #social media section
         MDLabel:
             text: "Social Media Login"
@@ -232,3 +270,20 @@
             pos_hint: {"center_x": .5, "center_y": .98}
             color: rgba(225, 0, 0, 255)
             on_release: root.manager.push("service_register_form1")
+<FileChooserPopup>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(20)
+        spacing: dp(20)
+
+        FileChooserIconView:
+            id: filechooser
+            filters: ['.pdf', '.jpg', '*.png']
+            on_submit: root.select_file(self.selection)
+
+        MDRaisedButton:
+            text: "Cancel"
+            size_hint: .5, None
+            height: dp(40)
+            pos_hint: {'center_x': .5}
+            on_release: root.close_file_chooser()

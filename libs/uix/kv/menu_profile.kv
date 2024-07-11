@@ -1,7 +1,7 @@
 <Profile>:
     MDTopAppBar:
         pos_hint: {"center_x": 0.5, "center_y": 0.97}
-        title: "My Profile"
+        title: "Basic Info"
         md_bg_color: 1, 0, 0, 1  # Red color for the background
         left_action_items: [['arrow-left', lambda x: root.go_back()]]
         right_action_items: [['bell', lambda x: root.notifications()], ['dots-vertical', lambda x: root.menu()]]
@@ -28,7 +28,8 @@
                     padding: dp(20)
                     spacing: dp(10)
                     MDLabel:
-                        text: "Yathish P Gowda"
+                        text: ""
+                        id : username
                         font_style: "Caption"  # Apply Caption font style
                         font_size: sp(30)  # Example: Font size of 20 sp (scalable pixels)
                         halign: "center"
@@ -38,7 +39,7 @@
 
             FitImage:
                 id: profile_image
-                source: "https://catholic-link.org/wp-content/uploads/2020/12/tim-marshall-K2u71wv2eI4-unsplash-300x300.jpg"
+                source: ""
                 size_hint: None, None
                 size: dp(100), dp(100)
                 pos_hint: {"center_x": 0.5, "center_y": 1.1}
@@ -56,9 +57,9 @@
         padding: dp(20)
         MDCard:
             orientation: 'vertical'
-            pos_hint: {"center_x": 0.5,"center_y": 0.32}
+            pos_hint: {"center_x": 0.5,"center_y": 0.36}
             size_hint_y:None
-            height: dp(500)  # Adjusted height for smaller window
+            height: dp(400)  # Adjusted height for smaller window
             elevation: 2
             BoxLayout:
                 pos_hint: {"center_x": 0.5, "center_y": 0.14}
@@ -82,19 +83,7 @@
                                     spacing: dp(10)
 
 
-                                    MDCard:
-                                        orientation: "horizontal"
-                                        size_hint_y: None
-                                        height:dp(50)
-                                        on_release: root.show_popup(username)
-                                        MDLabel:
-                                            text: "Username"
-                                            size_hint_y: None
-                                            color: 0,0,0,0.5
-                                        MDLabel:
-                                            id: username
-                                            text: "Enter your username"
-                                            size_hint_y: None
+
                                     MDCard:
                                         orientation: "horizontal"
                                         size_hint_y: None
