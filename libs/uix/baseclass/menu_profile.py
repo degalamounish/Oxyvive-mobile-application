@@ -1,6 +1,8 @@
 import json
+import os
 from datetime import datetime
 
+from anvil import BlobMedia
 from anvil.tables import app_tables
 from kivy.metrics import dp
 # import anvil.server
@@ -247,6 +249,16 @@ class Profile(Screen):
                 details = dict(app_tables.oxi_users.get(oxi_id=user_info.get('id')))
                 print(details)
                 if details:
+                    oxi_profile = details.get('oxi_profile')
+                    if oxi_profile:
+                        # Save the image to a temporary file in the current working directory
+                        current_dir = os.getcwd()
+                        image_path = os.path.join(current_dir, 'profile_image.png')
+                        with open(image_path, 'wb') as img_file:
+                            img_file.write(oxi_profile.get_bytes())
+                        self.ids.profile_image.source = image_path
+                    else:
+                        print("Profile image not found in the database.")
                     self.ids.address.text = details.get('oxi_address', '')
                     self.ids.state.text = details.get('oxi_state', '')
                     self.ids.country.text = details.get('oxi_country', '')
@@ -322,8 +334,8 @@ class Profile(Screen):
 
             if not weight_f:
                 raise ValueError("Weight field is empty")
-
             weight = int(weight_f)
+
             blood_group_label = self.ids.blood_group_label.text
             allergies = self.ids.allergies.text
             current_medications = self.ids.current_medications.text
@@ -337,6 +349,18 @@ class Profile(Screen):
             food_preference = self.ids.food_preference.text
             occupation = self.ids.occupation.text
             blood_group = self.ids.blood_group_label.text
+            image_path = self.ids.profile_image.source if 'profile_image' in self.ids else None
+
+            # Debug print to check image path
+            print(f"Image path: {image_path}")
+
+            image_media = None
+            if image_path and os.path.isfile(image_path):
+                with open(image_path, 'rb') as img_file:
+                    image_data = img_file.read()
+                    image_media = BlobMedia('image/png', image_data, name='profile_image.png')
+            else:
+                print("Image path is not valid or image does not exist.")
 
             # Debug print statements to check values
             print(f"address: {address}, city: {city}, state: {state}, dob: {dob}")
@@ -348,7 +372,6 @@ class Profile(Screen):
             print(f"activity_level: {activity_level}, food_preference: {food_preference}, occupation: {occupation}")
 
             # Assuming 'oxi_users' is a data table in Anvil
-            # Fetch the record where oxi_id equals 1
             with open('user_data.json', 'r') as file:
                 user_info = json.load(file)
             row_to_update = app_tables.oxi_users.get(oxi_id=user_info.get('id'))
@@ -376,8 +399,13 @@ class Profile(Screen):
                 row_to_update['oxi_food_preference'] = food_preference
                 row_to_update['oxi_occupation'] = occupation
                 row_to_update['oxi_blood_group_label'] = blood_group
+                if image_media:
+                    row_to_update['oxi_profile'] = image_media
+                else:
+                    print("Error: No image saved")
 
                 row_to_update.save()
+
 
                 print("Data updated successfully in Anvil database")
             else:

@@ -7,6 +7,7 @@ import anvil
 from PIL.Image import Image
 from anvil.tables import app_tables
 from kivy.animation import Animation
+from kivy.atlas import CoreImage
 from kivy.clock import Clock
 from kivy.properties import StringProperty, ObjectProperty, DictProperty
 from kivy.uix import image
@@ -31,6 +32,7 @@ from kivy.properties import ObjectProperty
 from kivy.graphics.texture import Texture
 from PIL import Image
 
+
 class Profile_screen(Screen):
     scroll_view = ObjectProperty(None)
 
@@ -38,26 +40,63 @@ class Profile_screen(Screen):
         super(Profile_screen, self).__init__(**kwargs)
 
     def on_kv_post(self, base_widget):
+        self.server = Server()
         print("IDs dictionary:", self.ids)  # Debugging line
-        with open('user_data.json', 'r') as file:
-            user_info = json.load(file)
-        if 'username' in self.ids:
-            self.ids.username.text = user_info.get('username', '')
+
+        try:
+            # Load user information from JSON file
+            with open('user_data.json', 'r') as file:
+                self.user_info = json.load(file)
+
+            # Update username and phone if their IDs are present
+            if 'username' in self.ids:
+                self.ids.username.text = self.user_info.get('username', '')
+            else:
+                print("Username ID not found")
+            if 'phone' in self.ids:
+                self.ids.phone.text = str(self.user_info.get('phone', ''))
+            else:
+                print("Phone ID not found")
+
+            # Schedule a check for server connection
+            Clock.schedule_once(self.check_server_connection, 1)
+        except FileNotFoundError:
+            print("user_data.json file not found.")
+        except Exception as e:
+            print("An error occurred:", str(e))
+
+    def check_server_connection(self, dt):
+        if self.server.is_connected():
+            print("Connected to server")
+            self.fetch_data_from_server()
         else:
-            print("Username ID not found")
-        if 'phone' in self.ids:
-            self.ids.phone.text = str(user_info.get('phone', ''))
-        else:
-            print("Email ID not found")
+            print("Not connected to server, retrying...")
+            Clock.schedule_once(self.check_server_connection, 1)
 
-    # def on_pre_enter(self, *args):
-    #     print("on_pre_enter called")
-    #     self.change()
-    #
-    #
-    # def change(self):
+    def fetch_data_from_server(self):
+        try:
+            details = app_tables.oxi_users.get(oxi_id=self.user_info.get('id'))
 
+            if details:
+                oxi_profile = details['oxi_profile']
 
+                if oxi_profile:
+                    current_dir = os.getcwd()
+                    image_path = os.path.join(current_dir, 'profile_image.png')
+                    with open(image_path, 'wb') as img_file:
+                        img_file.write(oxi_profile.get_bytes())
+
+                    if 'profile_image' in self.ids:
+                        self.ids.profile_image.source = image_path
+                        self.ids.profile_image.reload()
+                    else:
+                        print("Profile image ID not found")
+        except KeyError as e:
+            print(f"KeyError occurred while fetching data from server: {e}")
+        except AttributeError as e:
+            print(f"AttributeError occurred while fetching data from server: {e}")
+        except Exception as e:
+            print(f"An error occurred while fetching data from server: {e}")
 
     def go_back(self):
         self.manager.current = 'client_services'
@@ -106,10 +145,8 @@ class Profile_screen(Screen):
             print("Error decoding JSON file.")
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
-
 class NavigationDrawerScreen(MDScreen):
     pass
-
 
 class CustomImageTile(MDSmartTile):
 
@@ -229,12 +266,12 @@ class Client_services(MDScreen):
     def on_pre_enter(self):
 
         # self.change()
-        images = ['images/1.jpg', 'images/2.png', 'images/3.webp', 'images/gym.png']
+        images = ['images/1.png', 'images/2.png', 'images/3.png', 'images/gym.png']
         for i in images:
             environment_img = CustomImageTile(
                 source=i
             )
-            # self.ids.box3.add_widget(environment_img)
+            self.ids.box3.add_widget(environment_img)
 
     def logout(self):
         self.manager.current_heroes = []

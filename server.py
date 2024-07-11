@@ -46,7 +46,8 @@ class Server:
                 password TEXT NOT NULL,
                 phone TEXT NOT NULL,
                 pincode TEXT NOT NULL,
-                pan_card_no TEXT NOT NULL
+                pan_card_no TEXT NOT NULL,
+                profile FILE NOT NULL
             )
         ''')
         conn.commit()
