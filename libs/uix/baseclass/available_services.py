@@ -18,6 +18,7 @@ class SliverToolbar(MDTopAppBar):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.left_action_items = [["arrow-left", lambda x: self.back_screen(), "color", (1, 0, 0, 1)]]
 
     def back_screen(self):
         self.manager.push_replacement('client_location')
@@ -170,7 +171,7 @@ class AvailableService(MDScreen):
 
     def fetch_list_of_pincodes(self):
         global lat, lng
-        api_key = "AIzaSyAQhYOzS2RNq5CQOvCyuLhGqivDombb2Jo"
+        api_key = "AIzaSyA8GzhJLPK0Hfryi5zHbg3RMDSMCukmQCw"
         base_url = 'https://maps.googleapis.com/maps/api/geocode/json'
         params = {
             'address': self.location,

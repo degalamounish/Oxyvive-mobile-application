@@ -9,8 +9,12 @@
         icon:'account'
 
 <CustomButton@MDRelativeLayout>:
+
+<ClickableTextFieldRound@FloatLayout>:
+
 <CustomButtonMap>:
     icon:'crosshairs-gps'
+
 <CustomModalView>
     id: custom_modal_view
     size_hint: None, None
@@ -98,21 +102,33 @@
                     on_release:  root.show_confirmation_dialog()
                     pos_hint: { "center_y": .5}
                     pos: choose.width + self.width -dp(90), 0
-
-            MDTextField:
-                id: autocomplete
-                hint_text: "Search for places"
-                size_hint_x: 1
-                mode:'round'
-                on_text: root.search_location(self, self.text)
-                on_focus: if self.focus:root.on_text_field_focus(self, self.focus)
-                line_color_focus:0,0,0,1
-                text_color_focus:0,0,0,1
-                fill_color_normal:1,1,1,1
-                icon_left:'google-maps'
-                icon_left_color_focus:0,0,0,1
-                halign:'left'
-
+            ClickableTextFieldRound:
+                size_hint_y: None
+                height: autocomplete.height
+                MDTextField:
+                    id: autocomplete
+                    hint_text: "Search for places"
+                    size_hint_x: 1
+                    mode:'round'
+                    on_text: root.search_location(self, self.text)
+                    on_focus: if self.focus:root.on_text_field_focus(self, self.focus)
+                    line_color_focus:0,0,0,1
+                    text_color_focus:0,0,0,1
+                    fill_color_normal:1,1,1,1
+                    icon_left:'google-maps'
+                    icon_left_color_focus:0,0,0,1
+                    font_size:'14sp'
+                    padding: dp(40)
+                    halign:'left'
+                MDIconButton:
+                    id:clr
+                    icon: "close-circle"
+                    pos_hint: {"center_y": .5}
+                    pos: autocomplete.width - self.width + dp(8), 0
+                    theme_text_color: "Hint"
+                    color:0,0,0,1
+                    on_release:
+                        autocomplete.text = ''
 
 
         FloatLayout:
@@ -150,7 +166,7 @@
                         text_color: 1, 1, 1, 1
                         font_style: 'Subtitle2'
                         font_size:'16sp'
-                        md_bg_color: 0, 0, 0, 1
+                        md_bg_color: 1, 0, 0, 1
                         pos_hint: {'center_x': .5, 'center_y': .1}
                         size_hint: (1, 1)
                         on_release:root.next_screen()

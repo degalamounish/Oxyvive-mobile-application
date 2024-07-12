@@ -1,30 +1,35 @@
 import logging
 import os
+import re
 import threading
-
+from kivy.clock import Clock
 import requests
 from PIL import Image
 from diskcache import Cache as DiskCache
 from googlemaps import Client as GoogleMapsClient
 from kivy.animation import Animation
-from kivy.clock import Clock
 from kivy.config import Config
 from kivy.core.image import Texture
 from kivy.core.window import Window
 from kivy.metrics import dp
-from kivy.properties import ObjectProperty
-from kivy.properties import StringProperty
+from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.behaviors import DragBehavior
 from kivy.uix.modalview import ModalView
 from kivy.utils import platform
-from kivy_garden.mapview import MapMarker, Coordinate
-from kivy_garden.mapview import MapView, MapSource
+from kivy_garden.mapview import MapView, MapMarker, MapSource
 from kivymd.uix.button import MDFloatingActionButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.list import OneLineIconListItem, IconLeftWidget, OneLineAvatarIconListItem, OneLineAvatarListItem
 from kivymd.uix.screen import MDScreen
 from plyer import gps
 from plyer.utils import platform
+
+if platform == 'android':
+    from kivy.uix.modalview import ModalView
+    from kivy.clock import Clock
+    from android.permissions import (
+        request_permissions, check_permission, Permission
+    )
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -94,7 +99,7 @@ class StaticMapMarker(MapMarker):
 
 class CustomMapView(MapView):
     manager = ObjectProperty()
-    API_KEY = "AIzaSyAQhYOzS2RNq5CQOvCyuLhGqivDombb2Jo"
+    API_KEY = "AIzaSyA8GzhJLPK0Hfryi5zHbg3RMDSMCukmQCw"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -114,7 +119,13 @@ class CustomMapView(MapView):
             open('map_cache.sqlite', 'a').close()
 
     def setup_map(self, dt):
-        self.map_source = MapSource(google_maps_api_key=self.API_KEY, source='google', attribution='Google Maps')
+        # Set up the map source to use Google Maps with the 'roadmap' type
+        self.map_source = MapSource(
+            url="https://mt0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",  # URL for Google 'roadmap' tiles
+            attribution="Google Maps",
+            max_zoom=15,
+            min_zoom=8
+        )
         self.center_marker()
 
     def center_marker(self):
@@ -161,10 +172,19 @@ class CustomMapView(MapView):
     def fetch_address(self, lat, lon):
         results = self.geocoder.reverse_geocode((lat, lon))
         if results:
-            formatted_address = results[0].get('formatted_address', 'Address not found')
-            self.cache[(lat, lon)] = formatted_address
-            Clock.schedule_once(lambda dt: self.update_coordinate_text_field(lat, lon, formatted_address))
+            full_address = results[0].get('formatted_address', 'Address not found')
+            short_address = self.get_short_address(full_address)
+            self.cache[(lat, lon)] = short_address
+            Clock.schedule_once(lambda dt: self.update_coordinate_text_field(lat, lon, short_address))
             self.manage_cache_size()
+
+    def get_short_address(self, address):
+        # Split the address by commas
+        parts = address.split(',')
+        filtered_parts = [part.strip() for part in parts if not re.match(r'^[A-Z0-9]+\s+\w+', part.strip())]
+        short_address = ', '.join(filtered_parts[:5])
+
+        return short_address
 
     def update_coordinate_text_field(self, lat, lon, address):
         screen = self.manager.get_screen("client_location")
@@ -267,7 +287,7 @@ class ItemConfirm(OneLineAvatarIconListItem):
 
 
 class ClientLocation(MDScreen):
-    API_KEY = "AIzaSyAQhYOzS2RNq5CQOvCyuLhGqivDombb2Jo"
+    API_KEY = "AIzaSyA8GzhJLPK0Hfryi5zHbg3RMDSMCukmQCw"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -290,20 +310,24 @@ class ClientLocation(MDScreen):
         return False
 
     def on_pre_enter(self):
+        Clock.schedule_once(self.request_location_permission, 0.5)
         Clock.schedule_once(self.open_modal, 1)
+
+    def request_location_permission(self, *args):
         if platform == 'android':
-            self.request_permissions()
+            if not check_permission(Permission.ACCESS_FINE_LOCATION):
+                request_permissions(
+                    [Permission.ACCESS_FINE_LOCATION],
+                    self.permission_callback
+                )
+            else:
+                self.start_gps()
 
-    def request_permissions(self):
-        from android.permissions import request_permissions, Permission
-        request_permissions([Permission.ACCESS_COARSE_LOCATION, Permission.ACCESS_FINE_LOCATION],
-                            self.permissions_callback)
-
-    def permissions_callback(self, permissions, grants):
-        if all(grants):
+    def permission_callback(self, permissions_granted):
+        if permissions_granted:
             self.start_gps()
         else:
-            print("Permissions denied")
+            print("Location permission denied")
 
     def open_modal(self, _):
         self.custom_modal_view = CustomModalView()
@@ -441,6 +465,7 @@ class ClientLocation(MDScreen):
         headers = {'Content-Type': 'application/json'}
         data = {}
         try:
+
             response = requests.post(url, headers=headers, json=data)
 
             if response.status_code == 200:
