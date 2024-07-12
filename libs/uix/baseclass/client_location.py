@@ -1,20 +1,32 @@
+import logging
+import os
 import threading
 
-import googlemaps
+import requests
+from PIL import Image
+from diskcache import Cache as DiskCache
 from googlemaps import Client as GoogleMapsClient
 from kivy.animation import Animation
 from kivy.clock import Clock
+from kivy.config import Config
+from kivy.core.image import Texture
 from kivy.core.window import Window
 from kivy.metrics import dp
-from kivy.properties import ObjectProperty, StringProperty
+from kivy.properties import ObjectProperty
+from kivy.properties import StringProperty
 from kivy.uix.behaviors import DragBehavior
 from kivy.uix.modalview import ModalView
-from kivy_garden.mapview import MapView, MapMarker, MapSource
+from kivy.utils import platform
+from kivy_garden.mapview import MapMarker, Coordinate
+from kivy_garden.mapview import MapView, MapSource
 from kivymd.uix.button import MDFloatingActionButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.list import OneLineIconListItem, IconLeftWidget, OneLineAvatarIconListItem, OneLineAvatarListItem
 from kivymd.uix.screen import MDScreen
 from plyer import gps
+from plyer.utils import platform
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 class CustomModalView(DragBehavior, ModalView):
@@ -89,10 +101,17 @@ class CustomMapView(MapView):
         self.static_marker = StaticMapMarker()
         self.add_widget(self.static_marker)
         self.geocoder = GoogleMapsClient(key=self.API_KEY)
-        self.search_event = None
         self.cache_size_limit = 100
         self.cache = {}
+        self.tile_cache_limit = 200  # Limit number of tiles to cache
+        self.tile_cache = DiskCache('tile_cache')
+        self.init_cache()
+        self.enable_hardware_acceleration()
         Clock.schedule_once(self.setup_map, 0)
+
+    def init_cache(self):
+        if not os.path.exists('map_cache.sqlite'):
+            open('map_cache.sqlite', 'a').close()
 
     def setup_map(self, dt):
         self.map_source = MapSource(google_maps_api_key=self.API_KEY, source='google', attribution='Google Maps')
@@ -104,22 +123,16 @@ class CustomMapView(MapView):
         self.update_marker_position()
         self.update_text_field()
 
+    def on_touch_up(self, touch):
+        if touch.grab_current == self:
+            screen = self.manager.get_screen("client_location")
+            screen.hide_modal_view()
+        return super().on_touch_up(touch)
+
     def on_map_relocated(self, zoom, coord):
         super().on_map_relocated(zoom, coord)
         self.update_marker_position()
         self.update_text_field()
-
-    def on_touch_up(self, touch):
-        if touch.grab_current == self:
-            touch.ungrab(self)
-            self._touch_count -= 1
-            if self._touch_count == 0:
-                self.update_marker_position()
-                screen = self.manager.get_screen("client_location")
-                if screen:
-                    screen.hide_modal_view()
-                return True
-        return super().on_touch_up(touch)
 
     def update_marker_position(self):
         scatter = self._scatter
@@ -163,6 +176,77 @@ class CustomMapView(MapView):
             oldest_key = next(iter(self.cache))
             del self.cache[oldest_key]
 
+    def cache_tile(self, tile_key, tile_data):
+        if len(self.tile_cache) > self.tile_cache_limit:
+            oldest_tile_key = next(iter(self.tile_cache))
+            del self.tile_cache[oldest_tile_key]
+        self.tile_cache[tile_key] = tile_data
+
+    def get_cached_tile(self, tile_key):
+        return self.tile_cache.get(tile_key)
+
+    def fetch_tile(self, zoom, x, y):
+        tile_key = (zoom, x, y)
+        cached_tile = self.get_cached_tile(tile_key)
+        if cached_tile:
+            return cached_tile
+        else:
+            try:
+                # Fetch tile from Google Maps or another tile server
+                url = f"https://mt.google.com/vt/lyrs=m&x={x}&y={y}&z={zoom}&key={self.API_KEY}"
+                response = requests.get(url)
+                response.raise_for_status()
+                tile_data = response.content
+                self.cache_tile(tile_key, tile_data)
+                return tile_data
+            except requests.RequestException as e:
+                logging.error(f"Error fetching tile: {e}")
+                return None
+
+    def optimize_tile_fetching(self):
+        try:
+            # Use cached tiles if available, fetch new tiles only if necessary
+            for tile in self.get_tiles():
+                zoom, x, y = tile
+                tile_data = self.fetch_tile(zoom, x, y)
+                if tile_data:
+                    self.display_tile(tile_data, x, y)
+        except Exception as e:
+            logging.error(f"Error optimizing tile fetching: {e}")
+
+    def get_tiles(self):
+        # Returns the list of tiles (zoom, x, y) that should be displayed
+        tiles = []
+        for child in self._scatter.children:
+            zoom = self.zoom
+            x, y = child.tile_pos
+            tiles.append((zoom, x, y))
+        return tiles
+
+    def enable_hardware_acceleration(self):
+        Config.set('graphics', 'multisamples', '4')
+        Config.set('graphics', 'allow_screensaver', '0')
+        Config.set('kivy', 'default_font', ['Roboto', 'data/fonts/Roboto-Regular.ttf', 'data/fonts/Roboto-Italic.ttf',
+                                            'data/fonts/Roboto-Bold.ttf', 'data/fonts/Roboto-BoldItalic.ttf'])
+
+    def display_tile(self, tile_data, x, y):
+        # Create a texture from the tile data
+        tile_texture = Texture.create(size=(256, 256))
+        tile_texture.blit_buffer(tile_data, colorfmt='rgb', bufferfmt='ubyte')
+        tile_texture.flip_vertical()
+
+        # Create an Image widget to display the texture
+        tile_image = Image(texture=tile_texture, size=(256, 256))
+
+        # Calculate the position of the tile
+        tile_pos = self.map_source.get_rowcol(self.zoom, self.lat, self.lon)
+        tile_x = x - tile_pos[1]
+        tile_y = y - tile_pos[0]
+        tile_image.pos = (tile_x * 256, tile_y * 256)
+
+        # Add the tile image to the map
+        self.add_widget(tile_image)
+
 
 class Item(OneLineAvatarListItem):
     source = StringProperty()
@@ -187,12 +271,14 @@ class ClientLocation(MDScreen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.gps = None
         self.search_event = None
         self.dialog = None
         self.longitude = None
         self.latitude = None
         self.geocoder = GoogleMapsClient(key=self.API_KEY)
         self.custom_modal_view = None
+        self.fetch_location_details(self)
         self.gps_active = False
         self.places_results = []  # Store the results for place details
         Window.bind(on_keyboard=self.on_keyboard)
@@ -205,6 +291,19 @@ class ClientLocation(MDScreen):
 
     def on_pre_enter(self):
         Clock.schedule_once(self.open_modal, 1)
+        if platform == 'android':
+            self.request_permissions()
+
+    def request_permissions(self):
+        from android.permissions import request_permissions, Permission
+        request_permissions([Permission.ACCESS_COARSE_LOCATION, Permission.ACCESS_FINE_LOCATION],
+                            self.permissions_callback)
+
+    def permissions_callback(self, permissions, grants):
+        if all(grants):
+            self.start_gps()
+        else:
+            print("Permissions denied")
 
     def open_modal(self, _):
         self.custom_modal_view = CustomModalView()
@@ -316,28 +415,43 @@ class ClientLocation(MDScreen):
         self.manager.push_replacement('available_services')
 
     def fetch_location_details(self, instance):
-        if not self.gps_active:
+        if platform == 'android':
+            self.gps = gps
+            self.gps.configure(on_location=self.on_location)
+            Clock.schedule_once(self.start_gps)
             self.start_gps()
-        else:
-            self.stop_gps()
+        if platform == 'win':
+            self.fetch_location_from_google()
 
-    def start_gps(self):
-        try:
-            gps.configure(on_location=self.on_location_received)
-            gps.start()
-            self.gps_active = True
-            print("GPS started successfully.")
-        except NotImplementedError:
-            print("GPS is not available on this platform.")
+    def start_gps(self, *args):
+        gps.start()
 
     def stop_gps(self):
         gps.stop()
-        self.gps_active = False
-        print("GPS stopped.")
 
-    def on_location_received(self, **kwargs):
+    def on_location(self, **kwargs):
         self.latitude = kwargs.get('lat')
         self.longitude = kwargs.get('lon')
         print(f"Latitude: {self.latitude}, Longitude: {self.longitude}")
         self.update_map_to_current_location()
         self.hide_modal_view()
+
+    def fetch_location_from_google(self):
+        url = "https://www.googleapis.com/geolocation/v1/geolocate?key=" + self.API_KEY
+        headers = {'Content-Type': 'application/json'}
+        data = {}
+        try:
+            response = requests.post(url, headers=headers, json=data)
+
+            if response.status_code == 200:
+                location_data = response.json()
+                self.latitude = location_data['location']['lat']
+                self.longitude = location_data['location']['lng']
+                print(f"Latitude: {self.latitude}, Longitude: {self.longitude}")
+                # Now you can update your UI or perform any other actions with the location data
+                self.update_map_to_current_location()
+                self.hide_modal_view()
+            else:
+                print(f"Failed to fetch location: {response.status_code}")
+        except Exception:
+            pass
