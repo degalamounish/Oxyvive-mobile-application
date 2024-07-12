@@ -1,17 +1,21 @@
 <AvailableService>:
-    BoxLayout:
-        orientation: 'vertical'
+    MDSliverAppbar:
+        background_color: "red"
+        toolbar_cls:root.silver_tool_bar
 
-        SliverToolbar:
-            id: silver_tool_bar
-            title: "Available Services"
-            left_action_items: [["arrow-left", lambda x: root.go_back()]]
-            elevation: 10
+        MDSliverAppbarHeader:
 
-        ScrollView:
-            MDBoxLayout:
-                id: content
-                orientation: "vertical"
-                padding: "12dp"
-                spacing: "12dp"
-                adaptive_height: True
+            MDRelativeLayout:
+
+                MapView:
+                    id:mapview
+                    zoom:13
+                    lat:13.0358
+                    lon:77.5970
+
+        MDSliverAppbarContent:
+            id: content
+            orientation: "vertical"
+            padding: "12dp"
+            spacing: "12dp"
+            adaptive_height: True
