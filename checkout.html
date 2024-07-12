@@ -1,0 +1,45 @@
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <title>Razorpay Checkout</title>
+            <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        </head>
+        <body>
+        <script>
+            var options = {
+                "key": "rzp_test_41ch2lqayiGZ9X",
+                "amount": "99900",
+                "currency": "INR",
+                "name": "Oxivive",
+                "description": "Test Transaction",
+                "order_id": "order_OWoRCirOj7HxtK",
+                "handler": function (response) {
+                    // Send payment ID to server endpoint
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', 'http://localhost:9000/success?payment_id=' + response.razorpay_payment_id, true);
+                    xhr.send();
+
+                    // Alert and redirect
+                    alert("Payment successful! Payment ID: " + response.razorpay_payment_id);
+                    window.location.href = "http://localhost:9000/success";
+                },
+                "prefill": {
+                    "name": "Your Name",
+                    "email": "your.email@example.com",
+                    "contact": "9999999999"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.on('payment.failed', function (response) {
+                alert("Payment failed! Error: " + response.error.reason);
+            });
+            rzp1.open();
+        </script>
+        </body>
+        </html>
+        

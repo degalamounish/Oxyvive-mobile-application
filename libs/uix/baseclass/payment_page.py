@@ -1,17 +1,22 @@
 import json
 import random
 import string
+import time
 import webbrowser
 from datetime import datetime
+from http.server import SimpleHTTPRequestHandler, HTTPServer
+from threading import Thread
+from urllib.parse import urlparse, parse_qs
 
+import anvil
 import razorpay
+import requests
 from anvil.tables import app_tables
+from kivy.clock import Clock
 from kivy.core.window import Window
-from kivymd.uix.screen import MDScreen
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
-from kivy.clock import Clock
-import anvil
+from kivymd.uix.screen import MDScreen
 from kivymd.uix.textfield import MDTextField
 from server import Server
 
@@ -23,9 +28,7 @@ class Payment(MDScreen):
 
     def __init__(self, **kwargs):
         super(Payment, self).__init__(**kwargs)
-
-        self.confirm_cancel_dialog = None
-        self.payment_id_field = None
+        self.razorpay_payment_id = None
         self.dialog = None
         self.tax = None
         Window.bind(on_keyboard=self.on_keyboard)
@@ -57,36 +60,7 @@ class Payment(MDScreen):
         except (FileNotFoundError, json.JSONDecodeError) as e:
             print(f"Error reading user_data.json: {e}")
 
-    def razor_pay(self):
-        client = razorpay.Client(auth=('rzp_test_kOpS7Ythlfb1Ho', 'OzPZyPbsOV0AlADilk4wkgv9'))
-
-        # Create an order
-        order_amount = 5000  # Amount in paise (e.g., 50000 paise = 500 INR)
-        order_currency = 'INR'
-        order_receipt = 'order_rcptid_12'
-
-        order_data = {
-            'amount': order_amount,
-            'currency': order_currency,
-            'receipt': order_receipt,
-            'payment_capture': 1  # Automatically capture payment when order is created
-        }
-        try:
-            order = client.order.create(data=order_data)
-            # Get the order ID
-            order_id = order['id']
-            # client.payment.launch(order_id)
-
-            # Construct the payment URL
-            payment_url = f"https://rzp_test_kOpS7Ythlfb1Ho.api.razorpay.com/v1/checkout/{order_id}"
-            self.open_payment_gateway(payment_url)
-            self.show_validation_dialog("Payment Successful")
-            anvil.server.connect("server_UY47LMUKBDUJMU4EA3RKLXCC-LP5NLIEYMCLMZ4NU")
-
-        except Exception as e:
-            print("An error occurred while creating the order:", str(e))
-
-    def open_payment_gateway(self):
+    def store_booked_data(self):
         with open('booking_data.json', 'r') as file:
             booking_data = json.load(file)
         oxi_id = booking_data.get('user_id', '')
@@ -107,9 +81,10 @@ class Payment(MDScreen):
                     oxi_book_date=date_object,
                     oxi_book_time=book_time,
                     oxi_date_time=date_time,
-                    oxi_payment_id=self.payment_id_field.text
+                    oxi_payment_id=self.razorpay_payment_id
                 )
-                self.show_validation_dialog("Your slot is successfully booked. You will receive an instant response from Oxivive.")
+                self.show_validation_dialog(
+                    "Your slot is successfully booked. You will receive an instant response from Oxivive.")
             else:
                 self.show_validation_dialog("No internet connection")
 
@@ -117,84 +92,6 @@ class Payment(MDScreen):
             print(e)
             self.show_validation_dialog("Error processing user data")
 
-    def payment_id(self):
-        Clock.schedule_once(lambda dt: self.payment_id_dialog(), 0)
-        print(f"Opening Razorpay payment gateway")
-        website_url = 'http://razorpay.me/@oxivivelifecareprivatelimited'
-        webbrowser.open(website_url)
-
-    def payment_id_dialog(self):
-        self.payment_id_field = MDTextField(
-            hint_text="Payment ID",
-            mode="rectangle"
-        )
-
-        self.dialog = MDDialog(
-            title="Enter Payment ID",
-            type="custom",
-            content_cls=self.payment_id_field,
-            auto_dismiss=False,  # Prevent dismissing on outside click
-            buttons=[
-                MDFlatButton(
-                    text="CANCEL",
-                    on_release=self.confirm_cancel_dialog_open
-                ),
-                MDFlatButton(
-                    text="OK",
-                    on_release=self.validate_and_print_payment_id
-                ),
-            ],
-        )
-        self.dialog.open()
-
-    def confirm_cancel_dialog_open(self, *args):
-        if not self.confirm_cancel_dialog:
-            self.confirm_cancel_dialog = MDDialog(
-                title="Cancel Confirmation",
-                text="If you paid, paste the Payment ID. Otherwise, click OK to cancel your booking.",
-                auto_dismiss=False,  # Prevent dismissing on outside click
-                buttons=[
-                    MDFlatButton(
-                        text="CANCEL",
-                        on_release=self.dismiss_confirm_cancel_dialog
-                    ),
-                    MDFlatButton(
-                        text="OK",
-                        on_release=self.close_dialog
-                    ),
-                ],
-            )
-        self.confirm_cancel_dialog.open()
-
-    def dismiss_confirm_cancel_dialog(self, *args):
-        if self.confirm_cancel_dialog:
-            self.confirm_cancel_dialog.dismiss()
-
-    def close_dialog(self, *args):
-        if self.dialog:
-            self.dialog.dismiss()
-        if self.confirm_cancel_dialog:
-            self.confirm_cancel_dialog.dismiss()
-
-    def validate_and_print_payment_id(self, *args):
-        payment_id = self.payment_id_field.text
-        if not payment_id.strip():
-            alert_dialog = MDDialog(
-                title="Alert",
-                text="Please enter Payment ID. Without entering Payment ID, your slot is not booked.",
-                auto_dismiss=False,  # Prevent dismissing on outside click
-                buttons=[
-                    MDFlatButton(
-                        text="OK",
-                        on_release=lambda x: alert_dialog.dismiss()
-                    )
-                ]
-            )
-            alert_dialog.open()
-        else:
-            print(f"Payment ID entered: {payment_id}")
-            self.dialog.dismiss()
-            self.open_payment_gateway()
     def show_validation_dialog(self, message):
         # Create the dialog asynchronously
         Clock.schedule_once(lambda dt: self._create_dialog(message), 0)
@@ -249,3 +146,165 @@ class Payment(MDScreen):
         code = prefix + random_numbers
 
         return code
+
+    def initiate_payment(self):
+        print("Initiating payment...")
+        amount = 999  # Amount in INR (sub-units, e.g., 100 INR = 10000 paisa)
+        api_key = 'rzp_test_41ch2lqayiGZ9X'
+        api_secret = 'CPEd7kVR1d215BH12bIoJb63'
+
+        try:
+            # Create an order
+            response = requests.post(
+                'https://api.razorpay.com/v1/orders',
+                auth=(api_key, api_secret),
+                data=json.dumps({
+                    'amount': amount * 100,  # Amount in paisa
+                    'currency': 'INR',
+                    'receipt': 'order_rcptid_12',
+                    'payment_capture': '1'
+                }),
+                headers={'Content-Type': 'application/json'}
+            )
+            response.raise_for_status()  # Raise an exception for HTTP errors
+
+            order_data = response.json()
+            print(f"Order created successfully. Order ID: {order_data['id']}")
+            order_id = order_data['id']
+
+            # Update the HTML file with the order ID and amount
+            self.update_html_file(order_id, amount * 100)
+
+            # Serve the HTML file and open it in an external browser
+            self.serve_and_open_html()
+
+        except requests.exceptions.HTTPError as http_err:
+            print(f"HTTP error occurred: {http_err}")  # Debug: print HTTP errors
+        except Exception as err:
+            print(f"Other error occurred: {err}")  # Debug: print other errors
+
+    # Modify update_html_file to include capturing payment ID
+    def update_html_file(self, order_id, amount):
+        print(f"Updating HTML file with order ID: {order_id} and amount: {amount}")
+        html_content = f"""
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <title>Razorpay Checkout</title>
+            <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        </head>
+        <body>
+        <script>
+            var options = {{
+                "key": "rzp_test_41ch2lqayiGZ9X",
+                "amount": "{amount}",
+                "currency": "INR",
+                "name": "Oxivive",
+                "description": "Test Transaction",
+                "order_id": "{order_id}",
+                "handler": function (response) {{
+                    // Send payment ID to server endpoint
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', 'http://localhost:9000/success?payment_id=' + response.razorpay_payment_id, true);
+                    xhr.send();
+
+                    // Alert and redirect
+                    alert("Payment successful! Payment ID: " + response.razorpay_payment_id);
+                    window.location.href = "http://localhost:9000/success";
+                }},
+                "prefill": {{
+                    "name": "Your Name",
+                    "email": "your.email@example.com",
+                    "contact": "9999999999"
+                }},
+                "theme": {{
+                    "color": "#3399cc"
+                }}
+            }};
+            var rzp1 = new Razorpay(options);
+            rzp1.on('payment.failed', function (response) {{
+                alert("Payment failed! Error: " + response.error.reason);
+            }});
+            rzp1.open();
+        </script>
+        </body>
+        </html>
+        """
+        with open("checkout.html", "w") as file:
+            file.write(html_content)
+        print("HTML file updated successfully.")
+
+    # Modify CustomHandler to capture payment ID and print in PyCharm console
+    def serve_and_open_html(self):
+        def serve(app):
+            class CustomHandler(SimpleHTTPRequestHandler):
+                def __init__(self, *args, **kwargs):
+                    self.app = app
+                    super().__init__(*args, **kwargs)
+
+                def do_GET(self):
+                    if self.path.startswith('/success'):
+                        # Extract payment_id from query parameters
+                        parsed_url = urlparse(self.path)
+                        query_params = parse_qs(parsed_url.query)
+                        payment_id = query_params.get('payment_id', [''])[0]
+
+                        if payment_id:
+                            print(f"Payment successful! Payment ID: {payment_id}")
+                            self.app.razorpay_payment_id = payment_id
+
+                        print("Success page requested.")
+                        self.send_response(200)
+                        self.send_header("Content-type", "text/html")
+                        self.end_headers()
+                        # Send updated content with "Payment Success" title
+                        self.wfile.write(b"""
+                            <!DOCTYPE html>
+                                <html lang="en">
+                                    <head>
+                                        <meta charset="UTF-8">
+                                        <title>Oxivive Payment Success</title>
+                                    </head>
+                                    <body>
+                                        <h1>Payment Successful!</h1>
+                                    </body>
+                                </html>
+                            """)
+                        print("Sending response to success page request.")
+                        print("Shutting down the server and switching to success screen.")
+                        # Start a thread to handle the server shutdown and screen switch
+                        shutdown_thread = Thread(target=self.app.shutdown_and_switch)
+                        shutdown_thread.start()
+                    else:
+                        print(f"Serving file: {self.path}")
+                        super().do_GET()
+
+            httpd = HTTPServer(('localhost', 9000), CustomHandler)
+            print("Local server started. Serving at http://localhost:9000/checkout.html")
+            httpd.serve_forever()
+
+        # Start the server in a new thread
+        server_thread = Thread(target=serve, args=(self,))
+        server_thread.daemon = True
+        server_thread.start()
+
+        # Open the HTML file using the default web browser
+        print("Opening Razorpay checkout page...")
+        webbrowser.open("http://localhost:9000/checkout.html")
+
+    # Function to shutdown server and switch screens
+    def shutdown_and_switch(self):
+        time.sleep(1)  # Delay to ensure server shutdown before switching screens
+        print("Server shutdown initiated.")
+        # Switch to the success screen in the main thread
+        self.switch_to_success_screen()
+
+    # Function to switch to success screen
+    def switch_to_success_screen(self):
+        def switch_screen(dt):
+            self.store_booked_data()
+            self.manager.push_replacement('client_services')
+            print("Switched to success screen.")
+
+        Clock.schedule_once(switch_screen, 0)
