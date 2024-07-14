@@ -4,14 +4,14 @@ from kivy.core.window import Window
 from kivy.properties import ObjectProperty
 from kivy.uix.image import Image
 from kivy.uix.boxlayout import BoxLayout
-
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.toolbar import MDTopAppBar
 from kivymd.uix.card import MDCard
 from kivymd.uix.label import MDLabel
 from kivymd.uix.button import MDRaisedButton, MDFillRoundFlatButton
 from kivymd.uix.boxlayout import MDBoxLayout
-
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button import MDFlatButton
 
 class SliverToolbar(MDTopAppBar):
     manager = ObjectProperty()
@@ -47,6 +47,26 @@ class AvailableService(MDScreen):
         self.silver_tool_bar.manager = self.manager
         self.fetch_list_of_pincodes()
 
+    def show_no_service_popup(self):
+        dialog = MDDialog(
+            title="Service Unavailable",
+            text="We are not available in your area yet. Please search another location or select one with the help of the map.",
+            buttons=[
+                MDFlatButton(
+                    text="OK",
+                    on_release=lambda x: self.close_dialog()
+                )
+            ],
+        )
+        self.dialog = dialog
+        dialog.open()
+
+    def close_dialog(self):
+        if hasattr(self, 'dialog'):
+            self.dialog.dismiss()
+            self.dialog = None
+            self.manager.current = 'client_location'
+
     def populate_cards(self, service=None):
         pincodes = self.fetch_list_of_pincodes()
 
@@ -58,7 +78,14 @@ class AvailableService(MDScreen):
         # Combine all results
         all_results = list(results_oxiclinics) + list(results_oxigyms) + list(results_oxiwheels)
 
+        # Clear existing widgets
         self.ids.content.clear_widgets()
+
+        # Check if no services are available
+        if not all_results:
+            self.show_no_service_popup()
+            return
+
         for service in all_results:
             service_dict = dict(service)
             print(f"Service: {service_dict}")

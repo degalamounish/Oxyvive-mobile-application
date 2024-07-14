@@ -155,6 +155,11 @@
         "object": "ServicerDetails()",
         "kv": "libs/uix/kv/servicer_details.kv"
     },
+    "details":{
+        "import": "from libs.uix.baseclass.booking_details import DetailsScreen",
+        "object": "DetailsScreen()",
+        "kv": "libs/uix/kv/booking_details.kv"
+    },
     "Screen_name": {
         "import": "",
         "object": "()",

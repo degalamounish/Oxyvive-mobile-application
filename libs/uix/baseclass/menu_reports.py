@@ -6,25 +6,17 @@ from kivy.core.window import Window
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
-import os
-from kivymd.app import MDApp
-from kivy.lang import Builder
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
-from anvil.tables import app_tables
+from fpdf import FPDF
 import anvil.server
 
 class Report(MDScreen):
     def __init__(self, **kwargs):
         super(Report, self).__init__(**kwargs)
         Window.bind(on_keyboard=self.on_keyboard)
-        # self.invoice_app = InvoiceApp()
 
     def on_keyboard(self, instance, key, scancode, codepoint, modifier):
         if key == 27:  # Keycode for the back button on Android
-            self.reports_back()
+            self.go_back()
             return True
         return False
 
@@ -33,20 +25,12 @@ class Report(MDScreen):
 
     def on_enter(self):
         self.fetch_data_from_anvil()
-# class InvoiceApp():
-#     def build(self):
-#         self.title = 'Invoice Generator'
-#         self.root = Builder.load_file('menu_reports.kv')
-#         self.fetch_data_from_anvil()
 
     def fetch_data_from_anvil(self):
         try:
-            anvil.server.connect("server_YIC6OAWPGEQYBFQPKYFQURNH-EHPN322OL4WF5PEF")
-            # Fetch data from Anvil
             with open('user_data.json', 'r') as file:
                 user_info = json.load(file)
             d = app_tables.oxi_reports.get(oxi_id=user_info.get('id'))
-            print(d)
 
             if d is not None:
                 # Populate UI fields with fetched data
@@ -75,7 +59,9 @@ class Report(MDScreen):
             session = self.ids.session.text
             payable_to = self.ids.payable_to.text
             bank_details = self.ids.bank_details.text
-            d = app_tables.oxi_reports.get(oxi_email='yathishgowda@gmail.com')
+            with open('user_data.json', 'r') as file:
+                user_info = json.load(file)
+            d = app_tables.oxi_reports.get(oxi_id=user_info.get('id'))
             price = float(d['oxi_price'])  # Assuming price is fetched from database
             quantity = 1  # Example quantity, adjust as per your data model
 
@@ -85,97 +71,80 @@ class Report(MDScreen):
             grand_total = subtotal + cgst + sgst
 
             # Create PDF document
-            c = canvas.Canvas("invoice.pdf", pagesize=letter)
-            width, height = letter
+            pdf = FPDF()
+            pdf.add_page()
 
-            # Draw company name and image
-            c.drawImage('images/shot.png', 50, height - 150, width=100, height=100)
-            c.setFont("Helvetica-Bold", 24)
-            c.drawString(170, height - 80, "Oxivive")
-            c.setFont("Helvetica", 18)
-            c.drawString(170, height - 100, "Anti-aging shot therapy")
+            # Add company logo and name
+            pdf.image('images/shot.png', x=10, y=8, w=33)
+            pdf.set_font('Arial', 'B', 12)
+            pdf.cell(0, 20, '', 0, 1)  # Add some space below the logo
+            pdf.cell(0, 10, 'Oxivive - Anti-aging shot therapy', 0, 1, 'C')
 
-            # Draw patient information
-            c.setFont("Helvetica-Bold", 18)
-            c.drawString(50, height - 200, "Patient Name:")
-            c.setFont("Helvetica", 18)
-            c.drawString(200, height - 200, patient_name)
+            # Add patient information
+            pdf.set_font('Arial', 'B', 12)
+            pdf.cell(0, 10, '', 0, 1)  # Add some space
+            pdf.cell(50, 10, 'Patient Name:', 0, 0)
+            pdf.set_font('Arial', '', 12)
+            pdf.cell(0, 10, patient_name, 0, 1)
 
-            # Draw doctor information
-            c.setFont("Helvetica-Bold", 18)
-            c.drawString(50, height - 235, "Doctor Name:")
-            c.setFont("Helvetica", 18)
-            c.drawString(200, height - 235, doctor_name)
+            pdf.set_font('Arial', 'B', 12)
+            pdf.cell(50, 10, 'Doctor Name:', 0, 0)
+            pdf.set_font('Arial', '', 12)
+            pdf.cell(0, 10, doctor_name, 0, 1)
 
-            # Draw service type information
-            c.setFont("Helvetica-Bold", 18)
-            c.drawString(50, height - 270, "Service Type:")
-            c.setFont("Helvetica", 18)
-            c.drawString(200, height - 270, service_type)
+            pdf.set_font('Arial', 'B', 12)
+            pdf.cell(50, 10, 'Service Type:', 0, 0)
+            pdf.set_font('Arial', '', 12)
+            pdf.cell(0, 10, service_type, 0, 1)
 
-            # Draw session information
-            c.setFont("Helvetica-Bold", 18)
-            c.drawString(50, height - 305, "Session:")
-            c.setFont("Helvetica", 18)
-            c.drawString(200, height - 305, session)
+            pdf.set_font('Arial', 'B', 12)
+            pdf.cell(50, 10, 'Session:', 0, 0)
+            pdf.set_font('Arial', '', 12)
+            pdf.cell(0, 10, session, 0, 1)
 
-            # Draw payable to information
-            c.setFont("Helvetica-Bold", 18)
-            c.drawString(50, height - 340, "Payable to:")
-            c.setFont("Helvetica", 18)
-            c.drawString(200, height - 340, payable_to)
+            pdf.set_font('Arial', 'B', 12)
+            pdf.cell(50, 10, 'Payable to:', 0, 0)
+            pdf.set_font('Arial', '', 12)
+            pdf.cell(0, 10, payable_to, 0, 1)
 
-            # Draw bank details information
-            c.setFont("Helvetica-Bold", 18)
-            c.drawString(50, height - 375, "Bank Details:")
-            c.setFont("Helvetica", 18)
-            c.drawString(200, height - 375, bank_details)
+            pdf.set_font('Arial', 'B', 12)
+            pdf.cell(50, 10, 'Bank Details:', 0, 0)
+            pdf.set_font('Arial', '', 12)
+            pdf.cell(0, 10, bank_details, 0, 1)
 
-            table_headers = ["Service Type", "Price", "Total"]
-            col_widths = [280, 80, 80]
-            row_height = 30
-            x_start = 50
-            y_start = height - 430
+            # Add table with service details
+            pdf.cell(0, 10, '', 0, 1)  # Add empty line
+            pdf.set_fill_color(200, 220, 255)
+            pdf.set_font('Arial', 'B', 12)
+            pdf.cell(95, 10, 'Service Type', 1, 0, 'C', 1)
+            pdf.cell(30, 10, 'Price', 1, 0, 'C', 1)
+            pdf.cell(30, 10, 'Total', 1, 1, 'C', 1)
 
-            c.setFillColorRGB(1, 0, 0)  # Set header text color to black
-            c.setStrokeColorRGB(0, 0, 0)  # Set header border color to black
-            c.setFont("Helvetica-Bold", 12)
+            pdf.set_font('Arial', '', 12)
+            pdf.cell(95, 10, service_type, 1)
+            pdf.cell(30, 10, f'${price:.2f}', 1)
+            pdf.cell(30, 10, f'${subtotal:.2f}', 1, 1)
 
-            for i, header in enumerate(table_headers):
-                c.rect(x_start + sum(col_widths[:i]), y_start, col_widths[i], row_height, fill=1)
-                c.drawString(x_start + sum(col_widths[:i]) + 10, y_start + 10, header)
+            # Add totals
+            pdf.cell(0, 10, '', 0, 1)  # Add empty line
+            pdf.set_font('Arial', 'B', 12)
+            pdf.cell(95, 10, 'Sub Total:', 0)
+            pdf.cell(30, 10, f'${subtotal:.2f}', 0, 1, 'R')
 
-            # Fetch data from database and add rows dynamically
-            data = [
-                [self.ids.service_type.text, "${:.2f}".format(price), "${:.2f}".format(subtotal)],
-            ]
+            pdf.cell(95, 10, 'CGST (8%):', 0)
+            pdf.cell(30, 10, f'${cgst:.2f}', 0, 1, 'R')
 
-            # Draw table data
-            c.setFillColorRGB(0, 0, 0)  # Black color for text
-            for row_index, row_data in enumerate(data):
-                for col_index, cell_value in enumerate(row_data):
-                    c.rect(x_start + sum(col_widths[:col_index]), y_start - (row_index + 1) * row_height,
-                           col_widths[col_index], row_height, fill=0)
-                    c.drawString(x_start + sum(col_widths[:col_index]) + 10,
-                                 y_start - (row_index + 1) * row_height + 10,
-                                 cell_value)
+            pdf.cell(95, 10, 'SGST (8%):', 0)
+            pdf.cell(30, 10, f'${sgst:.2f}', 0, 1, 'R')
 
-            # Draw subtotal, taxes, and grand total
-            c.setFont("Helvetica-Bold", 18)
-            c.drawString(200, y_start - (len(data) + 1) * row_height - 20, "Sub Total:")
-            c.drawString(350, y_start - (len(data) + 1) * row_height - 20, "${:.2f}".format(subtotal))
-            c.drawString(200, y_start - (len(data) + 2) * row_height - 20, "CGST (8%):")
-            c.drawString(350, y_start - (len(data) + 2) * row_height - 20, "${:.2f}".format(cgst))
-            c.drawString(200, y_start - (len(data) + 3) * row_height - 20, "SGST (8%):")
-            c.drawString(350, y_start - (len(data) + 3) * row_height - 20, "${:.2f}".format(sgst))
-            c.setFont("Helvetica-Bold", 18)
-            c.drawString(200, y_start - (len(data) + 4) * row_height - 20, "Grand Total:")
-            c.drawString(350, y_start - (len(data) + 4) * row_height - 20, "${:.2f}".format(grand_total))
+            pdf.cell(95, 10, 'Grand Total:', 0)
+            pdf.cell(30, 10, f'${grand_total:.2f}', 0, 1, 'R')
 
-            c.save()
+            # Save PDF
+            pdf_name = "invoice.pdf"
+            pdf.output(pdf_name)
 
             # Print the PDF name and path
-            pdf_name = "invoice.pdf"
             pdf_path = os.path.abspath(pdf_name)  # Get absolute path to the PDF
             print(f"PDF saved successfully:\nName: {pdf_name}\nPath: {pdf_path}")
 
@@ -197,3 +166,4 @@ class Report(MDScreen):
         self.ids.sgst_label.text = "$0.00"
         self.ids.grand_total_label.text = "$0.00"
 
+# Note: Ensure you have the necessary UI elements with the correct IDs in your KV file.

@@ -2,35 +2,169 @@ import base64
 import io
 import json
 import os
-
-import anvil
 from PIL.Image import Image
 from anvil.tables import app_tables
 from kivy.animation import Animation
-from kivy.atlas import CoreImage
 from kivy.clock import Clock
 from kivy.properties import StringProperty, ObjectProperty, DictProperty
-from kivy.uix import image
-from kivy.uix.screenmanager import Screen
+from kivy.uix.image import Image as KivyImage
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.hero import MDHeroFrom
 from kivymd.uix.imagelist import MDSmartTile
 from kivymd.uix.relativelayout import MDRelativeLayout
 from kivymd.uix.screen import MDScreen
-
 from server import Server
-
-from kivy.uix.behaviors import ButtonBehavior
-from kivy.uix.image import Image
-
-
-import json
-import base64
-import io
+from kivymd.uix.button import MDRaisedButton, MDIconButton
+from kivymd.uix.card import MDCard
+from kivymd.uix.label import MDLabel
+from kivy.utils import get_color_from_hex
+from kivymd.uix.toolbar import MDTopAppBar
+from kivy.uix.scrollview import ScrollView
+from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen
 from kivy.properties import ObjectProperty
-from kivy.graphics.texture import Texture
-from PIL import Image
+
+
+class Activity(MDBoxLayout):
+    manager = ObjectProperty()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.orientation = 'vertical'
+        self.padding = 10
+        self.spacing = 20
+        self.md_bg_color = get_color_from_hex("#FFFFFF")
+
+    def back_btn(self):
+        print("Back button pressed")
+        if self.manager:
+            screen = self.manager.get_screen('client_services')
+            screen.ids.bottom_nav.switch_tab('home screen')
+        else:
+            print("Manager is not set.")
+
+
+class BookingDetails(Screen):
+    manager = ObjectProperty(None)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.manager = kwargs.get('manager', None)
+        if self.manager is None:
+            raise ValueError("Manager must be provided")
+
+        toolbar = MDTopAppBar(
+            title="My Bookings",
+            elevation=0,
+            pos_hint={'top': 1}
+        )
+        toolbar.left_action_items = [["arrow-left", lambda x: self.back_callback()]]
+        toolbar.md_bg_color = get_color_from_hex("#FF0000")
+        self.add_widget(toolbar)
+
+        self.bookings_layout = MDBoxLayout(
+            orientation='vertical',
+            padding=(40, 30, 40, 10),
+            spacing=15,
+            size_hint_y=None
+        )
+        self.bookings_layout.bind(minimum_height=self.bookings_layout.setter('height'))
+
+        scroll_view = ScrollView(size_hint=(1, None))
+        toolbar_height = toolbar.height
+        top_margin = 0.875
+        bottom_margin = 0
+        window_height = Window.height
+        scroll_view_height = window_height * (top_margin - bottom_margin) - toolbar_height
+        scroll_view.size = (Window.width, scroll_view_height)
+        scroll_view.pos_hint = {'top': top_margin}
+        scroll_view.pos = (0, (bottom_margin * window_height) - scroll_view_height)
+        scroll_view.add_widget(self.bookings_layout)
+        self.add_widget(scroll_view)
+
+    def back_callback(self):
+        screen = self.manager.get_screen('client_services')
+        screen.ids.bottom_nav.switch_tab('home screen')
+
+    def display_bookings(self, bookings):
+        for booking in bookings:
+            book_date = booking['oxi_book_date']
+            book_time = booking['oxi_date_time']
+            service_type = booking['service_type']
+            user_id = booking['oxi_id']
+            username = booking['username']
+            booking_date_str = book_date.strftime('%d %B %Y')
+            day, month, year = booking_date_str.split(' ')
+
+            service_images = {
+                "Oxi-Clinic": "images/1.png",
+                "Oxi-Wheel": "images/3.png",
+                "Oxi-Home": "images/2.png"
+            }
+            image_source = service_images.get(service_type, None)
+
+            booking_card = MDCard(
+                orientation='horizontal',
+                size_hint=(1, None),
+                height='130dp',
+                elevation=2,
+                padding=13,
+                spacing=5,
+                md_bg_color=get_color_from_hex("#FFFFFF"),
+                radius=[15, 15, 15, 15]
+            )
+
+            left_layout = MDBoxLayout(orientation='horizontal', padding=(0, 0, 0, 0), size_hint_x=0.85)
+            if image_source:
+                left_layout.add_widget(KivyImage(source=image_source, size_hint=(None, None), size=("110dp", "110dp")))
+
+            details_layout = MDBoxLayout(orientation='vertical', padding=(10, 0, 0, 0))
+            details_layout.add_widget(MDLabel(text=f"Service Type: {service_type}", theme_text_color="Custom",
+                                              text_color=get_color_from_hex("#000000")))
+            details_layout.add_widget(MDLabel(text=f"User ID: {user_id}", theme_text_color="Custom",
+                                              text_color=get_color_from_hex("#000000")))
+            details_layout.add_widget(MDLabel(text=f"User Name: {username}", theme_text_color="Custom",
+                                              text_color=get_color_from_hex("#000000")))
+            details_layout.add_widget(
+                MDLabel(text=f"Time: {book_time}", theme_text_color="Custom", text_color=get_color_from_hex("#000000")))
+            left_layout.add_widget(details_layout)
+
+            right_layout = MDBoxLayout(orientation='horizontal', size_hint_x=0.3)
+            date_layout = MDBoxLayout(orientation='vertical', size_hint=(None, None), size=("110dp", "110dp"),
+                                      md_bg_color=get_color_from_hex("#C0C0C0"), radius=[15, 15, 15, 15])
+            date_layout.add_widget(
+                MDLabel(text=day, theme_text_color="Custom", text_color=get_color_from_hex("#000000"), halign="center"))
+            date_layout.add_widget(
+                MDLabel(text=month, theme_text_color="Custom", text_color=get_color_from_hex("#000000"),
+                        halign="center"))
+            date_layout.add_widget(
+                MDLabel(text=year, theme_text_color="Custom", text_color=get_color_from_hex("#000000"),
+                        halign="center"))
+
+            button_layout = MDBoxLayout(orientation='vertical', size_hint=(None, None), size=("50dp", "60dp"),
+                                        padding=(40, 0, 0, 43))
+            button_layout.add_widget(
+                MDIconButton(icon="chevron-right", theme_text_color="Custom", text_color=get_color_from_hex("#000000"),
+                             pos_hint={"center_y": 0.5},
+                             on_release=lambda x, service_type=service_type, book_date=str(book_date),
+                                               book_time=book_time: self.view_booking_details(service_type, book_date,
+                                                                                              book_time)))
+
+            right_layout.add_widget(date_layout)
+            right_layout.add_widget(button_layout)
+
+            booking_card.add_widget(left_layout)
+            booking_card.add_widget(right_layout)
+            self.bookings_layout.add_widget(booking_card)
+
+    def view_booking_details(self, service_type, book_date, book_time):
+        self.manager.load_screen("details")
+        details_screen = self.manager.get_screen('details')
+        details_screen.set_details(service_type, book_date, book_time)
+        self.manager.current = 'details'
+
+    def go_back(self):
+        self.root.current = 'booking_details'
 
 
 class Profile_screen(Screen):
@@ -145,8 +279,11 @@ class Profile_screen(Screen):
             print("Error decoding JSON file.")
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
+
+
 class NavigationDrawerScreen(MDScreen):
     pass
+
 
 class CustomImageTile(MDSmartTile):
 
@@ -257,7 +394,7 @@ class Client_services(MDScreen):
             img_byte_arr = io.BytesIO()
             image.save(img_byte_arr, format='PNG')
             img_byte_arr = img_byte_arr.getvalue()
-            profile_texture=img_byte_arr
+            profile_texture = img_byte_arr
         profile_image_path = "profile_image.png"
         with open(profile_image_path, "wb") as profile_image_file:
             profile_image_file.write(profile_texture)
@@ -308,3 +445,33 @@ class Client_services(MDScreen):
 
     def switch_to_service_screen(self):
         self.ids.bottom_nav.switch_tab('service_screen')
+
+    import json
+
+    def activity_report(self):
+        # Assuming your JSON file structure looks like {'user_id': 'some_user_id'}
+        with open('user_data.json', 'r') as f:
+            data = json.load(f)
+            current_user_id = data.get('id', None)
+
+        if current_user_id is None:
+            print("User ID not found in JSON file.")
+            return
+
+        print(f"Current user ID: {current_user_id}")
+
+        all_bookings = app_tables.oxi_book_slot.search()  # Fetch all bookings
+        bookings = [booking for booking in all_bookings if booking['oxi_id'] == current_user_id]
+
+        self.ids.activity.clear_widgets()  # Clear existing widgets first
+        print(f"Bookings found: {bookings}")
+
+        if not bookings:
+            print("No bookings found, displaying Activity UI")
+            self.ids.activity.add_widget(Activity(manager=self.manager))
+        else:
+            print("Bookings found, displaying booking details")
+            booking_details = BookingDetails(manager=self.manager)  # Pass the manager
+            booking_details.display_bookings(bookings)
+            self.ids.activity.add_widget(booking_details)
+
