@@ -1,0 +1,19 @@
+<DetailsScreen>:
+    name: 'details'
+
+    BoxLayout:
+        orientation: 'vertical'
+
+        MDTopAppBar:
+            title: "Booking Details"
+            left_action_items: [["arrow-left", lambda x: root.go_back()]]
+            md_bg_color: get_color_from_hex("#FF0000")
+
+        ScrollView:
+            MDBoxLayout:
+                id: details_box
+                orientation: 'vertical'
+                padding: dp(10)
+                spacing: dp(10)
+                size_hint_y: None
+                height: self.minimum_height

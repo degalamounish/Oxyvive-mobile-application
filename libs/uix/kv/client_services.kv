@@ -1,3 +1,110 @@
+<Activity>:
+    orientation: 'vertical'
+    padding:dp(10)
+    spacing:dp(20)
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    MDTopAppBar:
+        title: 'My Bookings'
+        elevation: 0
+        pos_hint: {'top': 1}
+        left_action_items: [["arrow-left", lambda x: root.back_btn()]]
+        md_bg_color: get_color_from_hex("#FF0000")
+
+    MDScrollView:
+        do_scroll_x: False
+        do_scroll_y: True
+
+        MDBoxLayout:
+            id: bookings_layout
+            orientation: 'vertical'
+            size_hint_y: None
+            height: self.minimum_height
+            spacing:dp(20)
+            padding: [40, 10, 40, 10]
+
+            MDLabel:
+                text: "Appointments"
+                font_size: '18dp'
+                halign: 'left'
+                valign: 'middle'
+                size_hint_y: None
+                height: self.texture_size[1]
+                theme_text_color: "Custom"
+                text_color: 0, 0, 0, 1
+
+                canvas.before:
+                    Color:
+                        rgba: 0, 0, 0, 1  # Line color (black with 20% opacity)
+                    Rectangle:
+                        pos: self.x + 1, self.top - 50  # Adjust position of the line
+                        size: self.width - 6, 0.8  # Adjust width and height of the line
+
+            Image:
+                source: 'images/calender-booking-page.jpg'
+                size_hint_y: None
+                height: '190dp'
+                allow_stretch: True
+                keep_ratio: True
+
+            MDLabel:
+                text: "You haven't booked any appointments yet"
+                font_style: 'Subtitle1'
+                font_size: '18dp'
+                halign: 'center'
+                valign: 'middle'
+                text_size: self.width, None
+                size_hint_y: None
+                height: self.texture_size[1]
+                theme_text_color: "Custom"
+                text_color: 0, 0, 0, 1
+
+            MDLabel:
+                text: "Start by looking for doctors near you, read patient stories and book appointments"
+                font_style: 'Body2'
+                halign: 'center'
+                valign: 'middle'
+                text_size: self.width, None
+                size_hint_y: None
+                height: self.texture_size[1]
+                theme_text_color: "Custom"
+                text_color: 0, 0, 0, 1
+
+            MDBoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: None
+                height: '50dp'
+                halign: 'center'
+
+                MDRaisedButton:
+                    text: 'Book Now'
+                    on_release: root.manager.push_replacement('client_location')
+                    size_hint: 0.7, None
+                    size: '70dp', '40dp'
+                    md_bg_color: [1, 0, 0, 1]
+                    text_color: [1, 1, 1, 1]
+                    font_size: '16dp'
+                    halign: 'center'
+                    mode: 'RoundedRectangle'
+
+<BookingDetails>:
+    manager: app.root
+    bookings_layout: bookings_layout_id
+    BoxLayout:
+        id: bookings_layout_id
+        orientation: 'vertical'
+        spacing: dp(10)
+        padding: dp(10)
+        size_hint_y: None
+        height: self.minimum_height
+
+
+
 <Profile_screen>:
     name: 'profile'
     BoxLayout:
@@ -217,10 +324,6 @@
         color: 1, 1, 1, 1
 
 <ClickableTextFieldRound>:
-
-
-
-
 
 <HeroItem>
     id:hero
@@ -509,10 +612,10 @@
                             name: 'activity screen'
                             text: 'Activity'
                             icon: 'view-list'
-
-                            MDLabel:
-                                text: 'Activity'
-                                halign: 'center'
+                            on_tab_release: root.activity_report()
+                            MDBoxLayout:
+                                id: activity
+                                size_hint: 1, 1
 
                         MDBottomNavigationItem:
                             name: 'account screen'
