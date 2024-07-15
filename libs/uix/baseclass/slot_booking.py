@@ -242,7 +242,8 @@ class TaskSchedulerScreen(MDScreen):
         self.update_date_labels()
         self.selected_date = datetime.now().date()
         self.filter_time_slots()
-        self.added_task()
+        # self.added_task()
+        self.show_add_task_dialog(self)
 
     def back_screen(self):
         self.manager.push_replacement('available_services')
@@ -291,7 +292,8 @@ class TaskSchedulerScreen(MDScreen):
             print("Error parsing selected date.")
         # Example output
         print(f"Selected Date: {self.selected_date}")
-        self.added_task()
+        # self.added_task()
+        self.show_add_task_dialog(self)
 
     def show_add_task_dialog(self, value):
         if value:

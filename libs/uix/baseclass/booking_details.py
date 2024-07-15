@@ -12,6 +12,7 @@ from kivymd.uix.list import IconLeftWidget, OneLineIconListItem
 from kivymd.uix.gridlayout import MDGridLayout
 from kivy.uix.widget import Widget
 from kivy.graphics import Color, Line
+from kivy.core.window import Window
 from kivy.uix.screenmanager import ScreenManager, Screen
 
 
@@ -19,6 +20,10 @@ class DetailsScreen(MDScreen):
     service_type = StringProperty("")
     date = StringProperty("")
     time = StringProperty("")
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        Window.bind(on_keyboard=self.on_keyboard)  # Bind keyboard event
 
     def on_enter(self, *args):
         self.populate_details()
@@ -49,9 +54,9 @@ class DetailsScreen(MDScreen):
         treatment_details_card = MDCard(
             orientation='vertical',
             size_hint=(1, None),
-            height='250dp',
-            padding=10,
-            spacing=10,
+            height='260dp',
+            padding=20,
+            spacing=15,
             md_bg_color=get_color_from_hex("#FFFFFF"),
             radius=[15, 15, 15, 15],
             elevation=2
@@ -59,7 +64,7 @@ class DetailsScreen(MDScreen):
         treatment_details_card.add_widget(MDLabel(text="Treatment DETAILS", font_style='H6', halign='left'))
 
         # From location
-        from_layout = MDBoxLayout(orientation='horizontal', spacing=10)
+        from_layout = MDBoxLayout(orientation='horizontal', spacing=25)
         from_icon = IconLeftWidget(icon="map-marker", theme_text_color="Custom", text_color=get_color_from_hex("#4CAF50"))
         from_label = MDLabel(text="Kodigehalli Gate\nSahakar Nagar, Byatarayanapura, Bengaluru...", font_style='Caption', halign='left')
         from_layout.add_widget(from_icon)
@@ -67,7 +72,7 @@ class DetailsScreen(MDScreen):
         treatment_details_card.add_widget(from_layout)
 
         # To location
-        to_layout = MDBoxLayout(orientation='horizontal', spacing=10)
+        to_layout = MDBoxLayout(orientation='horizontal', spacing=25)
         to_icon = IconLeftWidget(icon="map-marker", theme_text_color="Custom", text_color=get_color_from_hex("#F44336"))
         to_label = MDLabel(text="Sri Parijatha Enterprises Sri Parijatha\n4th Cross Corner, Maruthi Nagar, Yelahanka...", font_style='Caption', halign='left')
         to_layout.add_widget(to_icon)
@@ -143,12 +148,13 @@ class DetailsScreen(MDScreen):
         self.populate_details()
 
     def go_back(self, *args):
-        # self.manager.load_screen('client_services')
-        # screen = self.manager.get_screen('client_services')
-        # screen.ids.bottom_nav.switch_tab('activity screen')
-        # self.manager.pop()
-        # self.hide_modal_view()
         self.manager.push_replacement('client_services')
+
+    def on_keyboard(self, instance, key, scancode, codepoint, modifier):
+        if key == 27:  # Keycode for the back button on Android
+            self.go_back()
+            return True
+        return False
 
 class LineSeparator(Widget):
     def __init__(self, **kwargs):

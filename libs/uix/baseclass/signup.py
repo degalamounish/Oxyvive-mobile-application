@@ -13,6 +13,7 @@ from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.screen import MDScreen
 from server import Server
+from plyer import filechooser
 
 
 class Signup(MDScreen):
@@ -244,20 +245,17 @@ class Signup(MDScreen):
         return code
 
     def choose_profile_picture(self):
-        file_chooser = FileChooserListView()
-        file_chooser.filters = ['*.png', '*.jpg', '*.jpeg']
+        filters = [("*.jpg;*.jpeg;*.png")]
+        filechooser.open_file(filters=filters, on_selection=self.handle_selection)
 
-        content = BoxLayout(orientation='vertical')
-        content.add_widget(file_chooser)
-        popup = Popup(title='Choose Profile Picture', content=content, size_hint=(0.9, 0.9))
+    def handle_selection(self, selection):
+        self.selection = selection
+        if selection:
+            selected_file = selection[0]
+        self.ids.signup_profile_pic.source = selected_file
 
-        def select_image(filechooser, selection, touch):
-            if selection:
-                self.ids.signup_profile_pic.source = selection[0]
-                popup.dismiss()
-
-        file_chooser.bind(on_submit=select_image)
-        popup.open()
+    def on_selection(self, *a, **k):
+        App.get_running_app().root.ids.result.text = str(self.selection)
 
     def clear_helper_texts(self):
         self.ids.signup_name.helper_text = ""
