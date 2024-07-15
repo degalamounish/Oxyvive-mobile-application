@@ -1,7 +1,7 @@
 <Activity>:
     orientation: 'vertical'
-    padding:dp(10)
-    spacing:dp(20)
+    padding: 10
+    spacing: 20
     canvas.before:
         Color:
             rgba: 1, 1, 1, 1
@@ -25,8 +25,8 @@
             orientation: 'vertical'
             size_hint_y: None
             height: self.minimum_height
-            spacing:dp(20)
-            padding: [40, 10, 40, 10]
+            spacing: 30
+            padding: [40, 10, 40, 30]
 
             MDLabel:
                 text: "Appointments"
@@ -42,7 +42,7 @@
                     Color:
                         rgba: 0, 0, 0, 1  # Line color (black with 20% opacity)
                     Rectangle:
-                        pos: self.x + 1, self.top - 50  # Adjust position of the line
+                        pos: self.x + 1, self.top - 57  # Adjust position of the line
                         size: self.width - 6, 0.8  # Adjust width and height of the line
 
             Image:
@@ -103,8 +103,6 @@
         size_hint_y: None
         height: self.minimum_height
 
-
-
 <Profile_screen>:
     name: 'profile'
     BoxLayout:
@@ -152,6 +150,10 @@
                                 text: "Username"
                                 theme_text_color: "Primary"
                                 font_style: "H6"
+                                adaptive_height: True
+                                text_size: self.width, None
+                                halign: "left"
+                                valign: "middle"
 
                             MDLabel:
                                 id: phone
@@ -325,6 +327,10 @@
 
 <ClickableTextFieldRound>:
 
+
+
+
+
 <HeroItem>
     id:hero
     size_hint_y: None
@@ -398,33 +404,22 @@
                                     padding: dp(25), 0, dp(25), 0
                                     ClickableTextFieldRound:
                                         size_hint_y: None
-                                        height: text_field.height
+                                        height: dp(50)  # Adjust the height as needed
                                         pos_hint: {"center_x": .5, "center_y": .9}
-                                        MDTextField:
-                                            id: text_field
-                                            mode: "fill"
-#                                            hint_text: "Search location here"
-                                            readonly:'True'
-                                            text: ''
-                                            radius:[30, 30, 30, 30]
-                                            line_color_focus: 1, 1, 1, 1  # Gray line color
-                                            background_color: 1, 1, 1, 1
-                                            on_focus:root.location_screen()
-            #                                    root.manager.current = "client_location"
-                                        MDIconButton:
+                                        padding: dp(10)
+                                        spacing: dp(10)
+                                        orientation: 'horizontal'
+                                        MDFillRoundFlatIconButton:
+                                            text: "Where to go?"
+                                            size_hint: (1, 1)
                                             icon: "magnify"
                                             pos_hint: {"center_y": .5}
-                                            #pos: text_field.width - self.width + dp(0), 0
-#                                            theme_text_color: "Hint"
-                                            on_release:root.location_screen()
-                                        MDFlatButton:
-                                            text:"Where to go?"
-                                            icon: "magnify"
-                                            pos_hint: {"center_y": .5,"center_y": .5}
-                                            pos:self.width -dp(60), 0
-                                            font_style: "Subtitle2"
-                                            font_size:'18sp'
-                                            on_release:root.location_screen()
+                                            font_size: '18sp'
+                                            on_release: root.location_screen()
+                                            halign:'left'
+                                            md_bg_color:0,0,0,0.1
+                                            text_color:0,0,0,1
+                                            icon_color:0,0,0,1
                                 MDGridLayout:
                                     cols:1
                                     padding: dp(25), 0, dp(25), 0
@@ -613,6 +608,8 @@
                             text: 'Activity'
                             icon: 'view-list'
                             on_tab_release: root.activity_report()
+                            #Activity:
+                                #manager: root.manager
                             MDBoxLayout:
                                 id: activity
                                 size_hint: 1, 1

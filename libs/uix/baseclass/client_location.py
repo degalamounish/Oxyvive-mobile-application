@@ -182,7 +182,7 @@ class CustomMapView(MapView):
         # Split the address by commas
         parts = address.split(',')
         filtered_parts = [part.strip() for part in parts if not re.match(r'^[A-Z0-9]+\s+\w+', part.strip())]
-        short_address = ', '.join(filtered_parts[:5])
+        short_address = ', '.join(filtered_parts[:4])
 
         return short_address
 

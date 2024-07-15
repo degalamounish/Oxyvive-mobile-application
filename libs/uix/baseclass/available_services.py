@@ -4,6 +4,7 @@ from kivy.core.window import Window
 from kivy.properties import ObjectProperty
 from kivy.uix.image import Image
 from kivy.uix.boxlayout import BoxLayout
+from kivymd.uix.fitimage import FitImage
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.toolbar import MDTopAppBar
 from kivymd.uix.card import MDCard
@@ -12,6 +13,13 @@ from kivymd.uix.button import MDRaisedButton, MDFillRoundFlatButton
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton
+
+
+class CardItem(MDCard):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.elevation = 3
+
 
 class SliverToolbar(MDTopAppBar):
     manager = ObjectProperty()
@@ -106,31 +114,22 @@ class AvailableService(MDScreen):
             if 'oxiclinics_Name' in service_dict:
                 service_name = service_dict['oxiclinics_Name']
                 service_district = service_dict['oxiclinics_District']
+                image_source = "images/2.png"
             elif 'oxigyms_Name' in service_dict:
                 service_name = service_dict['oxigyms_Name']
                 service_district = service_dict['oxigyms_District']
+                image_source = "images/3.png"
             elif 'oxiwheels_Name' in service_dict:
                 service_name = service_dict['oxiwheels_Name']
                 service_district = service_dict['oxiwheels_District']
+                image_source = "images/1.png"
             else:
                 print("Unknown service type or missing attribute")
                 continue
 
-            # Set the image source based on the service name
-            if service_name == "Oxivive Home":
-                image_source = "images/2.png"
-            elif service_name == "Oxivive Wheel":
-                image_source = "images/3.png"
-            elif service_name == "Oxivive Clinic":
-                image_source = "images/1.png"
-            else:
-                image_source = "images/shot.png"  # Default image if none match
-
-            image = Image(
+            image = FitImage(
                 source=image_source,
-                size_hint=(0.3, 1),
-                keep_ratio=True,
-                allow_stretch=True
+
             )
             box_layout.add_widget(image)
 
