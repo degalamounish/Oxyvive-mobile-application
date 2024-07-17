@@ -425,3 +425,33 @@ class Profile(Screen):
         screen = self.manager.get_screen('client_services')
         # screen.nav_drawer.set_state("close")
 
+    def choose_profile_picture(self):
+        # Dismiss existing popup if present
+        if hasattr(self, '_popup'):
+            self._popup.dismiss()
+
+        # Create the file chooser and set filters for image files
+        filechooser = FileChooserListView(path=r"/", filters=['*.png', '*.jpg', '*.jpeg'])
+
+        # Create a layout for the popup content
+        content = BoxLayout(orientation='vertical')
+        content.add_widget(filechooser)
+
+        # Create a button layout for 'Select' and 'Cancel' buttons
+        buttons = BoxLayout(size_hint_y=None, height='40dp')
+
+        # Create 'Select' and 'Cancel' buttons
+        select_btn = Button(text='Select', size_hint=(0.5, 1))
+        cancel_btn = Button(text='Cancel', size_hint=(0.5, 1))
+
+        # Define the function to select an image and close the popup
+        def select_image(instance, selection, touch):
+            if selection:
+                self.ids.profile_image.source = selection[0]
+                print("Image source set to:", selection[0])
+                self._popup.dismiss()
+
+        # Bind the select_image function to the file chooser's on_submit event
+        filechooser.bind(on_submit=select_image)
+
+

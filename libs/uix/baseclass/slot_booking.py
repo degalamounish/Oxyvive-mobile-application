@@ -187,9 +187,10 @@ class CustomModalView2(ModalView):
                 user_info = json.load(file)
 
             id = user_info['id']
+            username = user_info['username']
 
             booking_data = {'user_id': id, 'book_date': date_str, 'book_time': selected_slot,
-                            'servicer_id': self.servicer_id, 'date_time': formatted_date}
+                            'servicer_id': self.servicer_id, 'date_time': formatted_date, 'username': username}
 
             with open("booking_data.json", "w") as json_file:
                 json.dump(booking_data, json_file)

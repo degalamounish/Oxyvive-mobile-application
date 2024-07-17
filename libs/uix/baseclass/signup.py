@@ -19,6 +19,7 @@ from plyer import filechooser
 class Signup(MDScreen):
     def __init__(self, **kwargs):
         super(Signup, self).__init__(**kwargs)
+        self.profile = None
         Window.bind(on_keyboard=self.on_keyboard)
         self.server = Server()
 
@@ -102,7 +103,7 @@ class Signup(MDScreen):
         phone = self.ids.signup_phone.text
         pincode = self.ids.signup_pincode.text
         pan_card_no = self.ids.signup_pan_card_no.text
-        profile_pic_path = self.ids.signup_profile_pic.source
+        profile_pic_path = self.profile
         random_code = self.generate_random_code()
         print(random_code)
 
@@ -252,7 +253,7 @@ class Signup(MDScreen):
         self.selection = selection
         if selection:
             selected_file = selection[0]
-        self.ids.signup_profile_pic.source = selected_file
+            self.profile= selected_file
 
     def on_selection(self, *a, **k):
         App.get_running_app().root.ids.result.text = str(self.selection)
