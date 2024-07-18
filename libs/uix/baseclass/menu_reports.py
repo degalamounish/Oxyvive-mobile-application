@@ -1,13 +1,15 @@
 import json
 import os
-import anvil
-from anvil.tables import app_tables
+from platform import platform
+
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
 from fpdf import FPDF
 import anvil.server
+from anvil.tables import app_tables
+
 
 class Report(MDScreen):
     def __init__(self, **kwargs):
@@ -30,140 +32,150 @@ class Report(MDScreen):
         try:
             with open('user_data.json', 'r') as file:
                 user_info = json.load(file)
-            d = app_tables.oxi_reports.get(oxi_id=user_info.get('id'))
+            result = dict(app_tables.oxi_book_slot.get(oxi_id=user_info.get('id')))
+            # Assigning fetched data to UI elements
+            if isinstance(result, dict):
+                # Assigning fetched data to UI elements
+                self.ids.booking_id.text = result.get('oxi_book_id', '')
+                self.ids.patient_name.text = result.get('oxi_username', '')
+                self.ids.doctor_name.text = result.get('oxi_doctor_name', '')
+                self.ids.address.text = result.get('oxi_address', 'N/A')  # Default to 'N/A' if None
+                self.ids.service_type.text = result.get('oxi_service_type', '')
+                self.ids.session.text = str(result.get('oxi_session', ''))
+                self.ids.price_label.text = f"${result.get('oxi_price', 0):.2f}"
+                self.ids.subtotal.text = f"${result.get('oxi_price', 0):.2f}"
 
-            if d is not None:
-                # Populate UI fields with fetched data
-                self.ids.patient_name.text = d['oxi_patient_name']
-                self.ids.doctor_name.text = d['oxi_doctor_name']
-                self.ids.service_type.text = d['oxi_service_type']
-                self.ids.session.text = str(d['oxi_session'])
-                self.ids.payable_to.text = str(d['oxi_payable_to'])
-                self.ids.bank_details.text = d['oxi_bank_details']
+                # Calculate and assign tax values
+                price = result.get('oxi_price', 0)
+                cgst_value = price * 0.08
+                sgst_value = price * 0.08
+                grand_total_value = price + cgst_value + sgst_value
 
-                # Update company logo and description
-                self.ids.company_logo.source = 'Oxyvive-mobile-application/images/shot.png'
-                self.ids.company_description.text = 'Anti-aging shot therapy'
+                self.ids.cgst.text = f"${cgst_value:.2f}"
+                self.ids.sgst.text = f"${sgst_value:.2f}"
+                self.ids.grand_total.text = f"${grand_total_value:.2f}"
+
+                self.ids.payable_to.text = result.get('oxi_payable_to', '')
+                self.ids.bank_details.text = result.get('oxi_bank_details', '')
             else:
-                print("No data found from Anvil.")
+                print("Error: Data fetched from Anvil is not a dictionary")
 
         except Exception as e:
-            print(f"Error fetching data from Anvil: {e}")
+            print(f"Error fetching data from Anvil: {str(e)}")
 
     def save_pdf(self):
         try:
             # Fetch data from UI fields
+            booking_id = self.ids.booking_id.text
             patient_name = self.ids.patient_name.text
             doctor_name = self.ids.doctor_name.text
+            address = self.ids.address.text
             service_type = self.ids.service_type.text
             session = self.ids.session.text
-            payable_to = self.ids.payable_to.text
-            bank_details = self.ids.bank_details.text
-            with open('user_data.json', 'r') as file:
-                user_info = json.load(file)
-            d = app_tables.oxi_reports.get(oxi_id=user_info.get('id'))
-            price = float(d['oxi_price'])  # Assuming price is fetched from database
-            quantity = 1  # Example quantity, adjust as per your data model
+            price = float(self.ids.price_label.text.strip('$'))
+            subtotal = float(self.ids.subtotal.text.strip('$'))
+            cgst = float(self.ids.cgst.text.strip('$'))
+            sgst = float(self.ids.sgst.text.strip('$'))
+            grand_total = float(self.ids.grand_total.text.strip('$'))
 
-            subtotal = price * quantity
-            cgst = subtotal * 0.08
-            sgst = subtotal * 0.08
-            grand_total = subtotal + cgst + sgst
-
-            # Create PDF document
+            # Initialize PDF object
             pdf = FPDF()
             pdf.add_page()
 
-            # Add company logo and name
-            pdf.image('images/shot.png', x=10, y=8, w=33)
-            pdf.set_font('Arial', 'B', 12)
-            pdf.cell(0, 20, '', 0, 1)  # Add some space below the logo
-            pdf.cell(0, 10, 'Oxivive - Anti-aging shot therapy', 0, 1, 'C')
+            # Header
+            pdf.set_fill_color(204, 0, 0)
+            pdf.rect(0, 0, 210, 40, 'F')
+            if platform() == 'android':
+                pdf.image('file:///storage/emulated/0/Download/shot.png', 10, 8, 33)  # Adjust path for Android
+            else:
+                pdf.image('images/shot.png', 10, 8, 33)  # Adjust path for other platforms
+            pdf.set_font('Arial', 'B', 16)
+            pdf.set_text_color(255, 255, 255)
+            pdf.cell(80)
+            pdf.cell(30, 10, 'Oxivive', 0, 1, 'C')
+            pdf.set_font('Arial', 'I', 12)
+            pdf.cell(80)
+            pdf.cell(30, 10, 'INVOICE', 0, 1, 'C')
+            pdf.ln(20)
 
-            # Add patient information
+            # Reset text color to black for the body
+            pdf.set_text_color(0, 0, 0)
+
+            # Invoice details
             pdf.set_font('Arial', 'B', 12)
-            pdf.cell(0, 10, '', 0, 1)  # Add some space
-            pdf.cell(50, 10, 'Patient Name:', 0, 0)
+            pdf.cell(0, 10, f'Invoice Number: {booking_id}', 0, 1, 'L')
+            pdf.cell(0, 10, 'Date: August 21, 2023', 0, 1, 'L')
+            pdf.ln(10)
+
+            # Billing information
+            pdf.set_font('Arial', 'B', 12)
+            pdf.cell(85, 10, 'Billed To:', 0, 0, 'L')
+            pdf.cell(95, 10, 'Doctor:', 0, 1, 'R')
             pdf.set_font('Arial', '', 12)
-            pdf.cell(0, 10, patient_name, 0, 1)
+            pdf.multi_cell(95, 10, f"{patient_name}\n{address}", 0, 'L')
+            pdf.set_xy(115, pdf.get_y() - 30)
+            pdf.multi_cell(95, 10, f"{doctor_name}\n{address}", 0, 'R')
+            pdf.ln(10)
 
+            # Table header
+            pdf.set_fill_color(204, 0, 0)
+            pdf.set_text_color(255, 255, 255)
             pdf.set_font('Arial', 'B', 12)
-            pdf.cell(50, 10, 'Doctor Name:', 0, 0)
+            pdf.cell(80, 10, 'DETAILS', 1, 0, 'C', 1)
+            pdf.cell(30, 10, 'SESSION', 1, 0, 'C', 1)
+            pdf.cell(30, 10, 'PRICE', 1, 0, 'C', 1)
+            pdf.cell(50, 10, 'AMOUNT', 1, 1, 'C', 1)
+
+            # Table row
+            pdf.set_fill_color(255, 204, 204)
+            pdf.set_text_color(0, 0, 0)
             pdf.set_font('Arial', '', 12)
-            pdf.cell(0, 10, doctor_name, 0, 1)
+            pdf.cell(80, 10, service_type, 1, 0, 'C', 1)
+            pdf.cell(30, 10, str(session), 1, 0, 'C', 1)
+            pdf.cell(30, 10, f'${price:.2f}', 1, 0, 'C', 1)
+            pdf.cell(50, 10, f'${subtotal:.2f}', 1, 1, 'C', 1)
 
+            # Totals
             pdf.set_font('Arial', 'B', 12)
-            pdf.cell(50, 10, 'Service Type:', 0, 0)
-            pdf.set_font('Arial', '', 12)
-            pdf.cell(0, 10, service_type, 0, 1)
+            pdf.cell(0, 10, '', 0, 1)
+            pdf.set_fill_color(255, 204, 204)
+            pdf.set_text_color(0, 0, 0)  # Set text color to black for totals
+            pdf.cell(160, 10, 'SUB TOTAL:', 0, 0, 'R')
+            pdf.cell(30, 10, f'${subtotal:.2f}', 0, 1, 'R', 1)
+            pdf.cell(160, 10, 'CGST 8%:', 0, 0, 'R')
+            pdf.cell(30, 10, f'${cgst:.2f}', 0, 1, 'R', 1)
+            pdf.cell(160, 10, 'SGST 8%:', 0, 0, 'R')
+            pdf.cell(30, 10, f'${sgst:.2f}', 0, 1, 'R', 1)
+            pdf.cell(160, 10, 'GRAND TOTAL:', 0, 0, 'R')
+            pdf.cell(30, 10, f'${grand_total:.2f}', 0, 1, 'R', 1)
 
-            pdf.set_font('Arial', 'B', 12)
-            pdf.cell(50, 10, 'Session:', 0, 0)
-            pdf.set_font('Arial', '', 12)
-            pdf.cell(0, 10, session, 0, 1)
+            pdf.cell(0, 10, '', 0, 1)
 
-            pdf.set_font('Arial', 'B', 12)
-            pdf.cell(50, 10, 'Payable to:', 0, 0)
-            pdf.set_font('Arial', '', 12)
-            pdf.cell(0, 10, payable_to, 0, 1)
+            # Footer
+            # Footer
+            footer_height = 30
+            pdf.set_y(-footer_height - 0)  # Adjust the y-coordinate to position the footer correctly
+            pdf.set_fill_color(255, 0, 0)
+            pdf.rect(0, pdf.get_y(), 210, footer_height, 'F')
 
-            pdf.set_font('Arial', 'B', 12)
-            pdf.cell(50, 10, 'Bank Details:', 0, 0)
-            pdf.set_font('Arial', '', 12)
-            pdf.cell(0, 10, bank_details, 0, 1)
+            # Calculate vertical position for the centered text within the footer
+            footer_y = pdf.get_y() + (footer_height / 2) - 15.5  # Adjust 5 based on the text size
 
-            # Add table with service details
-            pdf.cell(0, 10, '', 0, 1)  # Add empty line
-            pdf.set_fill_color(200, 220, 255)
-            pdf.set_font('Arial', 'B', 12)
-            pdf.cell(95, 10, 'Service Type', 1, 0, 'C', 1)
-            pdf.cell(30, 10, 'Price', 1, 0, 'C', 1)
-            pdf.cell(30, 10, 'Total', 1, 1, 'C', 1)
-
-            pdf.set_font('Arial', '', 12)
-            pdf.cell(95, 10, service_type, 1)
-            pdf.cell(30, 10, f'${price:.2f}', 1)
-            pdf.cell(30, 10, f'${subtotal:.2f}', 1, 1)
-
-            # Add totals
-            pdf.cell(0, 10, '', 0, 1)  # Add empty line
-            pdf.set_font('Arial', 'B', 12)
-            pdf.cell(95, 10, 'Sub Total:', 0)
-            pdf.cell(30, 10, f'${subtotal:.2f}', 0, 1, 'R')
-
-            pdf.cell(95, 10, 'CGST (8%):', 0)
-            pdf.cell(30, 10, f'${cgst:.2f}', 0, 1, 'R')
-
-            pdf.cell(95, 10, 'SGST (8%):', 0)
-            pdf.cell(30, 10, f'${sgst:.2f}', 0, 1, 'R')
-
-            pdf.cell(95, 10, 'Grand Total:', 0)
-            pdf.cell(30, 10, f'${grand_total:.2f}', 0, 1, 'R')
-
+            pdf.set_y(footer_y)
+            pdf.set_text_color(0, 0, 0)
+            pdf.set_font('Arial', 'I', 12)
+            pdf.cell(0, 10, 'Thank you for your business!', 0, 0, 'C')
             # Save PDF
-            pdf_name = "invoice.pdf"
-            pdf.output(pdf_name)
+            if platform() == 'android':
+                pdf_path = '/storage/emulated/0/Download/invoice.pdf'  # Adjust path for Android
+            else:
+                desktop_path = os.path.join(os.path.expanduser('~'), 'Desktop')
+                if not os.path.exists(desktop_path):
+                    os.makedirs(desktop_path)
+                pdf_path = os.path.join(desktop_path, 'invoice.pdf')
 
-            # Print the PDF name and path
-            pdf_path = os.path.abspath(pdf_name)  # Get absolute path to the PDF
-            print(f"PDF saved successfully:\nName: {pdf_name}\nPath: {pdf_path}")
+            pdf.output(pdf_path)
+            print(f"PDF saved successfully:\nPath: {pdf_path}")
 
         except Exception as e:
             print(f"Error saving PDF: {e}")
-
-    def clear_fields(self):
-        # Clear all input fields
-        self.ids.patient_name.text = ''
-        self.ids.doctor_name.text = ''
-        self.ids.service_type.text = ''
-        self.ids.session.text = ''
-        self.ids.payable_to.text = ''
-        self.ids.bank_details.text = ''
-
-        # Reset labels to default
-        self.ids.subtotal_label.text = "$0.00"
-        self.ids.cgst_label.text = "$0.00"
-        self.ids.sgst_label.text = "$0.00"
-        self.ids.grand_total_label.text = "$0.00"
-
-# Note: Ensure you have the necessary UI elements with the correct IDs in your KV file.

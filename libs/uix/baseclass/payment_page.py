@@ -29,6 +29,7 @@ class Payment(MDScreen):
 
     def __init__(self, **kwargs):
         super(Payment, self).__init__(**kwargs)
+        self.service_type = None
         self.razorpay_payment_id = None
         self.dialog = None
         self.tax = None
@@ -75,6 +76,7 @@ class Payment(MDScreen):
         book_date = booking_data.get('book_date', '')
         book_time = booking_data.get('book_time', '')
         date_time = booking_data.get('date_time', '')
+        username = booking_data.get('username', '')
 
         try:
             if self.server.is_connected():
@@ -87,7 +89,9 @@ class Payment(MDScreen):
                     oxi_book_date=date_object,
                     oxi_book_time=book_time,
                     oxi_date_time=date_time,
-                    oxi_payment_id=self.razorpay_payment_id
+                    oxi_payment_id=self.razorpay_payment_id,
+                    oxi_username=username,
+                    oxi_service_type=self.service_type
                 )
                 self.show_validation_dialog(
                     "Your slot is successfully booked. You will receive an instant response from Oxivive.")
@@ -127,14 +131,17 @@ class Payment(MDScreen):
         details = dict(details)
         if 'oxiclinics_address' in details:
             self.ids.service_name.text = details.get('oxiclinics_Name', 'N/A')
+            self.service_type = 'OxiClinic'
             self.ids.service_type.text = 'OxiClinic'
             self.ids.service_address.text = details.get('oxiclinics_address', 'N/A')
         elif 'oxiwheels_address' in details:
             self.ids.service_name.text = details.get('oxiwheels_Name', 'N/A')
+            self.service_type = 'OxiWheel'
             self.ids.service_type.text = 'OxiWheel'
             self.ids.service_address.text = details.get('oxiwheels_address', 'N/A')
         elif 'oxigyms_address' in details:
             self.ids.service_name.text = details.get('oxigyms_Name', 'N/A')
+            self.service_type = 'OxiGym'
             self.ids.service_type.text = 'OxiGym'
             self.ids.service_address.text = details.get('oxigyms_address', 'N/A')
         else:
@@ -275,9 +282,10 @@ class Payment(MDScreen):
         server_thread.daemon = True
         server_thread.start()
         print("Opening Razorpay checkout page...")
-        webview.create_window('Razorpay Checkout', url="http://localhost:9000/checkout.html", width=800, height=600,
-                              resizable=True, js_api=True)
-        webview.start()
+        webbrowser.open("http://localhost:9000/checkout.html")
+        #webview.create_window('Razorpay Checkout', url="http://localhost:9000/checkout.html", width=800, height=600,
+                              #resizable=True, js_api=True)
+        #webview.start()
 
     def shutdown_and_switch(self):
         time.sleep(1)

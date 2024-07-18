@@ -25,8 +25,8 @@
             orientation: 'vertical'
             size_hint_y: None
             height: self.minimum_height
-            spacing: 30
-            padding: [40, 10, 40, 30]
+            spacing: 20
+            padding: [40, 10, 40, 10]
 
             MDLabel:
                 text: "Appointments"
@@ -42,8 +42,10 @@
                     Color:
                         rgba: 0, 0, 0, 1  # Line color (black with 20% opacity)
                     Rectangle:
-                        pos: self.x + 1, self.top - 57  # Adjust position of the line
+                        pos: self.x + 1, self.top - 50  # Adjust position of the line
                         size: self.width - 6, 0.8  # Adjust width and height of the line
+
+
 
             Image:
                 source: 'images/calender-booking-page.jpg'
@@ -51,6 +53,8 @@
                 height: '190dp'
                 allow_stretch: True
                 keep_ratio: True
+
+
 
             MDLabel:
                 text: "You haven't booked any appointments yet"
@@ -142,12 +146,12 @@
                         MDBoxLayout:
                             orientation: 'vertical'
                             adaptive_height: True
-                            padding: dp(30)
-                            spacing: dp(30)
+                            size_hint_y: None
+                            height: self.minimum_height
 
                             MDLabel:
                                 id: username
-                                text: "Username"
+                                text: "Username with multi-line text support"
                                 theme_text_color: "Primary"
                                 font_style: "H6"
                                 adaptive_height: True
@@ -160,36 +164,41 @@
                                 text: "Phone"
                                 theme_text_color: "Secondary"
                                 font_style: "Body1"
+                                adaptive_height: True
+                                padding_y: dp(5)
+                                halign: "left"
+                                valign: "middle"
 
                 MDCard:
                     size_hint: None, None
-                    size: "378dp", "400dp"  # Reduce height to fit content
+                    size: "378dp", self.minimum_height  # Adjust width as needed
                     elevation: 3
                     radius: [20]
                     orientation: 'vertical'
                     padding: dp(10)
-                    pos_hint: {'center_x': 0.5}
+                    spacing: dp(10)
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.7}
 
                     MDLabel:
                         text: "Settings"
                         theme_text_color: "Primary"
                         font_style: "H6"
                         halign: "center"
-                        pos_hint: {'center_x': 0.5, 'center_y': 1.5}
-                        size_hint: None, None
-                        size: "100dp", "50dp"
+                        size_hint_y: None
+                        height: self.texture_size[1] + dp(10)
+
                     MDSeparator:
                         height: dp(1)
 
-                    MDBoxLayout:
-                        orientation: 'vertical'
-                        spacing: dp(10)
-                        padding: dp(10)
+                    MDCard:
+                        size_hint: None, None
+                        size: "365dp", "50dp"
+                        radius: [10]
+                        on_touch_down: root.on_touch_down_profile()
 
-                        # Profile Setting
                         MDBoxLayout:
                             orientation: 'horizontal'
-                            spacing: dp(10)
+                            padding: dp(10)
 
                             IconLeftWidget:
                                 icon: 'account'
@@ -202,14 +211,18 @@
                             MDIconButton:
                                 icon: 'arrow-right'
                                 pos_hint: {'center_y': 0.5}
-                                on_release: root.profile()
-                        MDSeparator:
-                            height: dp(1)
+                    MDSeparator:
+                        height: dp(1)
 
-                        # Notifications Setting
+                    MDCard:
+                        size_hint: None, None
+                        size: "365dp", "50dp"
+                        radius: [10]
+                        on_touch_down: root.on_touch_down_notifications()
+
                         MDBoxLayout:
                             orientation: 'horizontal'
-                            spacing: dp(10)
+                            padding: dp(10)
 
                             IconLeftWidget:
                                 icon: 'bell'
@@ -222,14 +235,17 @@
                             MDIconButton:
                                 icon: 'arrow-right'
                                 pos_hint: {'center_y': 0.5}
-                                on_release: root.notifications()
-                        MDSeparator:
-                            height: dp(1)
+                    MDSeparator:
+                        height: dp(1)
+                    MDCard:
+                        size_hint: None, None
+                        size: "365dp", "50dp"
+                        radius: [10]
+                        on_touch_down: root.on_touch_down_bookings()
 
-                        # Bookings Setting
                         MDBoxLayout:
                             orientation: 'horizontal'
-                            spacing: dp(10)
+                            padding: dp(10)
 
                             IconLeftWidget:
                                 icon: 'calendar-check'
@@ -242,14 +258,17 @@
                             MDIconButton:
                                 icon: 'arrow-right'
                                 pos_hint: {'center_y': 0.5}
-                                on_release: root.Bookings()
-                        MDSeparator:
-                            height: dp(1)
+                    MDSeparator:
+                        height: dp(1)
+                    MDCard:
+                        size_hint: None, None
+                        size: "365dp", "50dp"
+                        radius: [10]
+                        on_touch_down: root.on_touch_down_reports()
 
-                        # Reports Setting
                         MDBoxLayout:
                             orientation: 'horizontal'
-                            spacing: dp(10)
+                            padding: dp(10)
 
                             IconLeftWidget:
                                 icon: 'file-document'
@@ -262,15 +281,17 @@
                             MDIconButton:
                                 icon: 'arrow-right'
                                 pos_hint: {'center_y': 0.5}
-                                on_release: root.Reports()
+                    MDSeparator:
+                        height: dp(1)
+                    MDCard:
+                        size_hint: None, None
+                        size: "365dp", "50dp"
+                        radius: [10]
+                        on_touch_down: root.on_touch_down_support()
 
-                        MDSeparator:
-                            height: dp(1)
-
-                        # Support Setting
                         MDBoxLayout:
                             orientation: 'horizontal'
-                            spacing: dp(10)
+                            padding: dp(10)
 
                             IconLeftWidget:
                                 icon: 'lifebuoy'
@@ -283,14 +304,17 @@
                             MDIconButton:
                                 icon: 'arrow-right'
                                 pos_hint: {'center_y': 0.5}
-                                on_release: root.Support()
-                        MDSeparator:
-                            height: dp(1)
+                    MDSeparator:
+                        height: dp(1)
+                    MDCard:
+                        size_hint: None, None
+                        size: "365dp", "50dp"
+                        radius: [10]
+                        on_touch_down: root.on_touch_down_log_out()
 
-                        # Log-out Setting
                         MDBoxLayout:
                             orientation: 'horizontal'
-                            spacing: dp(10)
+                            padding: dp(10)
 
                             IconLeftWidget:
                                 icon: 'logout'
@@ -303,7 +327,7 @@
                             MDIconButton:
                                 icon: 'arrow-right'
                                 pos_hint: {'center_y': 0.5}
-                                on_release: root.Log_out()
+
 <CustomImageTile>:
     radius: 24
     box_radius: [0, 0, 24, 24]

@@ -1,48 +1,19 @@
-<CardItem>
-    size_hint_y: None
-    height: "86dp"
-    padding: "4dp"
-    radius: 12
-
-    FitImage:
-        source: app.root.source
-        radius: root.radius
-        size_hint_x: None
-        width: root.height
-
-    MDBoxLayout:
-        orientation: "vertical"
-        adaptive_height: True
-        spacing: "6dp"
-        padding: "12dp", 0, 0, 0
-        pos_hint: {"center_y": .5}
-
-        MDLabel:
-            text: "Title text"
-            font_style: "H5"
-            bold: True
-            adaptive_height: True
-
-        MDLabel:
-            text: "Subtitle text"
-            theme_text_color: "Hint"
-            adaptive_height: True
-
 
 <AvailableService>:
     MDSliverAppbar:
-        background_color: "red"
+        #background_color: ""
         toolbar_cls:root.silver_tool_bar
 
         MDSliverAppbarHeader:
 
             MDRelativeLayout:
 
-                MapView:
-                    id:mapview
-                    zoom:13
-                    lat:13.0358
-                    lon:77.5970
+                CustomMapView2:
+                    id: map_view2
+                    manager:root.manager
+                    lat: 21
+                    lon: 78
+                    zoom: 10
 
         MDSliverAppbarContent:
             id: content
