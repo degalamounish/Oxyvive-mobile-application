@@ -12,6 +12,7 @@ from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.screen import MDScreen
 from plyer import filechooser
+from plyer.utils import platform
 from server import Server
 
 
@@ -23,6 +24,10 @@ class Signup(MDScreen):
         self.profile = None
         Window.bind(on_keyboard=self.on_keyboard)
         self.server = Server()
+        if (
+                platform == 'android'):
+            from android.permissions import request_permissions, Permission
+            request_permissions([Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE])
 
     def on_keyboard(self, instance, key, scancode, codepoint, modifier):
         if key == 27:  # Keycode for the back button on Android

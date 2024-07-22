@@ -1,6 +1,10 @@
 import os
+import time
+from threading import Thread
+
 import requests
 from anvil.tables import app_tables, query as q
+from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.metrics import dp
@@ -8,6 +12,7 @@ from kivy.properties import ObjectProperty
 from kivy.uix.image import Image
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
+from kivy.uix.modalview import ModalView
 from kivy.uix.scatter import Scatter
 from kivy_garden.mapview import MapMarker, MapView, MapSource, MapLayer
 from kivymd.uix.fitimage import FitImage
@@ -20,6 +25,19 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton
 from googlemaps import Client as GoogleMapsClient
+
+
+class LoadingScreen(ModalView):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.loading_label = self.ids.loading_label
+        self.start_animation()
+
+    def start_animation(self):
+        # Create the opacity animation for the loading label
+        anim = Animation(opacity=0, duration=0.5) + Animation(opacity=1, duration=0.5)
+        anim.repeat = True
+        anim.start(self.loading_label)
 
 
 class CustomMapMarker(MDBoxLayout, MapMarker):
@@ -120,6 +138,7 @@ class SliverToolbar(MDTopAppBar):
     def back_screen(self):
         screen = self.manager.get_screen('available_services')
         screen.remove_all_markers()
+        screen.ids.content.clear_widgets()
         self.manager.push_replacement('client_location')
 
 
@@ -146,9 +165,28 @@ class AvailableService(MDScreen):
         self.manager.push_replacement('client_location')
 
     def on_enter(self, *args):
+        # Open the loading screen
+        self.loading_screen = LoadingScreen()
+        self.loading_screen.open()
+
+        # Start the card population in a background thread
+        Thread(target=self._populate_cards_with_loading).start()
+
+    def _populate_cards_with_loading(self):
+        # Simulate a long-running task (remove if not needed)
+        time.sleep(2)
+
+        # Populate the cards
         self.populate_cards()
+
+        # Update the UI from the main thread
+        Clock.schedule_once(self._dismiss_loading_screen)
+
+    def _dismiss_loading_screen(self, *args):
+        # Dismiss the loading screen and update other UI components
+        self.loading_screen.dismiss()
         self.silver_tool_bar.manager = self.manager
-        #self.fetch_list_of_pincodes()
+        self.adding_cards()
 
     def show_no_service_popup(self):
         dialog = MDDialog(
@@ -177,15 +215,17 @@ class AvailableService(MDScreen):
         results_oxigyms = app_tables.oxigyms.search(oxigyms_pincode=q.any_of(*pincodes))
         results_oxiwheels = app_tables.oxiwheels.search(oxiwheels_pincode=q.any_of(*pincodes))
 
-        all_results = list(results_oxiclinics) + list(results_oxigyms) + list(results_oxiwheels)
+        self.all_results = list(results_oxiclinics) + list(results_oxigyms) + list(results_oxiwheels)
 
         self.ids.content.clear_widgets()
 
-        if not all_results:
+        if not self.all_results:
             self.show_no_service_popup()
             return
 
+    def adding_cards(self):
         # Add markers to the map
+        all_results = self.all_results
         services = []
         for service in all_results:
             service_dict = dict(service)
@@ -311,6 +351,7 @@ class AvailableService(MDScreen):
         self.manager.push_replacement('slot_booking')
         print(f"Booking service: {dict(service)}")
         self.remove_all_markers()
+        self.ids.content.clear_widgets()
 
     def fetch_list_of_pincodes(self):
         global lat, lng
