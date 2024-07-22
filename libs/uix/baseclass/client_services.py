@@ -145,21 +145,21 @@ class BookingDetails(Screen):
             details_layout.add_widget(
                 MDLabel(text=f"Time: {book_time}", theme_text_color="Custom", text_color=get_color_from_hex("#000000")))
 
-            right_layout = MDBoxLayout(orientation='horizontal', size_hint_x=0.1)
-            button_layout = MDBoxLayout(orientation='vertical', size_hint=(None, None), size=("50dp", "50dp"),
-                                        padding=(10, 0, 0, 115))
-            button_layout.add_widget(
-                MDIconButton(icon="chevron-right", theme_text_color="Custom", text_color=get_color_from_hex("#000000"),
-                             pos_hint={"center_y": 0.5},
-                             on_release=lambda x, service_type=service_type, book_date=str(book_date),
-                                               book_time=book_time: self.view_booking_details(service_type, book_date,
-                                                                                              book_time)))
-
-            right_layout.add_widget(button_layout)
+            # right_layout = MDBoxLayout(orientation='horizontal', size_hint_x=0.1)
+            # button_layout = MDBoxLayout(orientation='vertical', size_hint=(None, None), size=("50dp", "50dp"),
+            #                             padding=(10, 0, 0, 115))
+            # button_layout.add_widget(
+            #     MDIconButton(icon="chevron-right", theme_text_color="Custom", text_color=get_color_from_hex("#000000"),
+            #                  pos_hint={"center_y": 0.5},
+            #                  on_release=lambda x, service_type=service_type, book_date=str(book_date),
+            #                                    book_time=book_time: self.view_booking_details(service_type, book_date,
+            #                                                                                   book_time)))
+            #
+            # right_layout.add_widget(button_layout)
 
             booking_card.add_widget(left_layout)
             booking_card.add_widget(details_layout)
-            booking_card.add_widget(right_layout)
+            # booking_card.add_widget(right_layout)
             self.bookings_layout.add_widget(booking_card)
 
     def view_booking_details(self, service_type, book_date, book_time):
