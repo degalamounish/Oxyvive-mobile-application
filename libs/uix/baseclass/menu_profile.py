@@ -45,7 +45,7 @@ from kivymd.uix.list import OneLineAvatarListItem, MDList
 from kivymd.uix.scrollview import MDScrollView
 from kivymd.uix.button import MDFlatButton
 from kivy.utils import get_color_from_hex
-
+from plyer import filechooser
 
 
 class CustomPopup(Popup):
@@ -196,35 +196,19 @@ class Profile(Screen):
             self.current_label.text = new_value
             self.close_dialog()
 
-    def select_image(self):
-        if hasattr(self, '_popup'):
-            self._popup.dismiss()
+    def choose_profile_picture(self):
+        filters = [("*.jpg;*.jpeg;*.png")]
+        filechooser.open_file(filters=filters, on_selection=self.handle_selection)
 
-        content = BoxLayout(orientation='vertical')
-        filechooser = FileChooserListView(path=r"/", filters=['*.png', '*.jpg', '*.jpeg'])
-
-        buttons = BoxLayout(size_hint_y=None, height='40dp')
-        select_btn = Button(text='Select', size_hint=(0.5, 1))
-        cancel_btn = Button(text='Cancel', size_hint=(0.5, 1))
-
-        filechooser.bind(on_submit=self.on_file_select)
-        cancel_btn.bind(on_release=lambda x: self._popup.dismiss())
-
-        buttons.add_widget(select_btn)
-        buttons.add_widget(cancel_btn)
-
-        content.add_widget(filechooser)
-        content.add_widget(buttons)
-
-        self._popup = Popup(title="Select Image", content=content, size_hint=(0.9, 0.9))
-        self._popup.open()
-
-    def on_file_select(self, instance, selection, dummy):
+    def handle_selection(self, selection):
+        self.selection = selection
         if selection:
             selected_file = selection[0]
             self.ids.profile_image.source = selected_file
-            print("Image source set to:", selected_file)
-        self._popup.dismiss()
+            print(f"Selected file: {selected_file}")  # Debug print
+
+    def on_selection(self, *a, **k):
+        App.get_running_app().root.ids.result.text = str(self.selection)
 
     def show_date_picker(self):
         date_dialog = MDDatePicker()
@@ -240,18 +224,20 @@ class Profile(Screen):
         try:
             with open('user_data.json', 'r') as file:
                 user_info = json.load(file)
-                self.ids.username.text = f"{user_info.get('username', '')}"
-                self.ids.email.text = f"{user_info.get('email', '')}"
-                self.ids.phone.text = f"{user_info.get('phone', '')}"
-                self.ids.pincode.text = f"{user_info.get('pincode', '')}"
-                # self.ids.id.text = f"{str(user_info.get('id', ''))}"
+                print(f"User Info: {user_info}")  # Print user info for debugging
+
+                self.ids.username.text = f"{user_info.get('username')}"
+                self.ids.email.text = f"{user_info.get('email')}"
+                self.ids.phone.text = f"{user_info.get('phone')}"
+                self.ids.pincode.text = f"{user_info.get('pincode')}"
                 print(user_info.get('email'))
+
                 details = dict(app_tables.oxi_users.get(oxi_id=user_info.get('id')))
-                print(details)
+                print(f"Details: {details}")  # Print details for debugging
+
                 if details:
                     oxi_profile = details.get('oxi_profile')
                     if oxi_profile:
-                        # Save the image to a temporary file in the current working directory
                         current_dir = os.getcwd()
                         image_path = os.path.join(current_dir, 'profile_image.png')
                         with open(image_path, 'wb') as img_file:
@@ -259,29 +245,28 @@ class Profile(Screen):
                         self.ids.profile_image.source = image_path
                     else:
                         print("Profile image not found in the database.")
-                    self.ids.address.text = details.get('oxi_address', '')
-                    self.ids.state.text = details.get('oxi_state', '')
-                    self.ids.country.text = details.get('oxi_country', '')
-                    self.ids.city.text = details.get('oxi_city', '')
-                    self.ids.gender.text = details.get('oxi_gender', '')
-                    self.ids.allergies.text = details.get('oxi_allergies', '')
-                    self.ids.current_medications.text = details.get('oxi_current_medications', '')
-                    self.ids.past_medications.text = details.get('oxi_past_medications', '')
-                    self.ids.chronic_diseases.text = details.get('oxi_chronic_diseases', '')
-                    self.ids.injuries.text = details.get('oxi_injuries', '')
-                    self.ids.surgeries.text = details.get('oxi_surgeries', '')
-                    self.ids.smoking_habits.text = details.get('oxi_smoking_habits', '')
-                    self.ids.alcohol_consumption.text = details.get('oxi_alcohol_consumption', '')
-                    self.ids.activity_level.text = details.get('oxi_activity_level', '')
-                    self.ids.food_preference.text = details.get('oxi_food_preference', '')
-                    self.ids.occupation.text = details.get('oxi_occupation', '')
-                    self.ids.height.text = str(details.get('oxi_height', ''))
-                    self.ids.weight.text = str(details.get('oxi_weight', ''))
-                    self.ids.dob.text = str(details.get('oxi_dob', ''))
-                    self.ids.blood_group_label.text = details.get('oxi_blood_group_label', '')
+                    self.ids.address.text = details.get('oxi_address')
+                    self.ids.state.text = details.get('oxi_state')
+                    self.ids.country.text = details.get('oxi_country')
+                    self.ids.city.text = details.get('oxi_city')
+                    self.ids.gender.text = details.get('oxi_gender')
+                    self.ids.allergies.text = details.get('oxi_allergies')
+                    self.ids.current_medications.text = details.get('oxi_current_medications')
+                    self.ids.past_medications.text = details.get('oxi_past_medications')
+                    self.ids.chronic_diseases.text = details.get('oxi_chronic_diseases')
+                    self.ids.injuries.text = details.get('oxi_injuries')
+                    self.ids.surgeries.text = details.get('oxi_surgeries')
+                    self.ids.smoking_habits.text = details.get('oxi_smoking_habits')
+                    self.ids.alcohol_consumption.text = details.get('oxi_alcohol_consumption')
+                    self.ids.activity_level.text = details.get('oxi_activity_level')
+                    self.ids.food_preference.text = details.get('oxi_food_preference')
+                    self.ids.occupation.text = details.get('oxi_occupation')
+                    self.ids.height.text = str(details.get('oxi_height'))
+                    self.ids.weight.text = str(details.get('oxi_weight'))
+                    self.ids.dob.text = str(details.get('oxi_dob'))
+                    self.ids.blood_group_label.text = details.get('oxi_blood_group_label')
                 else:
                     print("No details found for the user.")
-                    # Clear the fields if no details are found
                     self.clear_fields()
 
         except FileNotFoundError:
@@ -424,34 +409,4 @@ class Profile(Screen):
         self.manager.push_replacement("client_services", "right")
         screen = self.manager.get_screen('client_services')
         # screen.nav_drawer.set_state("close")
-
-    def choose_profile_picture(self):
-        # Dismiss existing popup if present
-        if hasattr(self, '_popup'):
-            self._popup.dismiss()
-
-        # Create the file chooser and set filters for image files
-        filechooser = FileChooserListView(path=r"/", filters=['*.png', '*.jpg', '*.jpeg'])
-
-        # Create a layout for the popup content
-        content = BoxLayout(orientation='vertical')
-        content.add_widget(filechooser)
-
-        # Create a button layout for 'Select' and 'Cancel' buttons
-        buttons = BoxLayout(size_hint_y=None, height='40dp')
-
-        # Create 'Select' and 'Cancel' buttons
-        select_btn = Button(text='Select', size_hint=(0.5, 1))
-        cancel_btn = Button(text='Cancel', size_hint=(0.5, 1))
-
-        # Define the function to select an image and close the popup
-        def select_image(instance, selection, touch):
-            if selection:
-                self.ids.profile_image.source = selection[0]
-                print("Image source set to:", selection[0])
-                self._popup.dismiss()
-
-        # Bind the select_image function to the file chooser's on_submit event
-        filechooser.bind(on_submit=select_image)
-
 

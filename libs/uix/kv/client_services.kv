@@ -42,9 +42,9 @@
                     Color:
                         rgba: 0, 0, 0, 1  # Line color (black with 20% opacity)
                     Rectangle:
-                        pos: self.x + 1, self.top - 50  # Adjust position of the line
+                        pos: self.x + 1, self.top - 73  # Adjust position of the line
                         size: self.width - 6, 0.8  # Adjust width and height of the line
-
+                padding: [0, 0, 0, 30]
 
 
             Image:
@@ -53,8 +53,6 @@
                 height: '190dp'
                 allow_stretch: True
                 keep_ratio: True
-
-
 
             MDLabel:
                 text: "You haven't booked any appointments yet"
@@ -106,7 +104,6 @@
         padding: dp(10)
         size_hint_y: None
         height: self.minimum_height
-
 <Profile_screen>:
     name: 'profile'
     BoxLayout:
@@ -194,7 +191,7 @@
                         size_hint: None, None
                         size: "365dp", "50dp"
                         radius: [10]
-                        on_touch_down: root.on_touch_down_profile()
+                        on_release: root.on_touch_down_profile()
 
                         MDBoxLayout:
                             orientation: 'horizontal'
@@ -211,6 +208,7 @@
                             MDIconButton:
                                 icon: 'arrow-right'
                                 pos_hint: {'center_y': 0.5}
+
                     MDSeparator:
                         height: dp(1)
 
@@ -218,7 +216,7 @@
                         size_hint: None, None
                         size: "365dp", "50dp"
                         radius: [10]
-                        on_touch_down: root.on_touch_down_notifications()
+                        on_release: root.on_touch_down_notifications()
 
                         MDBoxLayout:
                             orientation: 'horizontal'
@@ -235,13 +233,15 @@
                             MDIconButton:
                                 icon: 'arrow-right'
                                 pos_hint: {'center_y': 0.5}
+
                     MDSeparator:
                         height: dp(1)
+
                     MDCard:
                         size_hint: None, None
                         size: "365dp", "50dp"
                         radius: [10]
-                        on_touch_down: root.on_touch_down_bookings()
+                        on_release: root.on_touch_down_bookings()
 
                         MDBoxLayout:
                             orientation: 'horizontal'
@@ -258,13 +258,15 @@
                             MDIconButton:
                                 icon: 'arrow-right'
                                 pos_hint: {'center_y': 0.5}
+
                     MDSeparator:
                         height: dp(1)
+
                     MDCard:
                         size_hint: None, None
                         size: "365dp", "50dp"
                         radius: [10]
-                        on_touch_down: root.on_touch_down_reports()
+                        on_release: root.on_touch_down_reports()
 
                         MDBoxLayout:
                             orientation: 'horizontal'
@@ -281,13 +283,15 @@
                             MDIconButton:
                                 icon: 'arrow-right'
                                 pos_hint: {'center_y': 0.5}
+
                     MDSeparator:
                         height: dp(1)
+
                     MDCard:
                         size_hint: None, None
                         size: "365dp", "50dp"
                         radius: [10]
-                        on_touch_down: root.on_touch_down_support()
+                        on_release: root.on_touch_down_support()
 
                         MDBoxLayout:
                             orientation: 'horizontal'
@@ -304,13 +308,15 @@
                             MDIconButton:
                                 icon: 'arrow-right'
                                 pos_hint: {'center_y': 0.5}
+
                     MDSeparator:
                         height: dp(1)
+
                     MDCard:
                         size_hint: None, None
                         size: "365dp", "50dp"
                         radius: [10]
-                        on_touch_down: root.on_touch_down_log_out()
+                        on_release: root.on_touch_down_log_out()
 
                         MDBoxLayout:
                             orientation: 'horizontal'
@@ -327,6 +333,8 @@
                             MDIconButton:
                                 icon: 'arrow-right'
                                 pos_hint: {'center_y': 0.5}
+
+
 
 <CustomImageTile>:
     radius: 24
@@ -428,22 +436,32 @@
                                     padding: dp(25), 0, dp(25), 0
                                     ClickableTextFieldRound:
                                         size_hint_y: None
-                                        height: dp(50)  # Adjust the height as needed
+                                        height: text_field.height
                                         pos_hint: {"center_x": .5, "center_y": .9}
-                                        padding: dp(10)
-                                        spacing: dp(10)
-                                        orientation: 'horizontal'
-                                        MDFillRoundFlatIconButton:
-                                            text: "Where to go?"
-                                            size_hint: (1, 1)
+                                        MDTextField:
+                                            id: text_field
+                                            mode: "fill"
+#                                            hint_text: "Search location here"
+                                            text: ''
+                                            radius:[30, 30, 30, 30]
+                                            line_color_focus: 1, 1, 1, 1  # Gray line color
+                                            background_color: 1, 1, 1, 1
+                                            on_focus:root.location_screen()
+            #                                    root.manager.current = "client_location"
+                                        MDIconButton:
                                             icon: "magnify"
                                             pos_hint: {"center_y": .5}
-                                            font_size: '18sp'
-                                            on_release: root.location_screen()
-                                            halign:'left'
-                                            md_bg_color:0,0,0,0.1
-                                            text_color:0,0,0,1
-                                            icon_color:0,0,0,1
+                                            #pos: text_field.width - self.width + dp(0), 0
+#                                            theme_text_color: "Hint"
+                                            on_release:root.location_screen()
+                                        MDFlatButton:
+                                            text:"Where to go?"
+                                            icon: "magnify"
+                                            pos_hint: {"center_y": .5,"center_y": .5}
+                                            pos:self.width -dp(60), 0
+                                            font_style: "Subtitle2"
+                                            font_size:'18sp'
+                                            on_release:root.location_screen()
                                 MDGridLayout:
                                     cols:1
                                     padding: dp(25), 0, dp(25), 0
