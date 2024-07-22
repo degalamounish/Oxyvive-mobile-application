@@ -32,21 +32,33 @@ class Report(MDScreen):
         try:
             with open('user_data.json', 'r') as file:
                 user_info = json.load(file)
-            result = dict(app_tables.oxi_book_slot.get(oxi_id=user_info.get('id')))
-            # Assigning fetched data to UI elements
-            if isinstance(result, dict):
-                # Assigning fetched data to UI elements
-                self.ids.booking_id.text = result.get('oxi_book_id', '')
-                self.ids.patient_name.text = result.get('oxi_username', '')
-                self.ids.doctor_name.text = result.get('oxi_doctor_name', '')
-                self.ids.address.text = result.get('oxi_address', 'N/A')  # Default to 'N/A' if None
-                self.ids.service_type.text = result.get('oxi_service_type', '')
-                self.ids.session.text = str(result.get('oxi_session', ''))
-                self.ids.price_label.text = f"${result.get('oxi_price', 0):.2f}"
-                self.ids.subtotal.text = f"${result.get('oxi_price', 0):.2f}"
+            # Fetch all booking slots for the given oxi_id
+            bookings_iterator = app_tables.oxi_book_slot.search(oxi_id=user_info.get('id'))
 
-                # Calculate and assign tax values
-                price = result.get('oxi_price', 0)
+            # Convert the SearchIterator to a list
+            bookings = list(bookings_iterator)
+            print(bookings)
+
+            if bookings:
+                # Debug: print the structure of the bookings
+                for booking in bookings:
+                # Find the booking with the latest booking date
+                    latest_booking = dict(max(bookings, key=lambda booking: booking['oxi_book_date']))
+                # Assigning fetched data to UI elements
+                self.ids.booking_id.text = latest_booking['oxi_book_id'] if 'oxi_book_id' in latest_booking else ''
+                self.ids.patient_name.text = latest_booking['oxi_username'] if 'oxi_username' in latest_booking else ''
+                self.ids.doctor_name.text = latest_booking[
+                    'oxi_doctor_name'] if 'oxi_doctor_name' in latest_booking else ''
+                self.ids.address.text = latest_booking['oxi_address'] if 'oxi_address' in latest_booking else 'N/A'
+                self.ids.service_type.text = latest_booking[
+                    'oxi_service_type'] if 'oxi_service_type' in latest_booking else ''
+                self.ids.session.text = str(latest_booking['oxi_session']) if 'oxi_session' in latest_booking else ''
+                self.ids.price_label.text = f"${latest_booking['oxi_price']:.2f}" if 'oxi_price' in latest_booking else "$0.00"
+                self.ids.subtotal.text = f"${latest_booking['oxi_price']:.2f}" if 'oxi_price' in latest_booking else "$0.00"
+
+
+            # Calculate and assign tax values
+                price = latest_booking['oxi_price']
                 cgst_value = price * 0.08
                 sgst_value = price * 0.08
                 grand_total_value = price + cgst_value + sgst_value
@@ -55,13 +67,16 @@ class Report(MDScreen):
                 self.ids.sgst.text = f"${sgst_value:.2f}"
                 self.ids.grand_total.text = f"${grand_total_value:.2f}"
 
-                self.ids.payable_to.text = result.get('oxi_payable_to', '')
-                self.ids.bank_details.text = result.get('oxi_bank_details', '')
+                self.ids.payable_to.text = latest_booking['oxi_payable_to']
+                self.ids.bank_details.text = latest_booking['oxi_bank_details']
             else:
-                print("Error: Data fetched from Anvil is not a dictionary")
+                # Handle case where no bookings are found
+                print("No bookings found for this user.")
 
         except Exception as e:
-            print(f"Error fetching data from Anvil: {str(e)}")
+            print(f"An error occurred: {e}")
+
+
 
     def save_pdf(self):
         try:
