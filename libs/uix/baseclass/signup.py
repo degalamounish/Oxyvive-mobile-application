@@ -1,24 +1,25 @@
-import re
+import os
 import random
+import re
 import string
+
 import bcrypt
-from anvil import BlobMedia
+from anvil import media
 from anvil.tables import app_tables
 from kivy.clock import Clock
 from kivy.core.window import Window
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.filechooser import FileChooserListView
-from kivy.uix.popup import Popup
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.screen import MDScreen
-from server import Server
 from plyer import filechooser
+from server import Server
 
 
 class Signup(MDScreen):
     def __init__(self, **kwargs):
         super(Signup, self).__init__(**kwargs)
+        self.selection = None
+        self.image_data = None
         self.profile = None
         Window.bind(on_keyboard=self.on_keyboard)
         self.server = Server()
@@ -103,9 +104,7 @@ class Signup(MDScreen):
         phone = self.ids.signup_phone.text
         pincode = self.ids.signup_pincode.text
         pan_card_no = self.ids.signup_pan_card_no.text
-        profile_pic_path = self.profile
-        random_code = self.generate_random_code()
-        print(random_code)
+        profile = self.ids.profile_name.text
 
         hash_pashword = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         hash_pashword = hash_pashword.decode('utf-8')
@@ -140,9 +139,8 @@ class Signup(MDScreen):
         elif not pan_card_no or len(pan_card_no) != 10:
             self.ids.signup_pan_card_no.error = True
             self.ids.signup_pan_card_no.helper_text = "Invalid Pan Card Number (10 digits required)"
-        elif not profile_pic_path:
-            self.set_error('signup_profile_pic', "Choose profile pic")
-
+        elif profile == 'None':
+            self.show_validation_dialog('Please upload Profile.')
 
         else:
             # Clear any existing errors and helper texts
@@ -181,35 +179,30 @@ class Signup(MDScreen):
                     elif existing_pan_card_no:
                         self.ids.signup_pan_card_no.helper_text = "Pan Card number already registered"
                     else:
-                        # If not present, proceed to insert the new user
-                        rows = app_tables.oxi_users.search()
-                        # Get the number of rows
-                        id = len(rows) + 1
-                        with open(profile_pic_path, 'rb') as f:
-                            profile_pic = BlobMedia('image/jpeg', f.read(), name=profile_pic_path.split('/')[-1])
-                        app_tables.oxi_users.add_row(
-                            oxi_id=random_code,
-                            oxi_username=name,
-                            oxi_email=email,
-                            oxi_password=hash_pashword,
-                            oxi_phone=float(phone),
-                            oxi_pincode=int(pincode),
-                            oxi_pan_card_no=str(pan_card_no),
-                            oxi_profile=profile_pic,
-                            oxi_usertype='client')
+                        id = self.generate_random_code()
                         # Additional SQLite insert (if needed)
                         with self.server.sqlite3_users_db() as connection:
                             cursor = connection.cursor()
                             cursor.execute('''
                                 INSERT INTO users (id, name, email, password, phone, pincode, pan_card_no, profile)
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                            ''', (id, name, email, hash_pashword, phone, pincode, pan_card_no, profile_pic_path))
+                            ''', (id, name, email, hash_pashword, phone, pincode, pan_card_no, self.image_data))
                             connection.commit()
 
+                        app_tables.oxi_users.add_row(
+                            oxi_id=str(id),
+                            oxi_username=name,
+                            oxi_email=email,
+                            oxi_password=hash_pashword,
+                            oxi_phone=float(phone),
+                            oxi_pincode=int(pincode),
+                            oxi_pan_card_no=str(pan_card_no),
+                            oxi_usertype='client',
+                            oxi_profile=self.profile)
 
-                            connection.commit()
                         # Navigate to the success screen
                         self.manager.push("login")
+
                 else:
                     self.show_validation_dialog("No internet connection")
 
@@ -238,55 +231,25 @@ class Signup(MDScreen):
         # All checks passed; the password is valid
         return True, "Password is valid"
 
-    def generate_random_code(self):
-        prefix = "CL"
-        random_numbers = ''.join(random.choices(string.digits, k=5))
-        code = prefix + random_numbers
-
-        return code
-
     def choose_profile_picture(self):
-        filters = [("*.jpg;*.jpeg;*.png")]
+        filters = ["*.jpg", "*.jpeg", "*.png"]
         filechooser.open_file(filters=filters, on_selection=self.handle_selection)
 
     def handle_selection(self, selection):
         self.selection = selection
         if selection:
             selected_file = selection[0]
-            self.profile= selected_file
+            print(selected_file)
+            # Extract only the file name
+            file_name = os.path.basename(selected_file)
+            with open(selected_file, 'rb') as f:
+                self.image_data = f.read()
+            self.profile = media.from_file(selected_file)
+            self.ids.profile_name.text = file_name
 
-    def on_selection(self, *a, **k):
-        App.get_running_app().root.ids.result.text = str(self.selection)
+    def generate_random_code(self):
+        prefix = "CL"
+        random_numbers = ''.join(random.choices(string.digits, k=5))
+        code = prefix + random_numbers
 
-    def clear_helper_texts(self):
-        self.ids.signup_name.helper_text = ""
-        self.ids.signup_email.helper_text = ""
-        self.ids.signup_password.helper_text = ""
-        self.ids.signup_phone.helper_text = ""
-        self.ids.signup_pincode.helper_text = ""
-        self.ids.signup_pan_card_no.helper_text = ""
-        self.ids.signup_profile_pic.helper_text = ""
-
-    def set_error(self, widget_id, message):
-        self.ids[widget_id].error = True
-        self.ids[widget_id].helper_text = message
-
-    def set_helper_text(self, widget_id, message):
-        self.ids[widget_id].helper_text = message
-
-    def clear_errors(self):
-        self.ids.signup_name.error = False
-        self.ids.signup_email.error = False
-        self.ids.signup_password.error = False
-        self.ids.signup_phone.error = False
-        self.ids.signup_pincode.error = False
-        self.ids.signup_pan_card_no.error = False
-        self.ids.signup_profile_pic.error = False
-
-    def clear_inputs(self):
-        self.ids.signup_name.text = ""
-        self.ids.signup_email.text = ""
-        self.ids.signup_password.text = ""
-        self.ids.signup_phone.text = ""
-        self.ids.signup_pincode.text = ""
-        self.ids.signup_pan_card_no.text = ""
+        return code

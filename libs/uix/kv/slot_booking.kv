@@ -1,45 +1,3 @@
-<CustomModalView2>
-    id: custom_modal_view
-    size_hint: None, None
-    pos_hint: {'center_x': .5, 'y': 0}
-    auto_dismiss: True
-    opacity: 0
-    MDGridLayout:
-        cols:1
-        md_bg_color: 1, 1, 1, 1
-        MDBoxLayout:
-            size_hint: 1, None
-            height: dp(40)
-            MDLabel:
-                text: 'Available Slots'
-                halign: 'center'
-                valign: 'center'
-                font_style:'Subtitle2'
-                font_size:'18sp'
-        MDGridLayout:
-            cols: 3
-            id: time_slot_box
-            padding:dp(25)
-            spacing:dp(20)
-            pos_hint:{'center_x':.5,'center_y':.5}
-            adaptive_size:True
-        MDGridLayout:
-            cols:2
-            size_hint: 1, None
-            height: dp(30)
-            padding:dp(25)
-            spacing:dp(10)
-            MDRaisedButton:
-                text:'Cancel'
-                valign:'center'
-                halign:'left'
-                on_release:root.dismiss_modal()
-            MDRaisedButton:
-                text:'Book Now'
-                valign:'center'
-                halign:'right'
-                pos_hint_x:{'center_x':1}
-                on_release:root.payment_screen()
 
 <CButton>:
     size_hint: None, None
@@ -120,181 +78,53 @@
                     size_hint_y: None
                     height: dp(80)
                     spacing: dp(10)
-                    padding: dp(20), dp(0), dp(20), dp(0)
+                    padding: dp(20)
                     pos_hint_y:{'center_y':1}
 
-
-#        FloatLayout:
-#            MDScrollView:
-#                GridLayout:
-#                    cols:2
-#                    size_hint_y: None
-#                    height: dp(1230)  # Timeline height for 12 hours with each hour taking 50dp
-#                    padding: dp(10)
-#                    spacing:dp(10)
-#
-#                    MDBoxLayout:
-#                        orientation: 'vertical'
-#                        size_hint_x: None
-#                        width: dp(120)
-#
-#                        canvas.before:
-#                            Color:
-#                                rgba: 0.7, 0.7, 0.7, 1
-#                            Line:
-#                                points: [dp(25), self.top, dp(25), self.y]
-#                                width: 1.5
-#
-#                        MDBoxLayout:
-#                            size_hint_y: None
-#                            height: dp(100)
-#                            padding:'25dp','0dp','0dp','0dp'
-#
-#                            MDLabel:
-#                                text:'9:00 am'
-#                                pos_hint:{'center_y':1}
-#
-#                        MDBoxLayout:
-#                            size_hint_y: None
-#                            height: dp(100)
-#                            padding:'25dp','0dp','0dp','0dp'
-#                            MDLabel:
-#                                text:'10:00 am'
-#                                pos_hint:{'center_y':1}
-#
-#                        MDBoxLayout:
-#                            size_hint_y: None
-#                            height: dp(100)
-#                            padding:'25dp','0dp','0dp','0dp'
-#                            MDLabel:
-#                                text:'11:00 am'
-#                                pos_hint:{'center_y':1}
-#
-#                        MDBoxLayout:
-#                            size_hint_y: None
-#                            height: dp(100)
-#
-#                            padding:'25dp','0dp','0dp','0dp'
-#                            MDLabel:
-#                                text:'12:00 pm'
-#                                pos_hint:{'center_y':1}
-#
-#                        MDBoxLayout:
-#                            size_hint_y: None
-#                            height: dp(100)
-#
-#                            padding:'25dp','0dp','0dp','0dp'
-#                            MDLabel:
-#                                text:'1:00 pm'
-#                                pos_hint:{'center_y':1}
-#
-#                        MDBoxLayout:
-#                            size_hint_y: None
-#                            height: dp(100)
-#                            padding:'25dp','0dp','0dp','0dp'
-#                            MDLabel:
-#                                text:'2:00 pm'
-#                                pos_hint:{'center_y':1}
-#
-#                        MDBoxLayout:
-#                            size_hint_y: None
-#                            height: dp(100)
-#                            padding:'25dp','0dp','0dp','0dp'
-#                            MDLabel:
-#                                text:'3:00 pm'
-#                                pos_hint:{'center_y':1}
-#
-#                        MDBoxLayout:
-#                            size_hint_y: None
-#                            height: dp(100)
-#                            padding:'25dp','0dp','0dp','0dp'
-#                            MDLabel:
-#                                text:'4:00 pm'
-#                                pos_hint:{'center_y':1}
-#
-#                        MDBoxLayout:
-#                            size_hint_y: None
-#                            height: dp(100)
-#                            padding:'25dp','0dp','0dp','0dp'
-#                            MDLabel:
-#                                text:'5:00 pm'
-#                                pos_hint:{'center_y':1}
-#
-#                        MDBoxLayout:
-#                            size_hint_y: None
-#                            height: dp(100)
-#                            padding:'25dp','0dp','0dp','0dp'
-#                            MDLabel:
-#                                text:'6:00 pm'
-#                                pos_hint:{'center_y':1}
-#
-#                        MDBoxLayout:
-#                            size_hint_y: None
-#                            height: dp(100)
-#                            padding:'25dp','0dp','0dp','0dp'
-#                            MDLabel:
-#                                text:'7:00 pm'
-#                                pos_hint:{'center_y':1}
-#
-#                        MDBoxLayout:
-#                            size_hint_y: None
-#                            height: dp(100)
-#                            padding:'25dp','0dp','0dp','0dp'
-#                            MDLabel:
-#                                text:'8:00 pm'
-#                                pos_hint:{'center_y':1}
-#
-#                        MDBoxLayout:
-#                            size_hint_y: None
-#                            height: dp(0)
-#                            padding:'25dp','0dp','0dp','0dp'
-#                            MDLabel:
-#                                text:'9:00 pm'
-#                                pos_hint:{'center_y':1}
-#
-#                    FloatLayout:
-#                        id: task_layout
-#                        size_hint_y: None
-#                        height: dp(1200)  # Match the height of the timeline
-#                        # padding: dp(10)
-#                        md_bg_color: 0.87, 0.96, 0.88, 1
-#
-#
-#            MDFloatingActionButton:
-#                icon: "plus"
-#                pos: self.parent.width - self.width - dp(16), dp(16)
-#                on_release: root.show_add_task_dialog(self)
-#                elevation_normal: 8
-#
-#<TaskCard@MDCard>:
-#    size_hint: None, None
-#    width: dp(270)
-#    orientation: 'vertical'
-#    padding: dp(10)
-#    radius: [10,]
-#    on_start_time: root.update_position()
-#    on_end_time: root.update_position()
-#    MDGridLayout:
-#        cols:1
-#        pos_hint_y:{'top':1}
-#        MDLabel:
-#            text: f'{root.start_time}-{root.end_time}'
-#            theme_text_color: "Secondary"
-#            size_hint_y: None
-#            height: self.texture_size[1]
-#
-#        MDLabel:
-#            text: root.title
-#            theme_text_color: "Primary"
-#            font_style: "H6"
-#            size_hint_y: None
-#            height: self.texture_size[1]
-#
-#        MDLabel:
-#            text: root.description
-#            theme_text_color: "Secondary"
-#            size_hint_y: None
-#            font_size:'14sp'
-#            height: self.texture_size[1]
-#
-#
+        MDBoxLayout:
+            spacing: dp(10)
+            padding: dp(20)
+            adaptive_height:True
+            MDCard:
+                pos_hint:{'center_x':.5,'center_y':.5}
+                radius:[20]
+                elevation:2
+                adaptive_height:True
+                MDGridLayout:
+                    cols:1
+                    md_bg_color: 1, 1, 1, 1
+                    pos_hint:{'center_x':.5,'center_y':.5}
+                    adaptive_height:True
+                    MDBoxLayout:
+                        size_hint: 1, None
+                        height: dp(40)
+                        MDLabel:
+                            text: 'Available Slots'
+                            halign: 'center'
+                            valign: 'center'
+                            font_style:'Subtitle2'
+                            font_size:'18sp'
+                    MDGridLayout:
+                        cols: 3
+                        id: time_slot_box2
+                        padding:dp(25)
+                        spacing:dp(20)
+                        pos_hint:{'center_x':.5,'center_y':.5}
+                        adaptive_height:True
+                        halign:'center'
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: dp(20)
+        MDBoxLayout:
+            orientation: "vertical"
+            size_hint: (1, None)
+            height:dp(50)
+            MDRaisedButton:
+                text:'Book Now'
+                text_color: 1, 1, 1, 1
+                font_style: 'Subtitle2'
+                font_size:'16sp'
+                md_bg_color: 1, 0, 0, 1
+                pos_hint: {'center_x': .5, 'center_y': .1}
+                size_hint: (1, 1)
+                on_release:root.payment_screen()
