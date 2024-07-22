@@ -62,7 +62,7 @@
         # Password input
         MDFloatLayout:
             size_hint: .7, .07
-            pos_hint: {"center_x": .5, "center_y": .70}
+            pos_hint: {"center_x": .5, "center_y": .69}
             MDTextField:
                 id: signup_password
                 hint_text: "Password"
@@ -120,7 +120,7 @@
         # Pincode input
         MDFloatLayout:
             size_hint: .7, .07
-            pos_hint: {"center_x": .5, "center_y": .54}
+            pos_hint: {"center_x": .5, "center_y": .53}
             MDTextField:
                 id: signup_pincode
                 hint_text: "Pincode"
@@ -159,18 +159,27 @@
                 canvas.before:
                     Color:
                         rgba: [75/255, 75/255, 75/255, 1]
+        MDGridLayout:
+            cols:2
+            adaptive_height:True
+            pos_hint: {"center_x": .5, "center_y": .33}
+            size_hint: 0.7, 0.07
+            MDRoundFlatButton:
+                id: signup_profile_pic
+                text: 'Upload profile'
+                font_style:'Subtitle1'
+                font_size: '16dp'  # Increased text size
+                pos_hint: {"center_x": .5, "center_y": .34}
+                font_name: "Roboto-Bold"  # Use Roboto-Bold font
+                text_color: 1, 0, 0, 1  # Red text colo
+                on_press: root.choose_profile_picture()
+            MDLabel:
+                id:profile_name
+                text:'None'
+                valign:'center'
+                halign:'center'
 
-        MDRaisedButton:
-            id: signup_profile_pic
-            text: 'Upload profile picture'
-            font_size: '20dp'  # Increased text size
-            size_hint: 0.7, 0.06
-            pos_hint: {"center_x": .5, "center_y": .34}
-            md_bg_color: [0.9, 0.9, 0.9, 1]  # Custom light grey background color
-            font_name: "Roboto-Bold"  # Use Roboto-Bold font
-            text_color: 1, 0, 0, 1  # Red text color
-            radius: [80, 80, 80, 80]  # Rounded corners
-            on_press: root.choose_profile_picture()
+
 
         # signup button
         Button:

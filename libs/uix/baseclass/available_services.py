@@ -221,15 +221,15 @@ class AvailableService(MDScreen):
             if 'oxiclinics_Name' in service_dict:
                 service_name = service_dict['oxiclinics_Name']
                 service_district = service_dict['oxiclinics_District']
-                image_source = "images/2.png"
+                image_source = "images/1.png"
             elif 'oxigyms_Name' in service_dict:
                 service_name = service_dict['oxigyms_Name']
                 service_district = service_dict['oxigyms_District']
-                image_source = "images/3.png"
+                image_source = "images/2.png"
             elif 'oxiwheels_Name' in service_dict:
                 service_name = service_dict['oxiwheels_Name']
                 service_district = service_dict['oxiwheels_District']
-                image_source = "images/1.png"
+                image_source = "images/3.png"
             else:
                 print("Unknown service type or missing attribute")
                 continue

@@ -142,10 +142,15 @@ class DetailsScreen(MDScreen):
     date = StringProperty()
 
     def set_details(self, service_type, book_date, book_time):
-        self.service_type = service_type
-        self.date = str(book_date)
-        self.time = book_time
+        print(f"Setting details: service_type={service_type}, book_date={book_date}, book_time={book_time}")  # Debugging line
+        # self.service_type = service_type
+        # self.date = str(book_date)
+        # self.time = book_time
         self.populate_details()
+        self.service_type = service_type if service_type is not None else "None"
+        self.date = book_date if book_date is not None else "None"
+        self.time = book_time if book_time is not None else "None"
+
 
     def go_back(self, *args):
         self.manager.push_replacement('client_services')
