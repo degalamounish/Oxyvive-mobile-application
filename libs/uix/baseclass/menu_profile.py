@@ -13,7 +13,7 @@ from kivy.properties import ObjectProperty, StringProperty, ListProperty
 from kivy.uix import label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
-from kivy.uix.filechooser import FileChooserListView
+from kivy.uix.filechooser import FileChooserListView, FileChooserIconView
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen
@@ -197,15 +197,22 @@ class Profile(Screen):
             self.close_dialog()
 
     def choose_profile_picture(self):
-        filters = [("*.jpg;*.jpeg;*.png")]
-        filechooser.open_file(filters=filters, on_selection=self.handle_selection)
+        content = BoxLayout(orientation='vertical')
+        filechooser = FileChooserIconView()
+        content.add_widget(filechooser)
+        buttons = BoxLayout(size_hint_y=None, height=50, spacing=10, padding=10)
+        popup = Popup(title="Select Profile Picture", content=content, size_hint=(0.9, 0.9))  # Define popup here
+        select_button = MDRaisedButton(text="Select", on_release=lambda *args: self.on_file_selection(filechooser.selection, popup))
+        cancel_button = MDRaisedButton(text="Cancel", on_release=popup.dismiss)
+        buttons.add_widget(select_button)
+        buttons.add_widget(cancel_button)
+        content.add_widget(buttons)
+        popup.open()
 
-    def handle_selection(self, selection):
-        self.selection = selection
+    def on_file_selection(self, selection, popup):
         if selection:
-            selected_file = selection[0]
-            self.ids.profile_image.source = selected_file
-            print(f"Selected file: {selected_file}")  # Debug print
+            self.ids.profile_image.source = selection[0]
+        popup.dismiss()
 
     def on_selection(self, *a, **k):
         App.get_running_app().root.ids.result.text = str(self.selection)

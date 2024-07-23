@@ -1,204 +1,187 @@
 <Login>:
+    orientation: 'vertical'
     MDFloatLayout:
-        id:main
-        md_bg_color: 1, 1, 1, 1
+        id: main
+        canvas.before:
+            Color:
+                rgba: (1, 0, 0, 1)  # Red color
+            Rectangle:
+                pos: self.pos
+                size: self.size
 
         MDIconButton:
             icon: "arrow-left"
-            pos_hint: {"center_y": .95}
+            pos_hint: {"center_x": 0.1, "center_y": .95}
             user_font_size: "30sp"
             theme_text_color: "Custom"
-            text_color: rgba(26, 24, 58, 255)
+            text_color: 0, 0, 0, 1
             on_release: root.on_back_button()
 
-        MDLabel:
-            text: "W e l c o m e   b a c k!"
-            font_name: "Roboto"
-            font_size: "23sp"
-            pos_hint: {"center_x": .6, "center_y": .85}
-            color: rgba(0, 0, 0, 255)
+        # Logo and Brand
+        Image:
+            source: 'images/shot.png'
+            size_hint: .2, .2
+            pos_hint: {"center_x": .5, "center_y": .85}
 
         MDLabel:
-            text: "Log in to continue"
-            font_name: "Roboto"
-            font_size: "18sp"
-            pos_hint: {"center_x": .6, "center_y": .79}
-            color: rgba(74, 73, 73, 255)
+            text: "Oxivive"
+            font_name: "Roboto-Bold"
+            font_size: "40sp"
+            pos_hint: {"center_x": .5, "center_y": .75}
+            halign: "center"
+            color: (1, 1, 1, 1)  # White color for visibility
 
-        # Email input
+        # Welcome message
+        MDLabel:
+            text: "Welcome back!"
+            font_name: "Roboto-Italic"
+            font_size: "24sp"
+            pos_hint: {"center_x": .5, "center_y": .68}
+            halign: "center"
+            color: (1, 1, 1, 1)  # White color for visibility
+        MDLabel:
+            text: "Log in to continue!"
+            font_name: "Roboto-Regular"
+            font_size: "20sp"
+            pos_hint: {"center_x": .5, "center_y": .62}
+            halign: "center"
+            color: (1, 1, 1, 1)
+
+        # White background area for login
         MDFloatLayout:
-            size_hint: .7, .05
-            pos_hint: {"center_x": .5, "center_y": .69}
-            MDTextField:
-                id: login_email
-                hint_text: "  Mobile Number / Email ID"
-                mode: "rectangle"
-                icon_right: "account"
-                icon_right_color: rgba(1, 0, 0, 1)
-                font_name: "Roboto"
-                helper_text: ''
-                keyboard_suggestions: True
-                helper_text_mode: 'on_error'
-                required: True
-                pos_hint: {"center_x": .5, "center_y": .5}
-                multiline: False
-                write_tab: False
-                line_color_focus: [1, 0, 0, 1]
-                hint_text_color_focus: [1, 0, 0, 1]
-                canvas.before:
-                    Color:
-                        rgba: [1, 0, 0, 1]
-
-        # Password input
-        MDFloatLayout:
-            size_hint: .7, .07
-            pos_hint: {"center_x": .5, "center_y": .58}
-            MDTextField:
-                id: login_password
-                hint_text: "  Password"
-                mode: "rectangle"
-                font_name: "Roboto"
-                helper_text: ''
-                helper_text_mode: 'on_error'
-                required: True
-                pos_hint: {"center_x": .5, "center_y": .5}
-                cursor_width: "2sp"
-                multiline: False
-                keyboard_suggestions: True
-                password: not show_password_button.active
-                write_tab: False
-                line_color_focus: [1, 0, 0, 1]
-                hint_text_color_focus: [1, 0, 0, 1]
-                canvas.before:
-                    Color:
-                        rgba: [1, 0, 0, 1]
-            MDIconButton:
-                id: show_password_button
-                pos_hint: {"center_x": .9525, "center_y": .41}
-                active: False  # Initial state is password hidden
-                text_color: [1, 0, 0, 1]
-                opposite_colors: True
-                background_palette: "Red"
-                background_hue: "500"
-                elevation_normal: 10
-                on_release:
-                    self.active = not self.active
-                    login_password.password = not self.active
-                Image:
-                    source: "images/eye-off.png" if not show_password_button.active else "images/eye.png"
-
-        # Remember me checkbox and label
-        #MDBoxLayout:
-            #orientation: 'horizontal'
-            #size_hint: .7, .05
-            #pos_hint: {"center_x": .50, "center_y": .495}
-            #MDCheckbox:
-                #id: remember_me
-                #active: True
-                #size_hint_x: None
-                #width: dp(22)
-            #MDLabel:
-                #text: "Remember me for 30 days"
-                #size_hint_x: None
-                #width: dp(150)
-                #valign: 'middle'
-                #theme_text_color: "Secondary"
-                #font_size: "13sp"
-
-        MDBoxLayout:
-            orientation: 'horizontal'
-            size_hint: .7, .05
-            pos_hint: {"center_x": .50, "center_y": .48}
-
-
-            MDCheckbox:
-                id: login_with_otp
-                size_hint_x: None
-                width: dp(22)
-            MDLabel:
-                text: "Login with OTP instead of password"
-                size_hint_x: None
-                width: dp(250)
-                valign: 'middle'
-                theme_text_color: "Secondary"
-                font_size: "13sp"
-
-        # Login button
-        Button:
-            id: login_button
-            text: "LOGIN"
-            font_size: "14sp"
-            size_hint: .7, .065
-            pos_hint: {"center_x": .50, "center_y": .40}
-            background_color: 0, 0, 0, 0
-            font_name: "Roboto"
-            on_release:
-                root.verify_login() if root.ids.login_with_otp.active else root.login_page(self)
+            size_hint: 1, .5
+            pos_hint: {"center_x": .5, "center_y": .25}
             canvas.before:
                 Color:
-                    rgb: rgba(255, 0, 0, 255)
-                RoundedRectangle:
-                    size: self.size
+                    rgba: (1, 1, 1, 1)  # White color
+                Rectangle:
                     pos: self.pos
-                    radius: [17, 17, 17, 17]
+                    size: self.size
 
-        # Forgot password button
-        MDTextButton:
-            text: "Forgot Password?"
-            pos_hint: {"center_x": .5, "center_y": .34}
-            color: rgba(250, 87, 87, 255)
-            font_size: "12sp"
-            font_name: "Roboto"
-            on_release: root.manager.push("forgot_password")
+            MDFloatLayout:
+                size_hint: .7, .12
+                pos_hint: {"center_x": .5, "center_y": .85}
+                canvas.before:
+                    Color:
+                        rgba: (255, 255, 255, 1)
+                    RoundedRectangle:
+                        size: self.size
+                        pos: self.pos
+                        radius: [16, 16, 16, 16]
 
-        MDLabel:
-            text: "or"
-            color: rgba(74, 73, 73, 255)
-            pos_hint: {"center_y": .30}
-            font_size: "13sp"
-            font_name: "Roboto"
-            halign: "center"
+                MDTextField:
+                    id: login_email
+                    hint_text: "  Mobile Number / Email ID"
+                    mode: "rectangle"
+                    icon_right: "account"
+                    icon_right_color: 1, 0, 0, 1
+                    font_name: "Roboto"
+                    helper_text: ''
+                    keyboard_suggestions: True
+                    helper_text_mode: 'on_error'
+                    required: True
+                    pos_hint: {"center_x": .5, "center_y": .85}
+                    multiline: False
+                    write_tab: False
+                    line_color_focus: 1, 0, 0, 1
+                    hint_text_color_focus: 1, 0, 0, 1
 
-        MDFloatLayout:
-            md_bg_color: rgba(178, 178, 178, 255)
-            size_hint: .3, .002
-            pos_hint: {"center_x": .3, "center_y": .30}
-        MDFloatLayout:
-            md_bg_color: rgba(178, 178, 178, 255)
-            size_hint: .3, .002
-            pos_hint: {"center_x": .7, "center_y": .30}
+            MDFloatLayout:
+                size_hint: .7, .12
+                pos_hint: {"center_x": .5, "center_y": .7}
+                canvas.before:
+                    Color:
+                        rgba: (255, 255, 255, 1)
+                    RoundedRectangle:
+                        size: self.size
+                        pos: self.pos
+                        radius: [16, 16, 16, 16]
 
-        # Social media login
-        MDLabel:
-            text: "Social Media Login"
-            font_name: "Roboto"
-            font_size: "13sp"
-            halign: "center"
-            pos_hint: {"center_y": .26}
-            color: rgba(74, 73, 73, 255)
+                MDTextField:
+                    id: login_password
+                    hint_text: "  Password"
+                    mode: "rectangle"
+                    font_name: "Roboto"
+                    helper_text: ''
+                    helper_text_mode: 'on_error'
+                    required: True
+                    pos_hint: {"center_x": .5, "center_y": .7}
+                    cursor_width: "2sp"
+                    multiline: False
+                    keyboard_suggestions: True
+                    password: not show_password_button.active
+                    write_tab: False
+                    line_color_focus: 1, 0, 0, 1
+                    hint_text_color_focus: 1, 0, 0, 1
 
-        # Social media images
-        MDBoxLayout:
-            size_hint: .5, .08
-            size_hint_y: .05
-            pos_hint: {"center_x": .5, "center_y": .25}
+                MDIconButton:
+                    id: show_password_button
+                    pos_hint: {"center_x": .94, "center_y": .5}
+                    active: False  # Initial state is password hidden
+                    icon: "eye-off"
+                    theme_text_color: "Custom"
+                    text_color: 1, 0, 0, 1
+                    on_release:
+                        self.active = not self.active
+                        login_password.password = not self.active
+                        self.icon = "eye" if self.active else "eye-off"
             Button:
-                size_hint: .6, .08
-                background_color: (0, 0, 0, 0)
-                on_release: root.google_sign_in()
-        Image:
-            size_hint: .42, .1
-            pos_hint: {"center_x": .5, "center_y": .19}
-            source: 'images/google_logo.png'
-            center_x: self.parent.center_x
-            center_y: self.parent.center_y
+                id: login_button
+                text: "LOGIN"
+                font_size: "18sp"
+                size_hint: .7, .12
+                pos_hint: {"center_x": .50, "center_y": .55}
+                background_color: 0, 0, 0, 0
+                font_name: "Roboto"
+                on_release:
+                    root.login_page()
+                canvas.before:
+                    Color:
+                        rgb: 1, 0, 0, 1
+                    RoundedRectangle:
+                        size: self.size
+                        pos: self.pos
+                        radius: [17, 17, 17, 17]
 
-        MDTextButton:
-            text: "Don't have an account? Sign up"
-            font_name: "Roboto"
-            font_size: "11sp"
-            pos_hint: {"center_x": .5, "center_y": .11}
-            color: rgba(225, 0, 0, 255)
-            on_release: root.manager.push("signup")
+            MDTextButton:
+                text: "Forgot Password?"
+                pos_hint: {"center_x": .5, "center_y": .42}
+                color: 1, 0, 0, 1
+                font_size: "12sp"
+                font_name: "Roboto"
+                on_release: root.manager.push("forgot_password")
+
+            MDLabel:
+                text: "or"
+                color: 0.29, 0.29, 0.29, 1
+                pos_hint: {"center_y": .37}
+                font_size: "13sp"
+                font_name: "Roboto"
+                halign: "center"
+
+            MDFloatLayout:
+                md_bg_color: 0.7, 0.7, 0.7, 1
+                size_hint: .3, .002
+                pos_hint: {"center_x": .3, "center_y": .37}
+            MDFloatLayout:
+                md_bg_color: 0.7, 0.7, 0.7, 1
+                size_hint: .3, .002
+                pos_hint: {"center_x": .7, "center_y": .37}
+
+            MDRoundFlatIconButton:
+                text: "Login with OTP"
+                icon: "key"
+                icon_color : 1,0,0,1
+                pos_hint: {'center_x': 0.5, 'center_y': 0.27}
+                text_color: 1, 0, 0, 1  # Red color for text
+                line_color: 1, 0, 0, 1  # Red color for border
+                on_release: root.send_otp()
 
 
+            MDTextButton:
+                text: "Don't have an account? Sign up"
+                font_name: "Roboto"
+                font_size: "14sp"
+                pos_hint: {"center_x": .5, "center_y": .07}
+                color: 1, 0, 0, 1
+                on_release: root.manager.push("signup")

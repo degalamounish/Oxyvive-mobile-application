@@ -105,15 +105,15 @@ class BookingDetails(Screen):
         for booking in bookings:
             book_date = booking['oxi_book_date']
             book_time = booking['oxi_date_time']
-            service_type = booking['service_type']
+            service_type = booking['oxi_service_type']
             user_id = booking['oxi_id']
-            username = booking['username']
+            username = booking['oxi_username']
             booking_date_str = book_date.strftime('%d %B %Y')
             day, month, year = booking_date_str.split(' ')
 
             service_images = {
-                "Oxi-Clinic": "images/1.png",
-                "Oxi-Wheel": "images/3.png",
+                "OxiClinic": "images/1.png",
+                "OxiWheel": "images/3.png",
                 "Oxi-Gym": "images/2.png"
             }
             image_source = service_images.get(service_type, "images/shot.png")

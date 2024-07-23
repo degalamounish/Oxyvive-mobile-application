@@ -7,18 +7,19 @@
         md_bg_color: 1, 1, 1, 1
         radius: [20]
         AnchorLayout:
+            MDSpinner:
+                size_hint: None, None
+                size: dp(30), dp(30)
+                pos_hint: {'center_x': .5, 'center_y': .5}
+                active:True
+        AnchorLayout:
             MDLabel:
                 id: loading_label
                 text: "Loading..."
                 halign: "center"
                 font_size:dp(20)
                 opacity: 1
-        AnchorLayout:
-            MDSpinner:
-                size_hint: None, None
-                size: dp(30), dp(30)
-                pos_hint: {'center_x': .5, 'center_y': .5}
-                active:True
+
 
 <AvailableService>:
     MDSliverAppbar:
