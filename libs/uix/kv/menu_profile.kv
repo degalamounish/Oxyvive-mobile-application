@@ -44,6 +44,7 @@
                 pos_hint: {"center_x": 0.5, "center_y": 1.1}
                 radius: 150, 150, 150, 150
 
+
             MDIconButton:
                 icon: 'camera-plus'
                 size_hint: None, None
@@ -51,7 +52,7 @@
                 theme_text_color: "Custom"
                 text_color: 1, 0, 0, 1  # Red icon color
                 pos_hint: {"center_x": 0.5, "center_y": .9}
-                on_release: root.select_image()
+                on_release: root.choose_profile_picture()
     BoxLayout:
         padding: dp(20)
         MDCard:

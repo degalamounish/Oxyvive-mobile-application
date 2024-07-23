@@ -200,6 +200,7 @@
                             IconLeftWidget:
                                 icon: 'account'
 
+
                             MDLabel:
                                 text: "Profile"
                                 theme_text_color: "Primary"
@@ -208,6 +209,8 @@
                             MDIconButton:
                                 icon: 'arrow-right'
                                 pos_hint: {'center_y': 0.5}
+                                on_release: root.on_touch_down_profile()
+
 
                     MDSeparator:
                         height: dp(1)
@@ -233,6 +236,8 @@
                             MDIconButton:
                                 icon: 'arrow-right'
                                 pos_hint: {'center_y': 0.5}
+                                on_release: root.on_touch_down_notifications()
+
 
                     MDSeparator:
                         height: dp(1)
@@ -258,6 +263,8 @@
                             MDIconButton:
                                 icon: 'arrow-right'
                                 pos_hint: {'center_y': 0.5}
+                                on_release: root.on_touch_down_bookings()
+
 
                     MDSeparator:
                         height: dp(1)
@@ -283,6 +290,8 @@
                             MDIconButton:
                                 icon: 'arrow-right'
                                 pos_hint: {'center_y': 0.5}
+                                on_release: root.on_touch_down_reports()
+
 
                     MDSeparator:
                         height: dp(1)
@@ -308,6 +317,8 @@
                             MDIconButton:
                                 icon: 'arrow-right'
                                 pos_hint: {'center_y': 0.5}
+                                on_release: root.on_touch_down_support()
+
 
                     MDSeparator:
                         height: dp(1)
@@ -333,6 +344,8 @@
                             MDIconButton:
                                 icon: 'arrow-right'
                                 pos_hint: {'center_y': 0.5}
+                                on_release: root.on_touch_down_log_out()
+
 
 
 

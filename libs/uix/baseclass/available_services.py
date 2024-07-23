@@ -4,40 +4,28 @@ from threading import Thread
 
 import requests
 from anvil.tables import app_tables, query as q
-from kivy.animation import Animation
+from googlemaps import Client as GoogleMapsClient
 from kivy.clock import Clock
 from kivy.core.window import Window
-from kivy.metrics import dp
 from kivy.properties import ObjectProperty
-from kivy.uix.image import Image
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.label import Label
 from kivy.uix.modalview import ModalView
-from kivy.uix.scatter import Scatter
-from kivy_garden.mapview import MapMarker, MapView, MapSource, MapLayer
+from kivy_garden.mapview import MapMarker, MapView, MapSource
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.button import MDFillRoundFlatButton
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.card import MDCard
+from kivymd.uix.dialog import MDDialog
 from kivymd.uix.fitimage import FitImage
+from kivymd.uix.label import MDLabel
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.toolbar import MDTopAppBar
-from kivymd.uix.card import MDCard
-from kivymd.uix.label import MDLabel
-from kivymd.uix.button import MDRaisedButton, MDFillRoundFlatButton
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.dialog import MDDialog
-from kivymd.uix.button import MDFlatButton
-from googlemaps import Client as GoogleMapsClient
 
 
 class LoadingScreen(ModalView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.loading_label = self.ids.loading_label
-        self.start_animation()
-
-    def start_animation(self):
-        # Create the opacity animation for the loading label
-        anim = Animation(opacity=0, duration=0.5) + Animation(opacity=1, duration=0.5)
-        anim.repeat = True
-        anim.start(self.loading_label)
 
 
 class CustomMapMarker(MDBoxLayout, MapMarker):
@@ -186,7 +174,7 @@ class AvailableService(MDScreen):
         # Dismiss the loading screen and update other UI components
         self.loading_screen.dismiss()
         self.silver_tool_bar.manager = self.manager
-        self.adding_cards()
+        self.adding_services()
 
     def show_no_service_popup(self):
         dialog = MDDialog(
@@ -217,15 +205,14 @@ class AvailableService(MDScreen):
 
         self.all_results = list(results_oxiclinics) + list(results_oxigyms) + list(results_oxiwheels)
 
-        self.ids.content.clear_widgets()
+    def adding_services(self):
+        all_results = self.all_results
 
+        self.ids.content.clear_widgets()
         if not self.all_results:
             self.show_no_service_popup()
             return
-
-    def adding_cards(self):
         # Add markers to the map
-        all_results = self.all_results
         services = []
         for service in all_results:
             service_dict = dict(service)
