@@ -18,71 +18,75 @@
             color: rgba(0, 0, 0, 255)
         # Username input
         MDFloatLayout:
-            size_hint: .7, .07
-            pos_hint: {"center_x": .5, "center_y": .86}
+            size_hint: .7, .04
+            pos_hint: {"center_x": .5, "center_y": .84}
             MDTextField:
                 id: signup_name
-                hint_text: "Full Name"
+                hint_text: "       Name"
                 font_name: "Roboto"
                 helper_text:''
                 helper_text_mode:  'on_error'
                 keyboard_suggestions: True
-                required: False
                 pos_hint: {"center_x": .5, "center_y": 0}
                 multiline: False
                 write_tab: False
-                line_color_focus: [75/255, 75/255, 75/255, 1]
-                hint_text_color_focus: [75/255, 75/255, 75/255, 1]
+                mode: "rectangle"
+                required: True
+                line_color_focus: [1, 0, 0, 1]
+                hint_text_color_focus: [1, 0, 0, 1]
                 canvas.before:
                     Color:
-                        rgba: [75/255, 75/255, 75/255, 1]
+                        rgba: [1, 0, 0, 1]
+
 
 
         # Email input
         MDFloatLayout:
-            size_hint: .7, .07
-            pos_hint: {"center_x": .5, "center_y": .78}
+            size_hint: .7, .04
+            pos_hint: {"center_x": .5, "center_y": .74}
             MDTextField:
                 id: signup_email
-                hint_text: "Email"
+                hint_text: "       Email"
                 font_name: "Roboto"
                 helper_text:""
                 helper_text_mode: 'on_error'
                 keyboard_suggestions: True
-                required: False
                 pos_hint: {"center_x": .5, "center_y": 0}
                 multiline: False
                 write_tab: False
-                line_color_focus: [75/255, 75/255, 75/255, 1]
-                hint_text_color_focus: [75/255, 75/255, 75/255, 1]
+                mode: "rectangle"
+                required: True
+                line_color_focus: [1, 0, 0, 1]
+                hint_text_color_focus: [1, 0, 0, 1]
                 canvas.before:
                     Color:
-                        rgba: [75/255, 75/255, 75/255, 1]
+                        rgba: [1, 0, 0, 1]
 
         # Password input
         MDFloatLayout:
-            size_hint: .7, .07
-            pos_hint: {"center_x": .5, "center_y": .69}
+            size_hint: .7, .04
+            pos_hint: {"center_x": .5, "center_y": .64}
             MDTextField:
                 id: signup_password
-                hint_text: "Password"
+                hint_text: "      Password"
                 font_name: "Roboto"
                 helper_text:""
                 helper_text_mode: 'on_error'
                 keyboard_suggestions: True
-                required: False
                 pos_hint: {"center_x": .5, "center_y": 0}
                 multiline: False
                 password: True
                 write_tab: False
-                line_color_focus: [75/255, 75/255, 75/255, 1]
-                hint_text_color_focus: [75/255, 75/255, 75/255, 1]
+                mode: "rectangle"
+                required: True
+                line_color_focus: [1, 0, 0, 1]
+                hint_text_color_focus: [1, 0, 0, 1]
                 canvas.before:
                     Color:
-                        rgba: [75/255, 75/255, 75/255, 1]
+                        rgba: [1, 0, 0, 1]
             MDIconButton:
                 id: show_password_button
-                pos_hint: {"center_x": .9, "center_y": 0}
+                pos_hint: {"center_x": .9, "center_y": -.15}
                 active: False  # Initial state is password hidden
                 text_color: [0, 0, 0, 1]
                 opposite_colors: True
@@ -97,95 +101,124 @@
 
         # Phone num input
         MDFloatLayout:
-            size_hint: .7, .07
-            pos_hint: {"center_x": .5, "center_y": .62}
+            size_hint: .7, .04
+            pos_hint: {"center_x": .5, "center_y": .54}
             MDTextField:
                 id: signup_phone
-                hint_text: "Phone no"
+                hint_text: "       Phone no"
                 font_name: "Roboto"
                 helper_text:""
                 helper_text_mode:  'on_error'
-                required: False
                 keyboard_suggestions: True
                 pos_hint: {"center_x": .5, "center_y": 0}
                 multiline: False
                 write_tab: False
                 input_type: "number"
-                line_color_focus: [75/255, 75/255, 75/255, 1]
-                hint_text_color_focus: [75/255, 75/255, 75/255, 1]
+                mode: "rectangle"
+                required: True
+                line_color_focus: [1, 0, 0, 1]
+                hint_text_color_focus: [1, 0, 0, 1]
                 canvas.before:
                     Color:
-                        rgba: [75/255, 75/255, 75/255, 1]
+                        rgba: [1, 0, 0, 1]
 
         # Pincode input
         MDFloatLayout:
-            size_hint: .7, .07
-            pos_hint: {"center_x": .5, "center_y": .53}
+            size_hint: .7, .04
+            pos_hint: {"center_x": .5, "center_y": .44}
             MDTextField:
                 id: signup_pincode
-                hint_text: "Pincode"
+                hint_text: "       Pincode"
                 font_name: "Roboto"
                 helper_text:("")
                 helper_text_mode:  'on_error'
-                required: False
                 keyboard_suggestions: True
                 pos_hint: {"center_x": .5, "center_y": 0}
                 multiline: False
                 write_tab: False
                 input_type: "number"
-                line_color_focus: [75/255, 75/255, 75/255, 1]
-                hint_text_color_focus: [75/255, 75/255, 75/255, 1]
+                mode: "rectangle"
+                required: True
+                line_color_focus: [1, 0, 0, 1]
+                hint_text_color_focus: [1, 0, 0, 1]
                 canvas.before:
                     Color:
-                        rgba: [75/255, 75/255, 75/255, 1]
+                        rgba: [1, 0, 0, 1]
 
         # pan_card_no input
         MDFloatLayout:
-            size_hint: .7, .07
-            pos_hint: {"center_x": .5, "center_y": .46}
+            size_hint: .7, .04
+            pos_hint: {"center_x": .5, "center_y": .34}
             MDTextField:
                 id: signup_pan_card_no
-                hint_text: "PAN Number"
+                hint_text: "        PAN Number"
                 font_name: "Roboto"
                 helper_text:''
                 helper_text_mode:  'on_error'
                 keyboard_suggestions: True
-                required: False
                 pos_hint: {"center_x": .5, "center_y": 0}
                 multiline: False
                 write_tab: False
-                line_color_focus: [75/255, 75/255, 75/255, 1]
-                hint_text_color_focus: [75/255, 75/255, 75/255, 1]
+                mode: "rectangle"
+                required: True
+                line_color_focus: [1, 0, 0, 1]
+                hint_text_color_focus: [1, 0, 0, 1]
                 canvas.before:
                     Color:
-                        rgba: [75/255, 75/255, 75/255, 1]
-        MDGridLayout:
-            cols:2
-            adaptive_height:True
-            pos_hint: {"center_x": .5, "center_y": .33}
-            size_hint: 0.7, 0.07
-            MDRoundFlatButton:
-                id: signup_profile_pic
-                text: 'Upload profile'
-                font_style:'Subtitle1'
-                font_size: '16dp'  # Increased text size
-                pos_hint: {"center_x": .5, "center_y": .34}
-                font_name: "Roboto-Bold"  # Use Roboto-Bold font
-                text_color: 1, 0, 0, 1  # Red text colo
+                        rgba: [1, 0, 0, 1]
+
+        MDBoxLayout:
+            orientation: 'horizontal'
+            size_hint: .7, .08
+            pos_hint: {"center_x": .5, "center_y": .21}
+            height: "100dp"
+            width: dp(200)
+            padding: [0, 0, 20, 0]
+            canvas.before:
+                Color:
+                    rgba: 149/255, 165/255, 166/255, 1  # Grey color for the border
+                Line:
+                    rounded_rectangle: [self.x, self.y, self.width, self.height, 10]
+                    width: 1.23
+
+            MDIconButton:
+                icon: 'upload'
+                pos_hint: {"center_x": .1, "center_y": .5}
+                #icon_color: 0,0,0,1
+                theme_text_color: "Custom"
+                text_color: 1, 0, 0, 1  # Black color for the icon
                 on_press: root.choose_profile_picture()
+
+            MDLabel:
+                id: signup_profile_pic
+                text: 'Upload Profile Photo'
+                font_name: "Roboto"
+                font_size: '17dp'
+                #font_name: "Roboto-Bold"
+                color: 1, 0, 0, 1  # Red color for the label
+                pos_hint: {"center_x": .5, "center_y": .5}
+
+            #Image:
+                #id: profile_image
+                #source: ''
+                #size_hint: None, None
+                #size: 60, 60
+                #pos_hint: {"center_x": -1, "center_y": .5}
+                #allow_stretch: True
+
             MDLabel:
                 id:profile_name
+                pos_hint: {"center_x": -1, "center_y": .5}
                 text:'None'
+                font_size: '10dp'
                 valign:'center'
                 halign:'center'
-
-
 
         # signup button
         Button:
             text: "SIGNUP"
             size_hint: .66, .065
-            pos_hint: {"center_x": .5, "center_y": .25}
+            pos_hint: {"center_x": .5, "center_y": .11}
             background_color: 0, 0, 0, 0
             font_name: "Roboto"
             on_press: root.users(self)
@@ -198,46 +231,46 @@
                     pos: self.pos
                     radius: [17, 17, 17, 17]
         # or label
-        MDLabel:
-            text: "or"
-            color: rgba(74, 73, 73, 255)
-            pos_hint: {"center_y": .195}
-            font_size: "13sp"
-            font_name: "Roboto"
-            halign: "center"
+        #MDLabel:
+            #text: "or"
+            #color: rgba(74, 73, 73, 255)
+            #pos_hint: {"center_y": .195}
+            #font_size: "13sp"
+            #font_name: "Roboto"
+            #halign: "center"
         #lines
-        MDFloatLayout:
-            md_bg_color: rgba(178, 178, 178, 255)
-            size_hint: .3, .002
-            pos_hint: {"center_x": .3, "center_y": .195}
-        MDFloatLayout:
-            md_bg_color: rgba(178, 178, 178, 255)
-            size_hint: .3, .002
-            pos_hint: {"center_x": .7, "center_y": .195}
+        #MDFloatLayout:
+            #md_bg_color: rgba(178, 178, 178, 255)
+            #size_hint: .3, .002
+            #pos_hint: {"center_x": .3, "center_y": .195}
+        #MDFloatLayout:
+            #md_bg_color: rgba(178, 178, 178, 255)
+            #size_hint: .3, .002
+            #pos_hint: {"center_x": .7, "center_y": .195}
         #social media section
-        MDLabel:
-            text: "Social Media Login"
-            font_name: "Roboto"
-            font_size: "13sp"
-            halign: "center"
-            pos_hint: {"center_y": .16}
-            color: rgba(74, 73, 73, 255)
+        #MDLabel:
+            #text: "Social Media Login"
+            #font_name: "Roboto"
+            #font_size: "13sp"
+            #halign: "center"
+            #pos_hint: {"center_y": .16}
+            #color: rgba(74, 73, 73, 255)
         #social media images
-        MDGridLayout:
-            cols: 1
-            size_hint: .5, .08
-            size_hint_y: .05
-            pos_hint: {"center_x": .5, "center_y": .1}
-            Button:
-                size_hint: .6, .08
-                background_color: (0,0,0,0)
-#                on_release: root.google_sign_in()
-        Image:
-            size_hint: .5, .1
-            pos_hint: {"center_x": .5, "center_y": .1}
-            source: 'images/google_logo.png'
-            center_x: self.parent.center_x
-            center_y: self.parent.center_y
+        #MDGridLayout:
+            #cols: 1
+            #size_hint: .5, .08
+            #size_hint_y: .05
+            #pos_hint: {"center_x": .5, "center_y": .1}
+            #Button:
+                #size_hint: .6, .08
+                #background_color: (0,0,0,0)
+#                #on_release: root.google_sign_in()
+        #Image:
+            #size_hint: .5, .1
+            #pos_hint: {"center_x": .5, "center_y": .1}
+            #source: 'images/google_logo.png'
+            #center_x: self.parent.center_x
+            #center_y: self.parent.center_y
         #log in button
         MDTextButton:
             text: "Already have an account? Sign in"
@@ -246,11 +279,11 @@
             pos_hint: {"center_x": .5, "center_y": .05}
             color: rgba(225, 0, 0, 255)
             on_release: root.manager.push("login")
-        MDTextButton:
-            text: "Are you service provider? Sign in"
-            font_name: "Roboto"
-            font_size: "11sp"
-            pos_hint: {"center_x": .5, "center_y": .98}
-            color: rgba(225, 0, 0, 255)
-            on_release: root.manager.push("service_register_form1")
+        #MDTextButton:
+            #text: "Are you service provider? Sign in"
+            #font_name: "Roboto"
+            #font_size: "11sp"
+            #pos_hint: {"center_x": .5, "center_y": .98}
+            #color: rgba(225, 0, 0, 255)
+            #on_release: root.manager.push("service_register_form1")
 

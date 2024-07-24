@@ -12,10 +12,14 @@ from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.screen import MDScreen
 from plyer import filechooser
-from plyer.utils import platform
 from server import Server
-
-
+from plyer.utils import platform
+if platform == 'android':
+    from kivy.uix.modalview import ModalView
+    from kivy.clock import Clock
+    from android.permissions import (
+        request_permissions, check_permission, Permission
+    )
 class Signup(MDScreen):
     def __init__(self, **kwargs):
         super(Signup, self).__init__(**kwargs)
@@ -24,8 +28,7 @@ class Signup(MDScreen):
         self.profile = None
         Window.bind(on_keyboard=self.on_keyboard)
         self.server = Server()
-        if (
-                platform == 'android'):
+        if (platform == 'android'):
             from android.permissions import request_permissions, Permission
             request_permissions([Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE])
 
@@ -239,13 +242,17 @@ class Signup(MDScreen):
     def choose_profile_picture(self):
         filters = ["*.jpg", "*.jpeg", "*.png"]
         filechooser.open_file(filters=filters, on_selection=self.handle_selection)
+        # file_path = filechooser.open_file(filters=filters, on_selection=self.handle_selection)
+        # if file_path:
+        #     self.ids.profile_image.source = file_path[0]
+        #     #self.ids.signup_profile_pic.text = file_path[0]  # Update the label text with the file path
 
     def handle_selection(self, selection):
         self.selection = selection
         if selection:
             selected_file = selection[0]
             print(selected_file)
-            # Extract only the file name
+            #Extract only the file name
             file_name = os.path.basename(selected_file)
             with open(selected_file, 'rb') as f:
                 self.image_data = f.read()
