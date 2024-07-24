@@ -1,4 +1,6 @@
 import json
+import math
+import os
 import random
 import string
 import time
@@ -8,17 +10,13 @@ from http.server import SimpleHTTPRequestHandler, HTTPServer
 from threading import Thread
 from urllib.parse import urlparse, parse_qs
 
-import anvil
-import razorpay
 import requests
-import webview
 from anvil.tables import app_tables
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.screen import MDScreen
-from kivymd.uix.textfield import MDTextField
 from server import Server
 
 
@@ -26,6 +24,8 @@ class Payment(MDScreen):
     servicer_id = None
     date = None
     time_left = None
+    api_key = "AIzaSyA8GzhJLPK0Hfryi5zHbg3RMDSMCukmQCw"
+    origin = None
 
     def __init__(self, **kwargs):
         super(Payment, self).__init__(**kwargs)
@@ -75,7 +75,7 @@ class Payment(MDScreen):
         servicer_id = booking_data.get('servicer_id', '')
         book_date = booking_data.get('book_date', '')
         book_time = booking_data.get('book_time', '')
-        date_time = booking_data.get('date_time', '')
+        self.date_time = booking_data.get('date_time', '')
         username = booking_data.get('username', '')
 
         try:
@@ -88,7 +88,7 @@ class Payment(MDScreen):
                     oxi_id=oxi_id,
                     oxi_book_date=date_object,
                     oxi_book_time=book_time,
-                    oxi_date_time=date_time,
+                    oxi_date_time=self.date_time,
                     oxi_payment_id=self.razorpay_payment_id,
                     oxi_username=username,
                     oxi_service_type=self.service_type
@@ -129,22 +129,103 @@ class Payment(MDScreen):
             print("Service ID not found in any table")
             return
         details = dict(details)
+        print(details)
         if 'oxiclinics_address' in details:
             self.ids.service_name.text = details.get('oxiclinics_Name', 'N/A')
             self.service_type = 'OxiClinic'
             self.ids.service_type.text = 'OxiClinic'
             self.ids.service_address.text = details.get('oxiclinics_address', 'N/A')
+            self.ids.c_fee.text = f"₹{details.get('oxiclinics_fees', 'N/A')}"
+            oxiclinics_profile = details['oxiclinics_image']
+            if oxiclinics_profile:
+                current_dir = os.getcwd()
+                image_path = os.path.join(current_dir, 'servicer_profile_image.png')
+                with open(image_path, 'wb') as img_file:
+                    img_file.write(oxiclinics_profile.get_bytes())
+
+                if 's_image' in self.ids:
+                    self.ids.s_image.source = image_path
+                    self.ids.s_image.reload()
+                else:
+                    print("Profile image ID not found")
+            else:
+                if 's_image' in self.ids:
+                    self.ids.s_image.source = 'images/profile.jpg'
+
+            self.destination = details['oxiclinics_address']
+            print('origin', self.origin)
+            print('destination', self.destination)
+            self.fetch_and_calculate_distance()
+
         elif 'oxiwheels_address' in details:
             self.ids.service_name.text = details.get('oxiwheels_Name', 'N/A')
             self.service_type = 'OxiWheel'
             self.ids.service_type.text = 'OxiWheel'
             self.ids.service_address.text = details.get('oxiwheels_address', 'N/A')
+            self.ids.c_fee.text = f"₹{details.get('oxiwheels_fees', 'N/A')}"
+            oxiwheels_profile = details['oxiwheels_image']
+            if oxiwheels_profile:
+                current_dir = os.getcwd()
+                image_path = os.path.join(current_dir, 'servicer_profile_image.png')
+                with open(image_path, 'wb') as img_file:
+                    img_file.write(oxiwheels_profile.get_bytes())
+
+                if 's_image' in self.ids:
+                    self.ids.s_image.source = image_path
+                    self.ids.s_image.reload()
+                else:
+                    print("Profile image ID not found")
+            else:
+                if 's_image' in self.ids:
+                    self.ids.s_image.source = 'images/profile.jpg'
+
+            origin = ''
+            destination = details['oxiwheels_address']
+            result = self.get_distance(self.api_key, self.origin, destination)
+
+            if "error" not in result:
+                print(f"Origin: {result['origin']}")
+                print(f"Destination: {result['destination']}")
+                print(f"Distance: {result['distance']}")
+                print(f"Duration: {result['duration']}")
+            else:
+                print(result["error"])
+
         elif 'oxigyms_address' in details:
             self.ids.service_name.text = details.get('oxigyms_Name', 'N/A')
             self.service_type = 'OxiGym'
             self.ids.service_type.text = 'OxiGym'
             self.ids.service_address.text = details.get('oxigyms_address', 'N/A')
-        else:
+            self.ids.c_fee.text = f"₹{details.get('oxigyms_fees', 'N/A')}"
+            oxigyms_profile = details['oxigyms_image']
+            if oxigyms_profile:
+                current_dir = os.getcwd()
+                image_path = os.path.join(current_dir, 'servicer_profile_image.png')
+                with open(image_path, 'wb') as img_file:
+                    img_file.write(oxigyms_profile.get_bytes())
+
+                if 's_image' in self.ids:
+                    self.ids.s_image.source = image_path
+                    self.ids.s_image.reload()
+                else:
+                    print("Profile image ID not found")
+            else:
+                if 's_image' in self.ids:
+                    self.ids.s_image.source = 'images/profile.jpg'
+
+            origin = ''
+            destination = details['oxigyms_address']
+            result = self.get_distance(self.api_key, self.origin, destination)
+            print(result)
+
+            #     if "error" not in result:
+            #         print(f"Origin: {result['origin']}")
+            #         print(f"Destination: {result['destination']}")
+            #         print(f"Distance: {result['distance']}")
+            #         print(f"Duration: {result['duration']}")
+            #     else:
+            #         print(result["error"])
+            # else:
             self.ids.service_address.text = 'N/A'
 
     def view_bill(self):
@@ -283,9 +364,9 @@ class Payment(MDScreen):
         server_thread.start()
         print("Opening Razorpay checkout page...")
         webbrowser.open("http://localhost:9000/checkout.html")
-        #webview.create_window('Razorpay Checkout', url="http://localhost:9000/checkout.html", width=800, height=600,
-                              #resizable=True, js_api=True)
-        #webview.start()
+        # webview.create_window('Razorpay Checkout', url="http://localhost:9000/checkout.html", width=800, height=600,
+        # resizable=True, js_api=True)
+        # webview.start()
 
     def shutdown_and_switch(self):
         time.sleep(1)
@@ -295,4 +376,93 @@ class Payment(MDScreen):
     def switch_to_success_screen(self):
         self.store_booked_data()
         self.manager.push_replacement('client_services')
+        Clock.schedule_once(self.sending_notification)
+
+    def sending_notification(self, *args):
+        self.appointment_time = self.convert_datetime(self.date_time)
+        print(self.appointment_time)
+        message = f"Your appointment is booked for {self.appointment_time.strftime('%Y-%m-%d %H:%M')}"
+        self.manager.load_screen('menu_notification')
+        self.manager.get_screen('menu_notification').schedule_notifications(self.appointment_time)
+        self.manager.get_screen('menu_notification').show_notification("Appointment Booked", message)
+
         print("Switched to success screen.")
+
+    def convert_datetime(self, original_str):
+        # Define the format of the original datetime string (without year)
+        original_format = "%a, %d %b %I:%M %p"
+        # Parse the original datetime string
+        try:
+            dt = datetime.strptime(original_str, original_format)
+        except ValueError as e:
+            print(f"Error parsing datetime: {e}")
+            return None
+        # Replace the year with the current year
+        current_year = datetime.now().year
+        dt = dt.replace(year=current_year)
+
+        return dt
+
+    def get_distance(self, api_key, origin, destination):
+        url = "https://maps.googleapis.com/maps/api/distancematrix/json"
+        params = {
+            "origins": origin,
+            "destinations": destination,
+            "key": api_key
+        }
+
+        response = requests.get(url, params=params)
+        data = response.json()
+
+        if data['status'] == 'OK':
+            elements = data['rows'][0]['elements'][0]
+            if elements['status'] == 'OK':
+                distance = elements['distance']['text']
+                duration = elements['duration']['text']
+                return distance, duration
+            else:
+                return "Error: " + elements['status']
+        else:
+            return "Error: " + data['status']
+
+    def fetch_coordinates(self, address):
+        url = "https://maps.googleapis.com/maps/api/geocode/json"
+        params = {
+            "address": address,
+            "key": self.api_key
+        }
+
+        response = requests.get(url, params=params)
+        data = response.json()
+
+        if data['status'] == 'OK':
+            location = data['results'][0]['geometry']['location']
+            return location['lat'], location['lng']
+        else:
+            raise ValueError(f"Error fetching coordinates: {data['status']}")
+
+    def fetch_and_calculate_distance(self):
+        try:
+            origin_coords = self.fetch_coordinates(self.origin)
+            destination_coords = self.fetch_coordinates(self.destination)
+
+            lat1, lon1 = origin_coords
+            lat2, lon2 = destination_coords
+
+            distance = self.haversine(lat1, lon1, lat2, lon2)
+            result_text = f"Distance: {distance:.2f} km"
+        except ValueError as e:
+            result_text = str(e)
+
+        self.ids.distance_from.text = f'[color=#6200EA]Distance From you [/color] - {result_text}'
+
+    def haversine(self,lat1, lon1, lat2, lon2):
+        R = 6371  # Earth radius in kilometers
+
+        dlat = math.radians(lat2 - lat1)
+        dlon = math.radians(lon2 - lon1)
+        a = math.sin(dlat / 2) ** 2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(
+            dlon / 2) ** 2
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+        distance = R * c
+        return distance
