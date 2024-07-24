@@ -302,6 +302,7 @@ class ClientLocation(MDScreen):
         self.gps_active = False
         self.places_results = []  # Store the results for place details
         Window.bind(on_keyboard=self.on_keyboard)
+        self.origin = None
 
     def on_keyboard(self, instance, key, scancode, codepoint, modifier):
         if key == 27:  # Keycode for the back button on Android
@@ -433,6 +434,10 @@ class ClientLocation(MDScreen):
         self.manager.push_replacement('client_services')
 
     def next_screen(self):
+        self.manager.load_screen('payment_page')
+        screen_payment = self.manager.get_screen('payment_page')
+        screen_payment.origin = self.ids.autocomplete.text
+
         self.manager.load_screen('available_services')
         screen = self.manager.get_screen('available_services')
         screen.location = self.ids.autocomplete.text
