@@ -29,6 +29,7 @@ class Payment(MDScreen):
 
     def __init__(self, **kwargs):
         super(Payment, self).__init__(**kwargs)
+        self.amt = None
         self.service_type = None
         self.razorpay_payment_id = None
         self.dialog = None
@@ -136,6 +137,7 @@ class Payment(MDScreen):
             self.ids.service_type.text = 'OxiClinic'
             self.ids.service_address.text = details.get('oxiclinics_address', 'N/A')
             self.ids.c_fee.text = f"₹{details.get('oxiclinics_fees', 'N/A')}"
+            self.amt = details.get('oxiclinics_fees', 'N/A')
             oxiclinics_profile = details['oxiclinics_image']
             if oxiclinics_profile:
                 current_dir = os.getcwd()
@@ -163,6 +165,7 @@ class Payment(MDScreen):
             self.ids.service_type.text = 'OxiWheel'
             self.ids.service_address.text = details.get('oxiwheels_address', 'N/A')
             self.ids.c_fee.text = f"₹{details.get('oxiwheels_fees', 'N/A')}"
+            self.amt = details.get('oxiwheels_fees', 'N/A')
             oxiwheels_profile = details['oxiwheels_image']
             if oxiwheels_profile:
                 current_dir = os.getcwd()
@@ -179,17 +182,13 @@ class Payment(MDScreen):
                 if 's_image' in self.ids:
                     self.ids.s_image.source = 'images/profile.jpg'
 
-            origin = ''
-            destination = details['oxiwheels_address']
-            result = self.get_distance(self.api_key, self.origin, destination)
+            self.destination = details['oxiwheels_address']
 
-            if "error" not in result:
-                print(f"Origin: {result['origin']}")
-                print(f"Destination: {result['destination']}")
-                print(f"Distance: {result['distance']}")
-                print(f"Duration: {result['duration']}")
-            else:
-                print(result["error"])
+            print('origin', self.origin)
+            print('destination', self.destination)
+            self.fetch_and_calculate_distance()
+
+
 
         elif 'oxigyms_address' in details:
             self.ids.service_name.text = details.get('oxigyms_Name', 'N/A')
@@ -197,6 +196,7 @@ class Payment(MDScreen):
             self.ids.service_type.text = 'OxiGym'
             self.ids.service_address.text = details.get('oxigyms_address', 'N/A')
             self.ids.c_fee.text = f"₹{details.get('oxigyms_fees', 'N/A')}"
+            self.amt = details.get('oxigyms_fees', 'N/A')
             oxigyms_profile = details['oxigyms_image']
             if oxigyms_profile:
                 current_dir = os.getcwd()
@@ -213,19 +213,12 @@ class Payment(MDScreen):
                 if 's_image' in self.ids:
                     self.ids.s_image.source = 'images/profile.jpg'
 
-            origin = ''
-            destination = details['oxigyms_address']
-            result = self.get_distance(self.api_key, self.origin, destination)
-            print(result)
+            self.destination = details['oxigyms_address']
 
-            #     if "error" not in result:
-            #         print(f"Origin: {result['origin']}")
-            #         print(f"Destination: {result['destination']}")
-            #         print(f"Distance: {result['distance']}")
-            #         print(f"Duration: {result['duration']}")
-            #     else:
-            #         print(result["error"])
-            # else:
+            print('origin', self.origin)
+            print('destination', self.destination)
+            self.fetch_and_calculate_distance()
+        else:
             self.ids.service_address.text = 'N/A'
 
     def view_bill(self):
@@ -241,7 +234,7 @@ class Payment(MDScreen):
 
     def initiate_payment(self):
         print("Initiating payment...")
-        amount = 999  # Amount in INR (sub-units, e.g., 100 INR = 10000 paisa)
+        amount = int(self.amt)  # Amount in INR (sub-units, e.g., 100 INR = 10000 paisa)
         api_key = 'rzp_test_41ch2lqayiGZ9X'
         api_secret = 'CPEd7kVR1d215BH12bIoJb63'
 
@@ -454,9 +447,9 @@ class Payment(MDScreen):
         except ValueError as e:
             result_text = str(e)
 
-        self.ids.distance_from.text = f'[color=#6200EA]Distance From you [/color] - {result_text}'
+        self.ids.distance_from.text = f'[color=#6200EA]Distance between [/color] - {result_text}'
 
-    def haversine(self,lat1, lon1, lat2, lon2):
+    def haversine(self, lat1, lon1, lat2, lon2):
         R = 6371  # Earth radius in kilometers
 
         dlat = math.radians(lat2 - lat1)
