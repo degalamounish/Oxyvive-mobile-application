@@ -2,28 +2,24 @@ import base64
 import io
 import json
 import os
-from PIL.Image import Image
 from anvil.tables import app_tables
-from kivy.animation import Animation
 from kivy.clock import Clock
-from kivy.properties import StringProperty, ObjectProperty, DictProperty
+from kivy.core.window import Window
+from kivy.properties import ObjectProperty
+from kivy.properties import StringProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image as KivyImage
+from kivy.uix.screenmanager import Screen
+from kivy.uix.scrollview import ScrollView
+from kivy.utils import get_color_from_hex
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.hero import MDHeroFrom
+from kivymd.uix.card import MDCard
 from kivymd.uix.imagelist import MDSmartTile
+from kivymd.uix.label import MDLabel
 from kivymd.uix.relativelayout import MDRelativeLayout
 from kivymd.uix.screen import MDScreen
-from server import Server
-from kivymd.uix.button import MDRaisedButton, MDIconButton
-from kivymd.uix.card import MDCard
-from kivymd.uix.label import MDLabel
-from kivy.utils import get_color_from_hex
 from kivymd.uix.toolbar import MDTopAppBar
-from kivy.uix.scrollview import ScrollView
-from kivy.core.window import Window
-from kivy.uix.screenmanager import Screen
-from kivy.properties import ObjectProperty
+from server import Server
 
 
 class Activity(MDBoxLayout):
@@ -265,7 +261,9 @@ class Profile_screen(Screen):
             print(f"An error occurred while fetching data from server: {e}")
 
     def go_back(self):
-        self.manager.current = 'client_services'
+        self.manager.load_screen('client_services')
+        screen = self.manager.get_screen('client_services')
+        screen.ids.bottom_nav.switch_tab('home screen')
 
     def on_touch_down_notifications(self):
         self.manager.load_screen("menu_notification")
@@ -311,10 +309,9 @@ class Profile_screen(Screen):
             print("Error decoding JSON file.")
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
-
-
-class NavigationDrawerScreen(MDScreen):
-    pass
+        self.manager.load_screen('client_services')
+        screen = self.manager.get_screen('client_services')
+        screen.ids.bottom_nav.switch_tab('home screen')
 
 
 class CustomImageTile(MDSmartTile):
@@ -330,77 +327,6 @@ class ClickableTextFieldRound(MDRelativeLayout):
 
     def on_focus(self):
         pass
-
-
-class HeroItem(MDHeroFrom):
-    text = StringProperty()
-    text2 = StringProperty()
-    tag = StringProperty()
-    manager = ObjectProperty()
-    id = ObjectProperty()
-    details = DictProperty()
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        # self.ids.tile.ids.image.ripple_duration_in_fast = 0.05
-
-    def on_transform_in(self, instance_hero_widget, duration):
-        print('in')
-        Animation(
-            radius=[0, 0, 0, 0],
-            box_radius=[0, 0, 0, 0],
-            duration=duration,
-        ).start(instance_hero_widget)
-
-    def on_transform_out(self, instance_hero_widget, duration):
-        print('out')
-        Animation(
-            radius=[10, 10, 10, 10],
-            box_radius=[0, 0, 10, 10],
-            duration=duration,
-        ).start(instance_hero_widget)
-
-    def on_release(self):
-        def switch_screen(*args):
-            self.manager.current_heroes = [self.tag]
-            self.manager.load_screen("servicer_details")
-            screen = self.manager.get_screen("servicer_details")
-            screen.ids.hero_to.tag = self.tag  # Access hero_to through ids
-            # Extract the table identifier and ID from the tag
-            table_identifier = self.tag[:2]
-
-            # Check and fetch the description from the appropriate table
-            if table_identifier == 'OC':
-                discription_row = app_tables.oxiclinics.get(oxiclinics_id=self.tag)
-                if discription_row:
-                    discription = discription_row['oxiclinics_discription']
-                    if discription == None:
-                        discription = 'No description available'
-                else:
-                    discription = 'No description available'
-            elif table_identifier == 'OW':
-                discription_row = app_tables.oxiwheels.get(oxiwheels_id=self.tag)
-                if discription_row:
-                    discription = discription_row['oxiwheels_discrption']
-                    if discription == None:
-                        discription = 'No description available'
-                else:
-                    discription = 'No description available'
-            elif table_identifier == 'OG':
-                discription_row = app_tables.oxigyms.get(oxigyms_id=self.tag)
-                if discription_row:
-                    discription = discription_row['oxigyms_discrption']
-                    if discription == None:
-                        discription = 'No description available'
-                else:
-                    discription = 'No description available'
-
-            print(discription)
-
-            screen.ids.discrptions.text = discription
-            self.manager.push("servicer_details")
-
-        Clock.schedule_once(switch_screen, 0.2)
 
 
 class Client_services(MDScreen):

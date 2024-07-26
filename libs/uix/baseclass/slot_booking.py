@@ -3,31 +3,12 @@ import sqlite3
 from datetime import datetime, timedelta
 
 from anvil.tables import app_tables
-from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.metrics import dp
-from kivy.properties import StringProperty, ObjectProperty, Clock
-from kivy.uix.modalview import ModalView
+from kivy.properties import StringProperty, Clock
 from kivymd.uix.button import MDRaisedButton, MDFlatButton
-from kivymd.uix.card import MDCard
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.screen import MDScreen
-
-# Create the BookSlot table if it doesn't exist
-
-conn = sqlite3.connect("users.db")
-cursor = conn.cursor()
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS BookSlot (
-        slot_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
-        username TEXT NOT NULL,
-        book_date TEXT NOT NULL,
-        book_time TEXT NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES users (id)
-    )
-''')
-conn.commit()
 
 
 class CButton(MDFlatButton):
@@ -192,10 +173,6 @@ class TaskSchedulerScreen(MDScreen):
     def dismiss_modal(self):
         self.dismiss()
         CButton.selected_slots = []
-
-    from datetime import datetime, timedelta
-
-    from datetime import datetime, timedelta
 
     def generate_datetime(self, date_str, time_slot):
         # Parse the date string

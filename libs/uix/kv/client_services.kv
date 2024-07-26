@@ -372,35 +372,6 @@
 
 <ClickableTextFieldRound>:
 
-
-
-
-
-<HeroItem>
-    id:hero
-    size_hint_y: None
-    size_hint_x: None
-    height: '120dp'
-    width: '100dp'
-    radius: 10
-    MDSmartTile:
-        id: tile
-        radius: 10
-        box_radius: 0, 0, 10, 10
-        box_color: 0, 0, 0, 0.5
-        source: root.text
-        size_hint: None, None
-        size: root.size
-        mipmap: True
-        on_release: root.on_release()
-
-        MDLabel:
-            text: root.text2
-            bold: True
-            font_style: "Subtitle2"
-            halign:'center'
-            opposite_colors: True
-
 <Client_services>:
     MDNavigationLayout:
         id: nav_layout

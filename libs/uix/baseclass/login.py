@@ -122,16 +122,7 @@ class Login(MDScreen):
                             profile_data = base64.b64encode(profile_data).decode('utf-8')
                         except (KeyError, AttributeError):
                             profile_data = ''
-
-                    if user_sqlite:
-                        username = user_sqlite[1]
-                        email = user_sqlite[2]
-                        password = user_sqlite[3]
-                        phone = user_sqlite[4]
-                        pincode = user_sqlite[0]
-                        print(f"hi {username}")
                     logged_in = True
-                    self.manager.load_screen("menu_profile")
                     logged_in_data = {'logged_in': logged_in}
                     user_info = {'username': username, 'email': email, 'phone': phone, 'pincode': pincode,
                                  'password': password, 'profile': profile_data,'id':id }
@@ -139,17 +130,6 @@ class Login(MDScreen):
                         json.dump(logged_in_data, json_file)
                     with open("user_data.json", "w") as json_file:
                         json.dump(user_info, json_file)
-                    self.manager.load_screen("client_services")
-                    screen = self.manager.get_screen("client_services")
-                    screen.ids.username.text = user_info['username']
-                    screen.ids.email.text = user_info['email']
-                    profile_texture = base64.b64decode(profile_data)
-                    profile_image_path = "profile_image.png"
-
-                    with open(profile_image_path, "wb") as profile_image_file:
-                        profile_image_file.write(profile_texture)
-
-                    screen.ids.image.source = profile_image_path
             elif user_type == 'service provider':
                 if password_value:
                     self.show_popup(

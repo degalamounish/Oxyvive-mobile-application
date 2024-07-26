@@ -389,7 +389,7 @@ class AvailableService(MDScreen):
             nearby_url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
             nearby_params = {
                 'location': f'{lat},{lng}',
-                'radius': 30000,
+                'radius': 60000,
                 'key': api_key,
             }
             nearby_response = requests.get(nearby_url, params=nearby_params)
