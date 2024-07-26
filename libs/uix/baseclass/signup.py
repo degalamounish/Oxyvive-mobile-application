@@ -14,12 +14,13 @@ from kivymd.uix.screen import MDScreen
 from plyer import filechooser
 from server import Server
 from plyer.utils import platform
+
 if platform == 'android':
-    from kivy.uix.modalview import ModalView
-    from kivy.clock import Clock
     from android.permissions import (
         request_permissions, check_permission, Permission
     )
+
+
 class Signup(MDScreen):
     def __init__(self, **kwargs):
         super(Signup, self).__init__(**kwargs)
@@ -28,8 +29,7 @@ class Signup(MDScreen):
         self.profile = None
         Window.bind(on_keyboard=self.on_keyboard)
         self.server = Server()
-        if (platform == 'android'):
-            from android.permissions import request_permissions, Permission
+        if platform == 'android':
             request_permissions([Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE])
 
     def on_keyboard(self, instance, key, scancode, codepoint, modifier):
@@ -128,7 +128,7 @@ class Signup(MDScreen):
         self.ids.signup_password.helper_text = ""
         self.ids.signup_phone.helper_text = ""
         self.ids.signup_pincode.helper_text = ""
-        self.ids.signup_pan_card_no.text = ""
+        self.ids.signup_pan_card_no.helper_text = ""
         if not name:
             self.ids.signup_name.error = True
             self.ids.signup_name.helper_text = "Enter Name"
@@ -248,16 +248,37 @@ class Signup(MDScreen):
         #     #self.ids.signup_profile_pic.text = file_path[0]  # Update the label text with the file path
 
     def handle_selection(self, selection):
-        self.selection = selection
-        if selection:
-            selected_file = selection[0]
-            print(selected_file)
-            #Extract only the file name
+        if not selection:
+            print("No file selected")
+            self.show_validation_dialog("No file selected. Please select a file.")
+            return
+
+        selected_file = selection[0]
+        print("Selected file path:", selected_file)
+
+        # Check if the selected file is a string and not None
+        if not isinstance(selected_file, str):
+            print("Invalid file path type:", type(selected_file))
+            self.show_validation_dialog("Invalid file path. Please select a different file.")
+            return
+
+        # Check if the selected file is accessible
+        if os.path.exists(selected_file):
+            print("File exists")
+            # Extract only the file name
             file_name = os.path.basename(selected_file)
-            with open(selected_file, 'rb') as f:
-                self.image_data = f.read()
-            self.profile = media.from_file(selected_file)
-            self.ids.profile_name.text = file_name
+            try:
+                with open(selected_file, 'rb') as f:
+                    self.image_data = f.read()
+                self.profile = media.from_file(selected_file)
+                self.ids.profile_name.text = file_name
+                print("File successfully read and data assigned")
+            except Exception as e:
+                print("Error reading the file:", e)
+                self.show_validation_dialog("Error reading the file. Please select a different file.")
+        else:
+            print("File does not exist or is not accessible")
+            self.show_validation_dialog("File does not exist or is not accessible. Please select a different file.")
 
     def generate_random_code(self):
         prefix = "CL"
