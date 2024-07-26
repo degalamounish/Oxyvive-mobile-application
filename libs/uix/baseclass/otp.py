@@ -115,7 +115,8 @@ class Otp(MDScreen):
             title_color='black',
             content=popup_content,
             size_hint=(0.8, 0.3),
-            background='white'
+            background='white',
+            auto_dismiss = False  # Prevent dismissal without pressing OK
         )
         popup.open()
 

@@ -28,7 +28,7 @@ class Activity(MDBoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.orientation = 'vertical'
-        self.padding = 10
+        self.padding = 0
         self.spacing = 20
         self.md_bg_color = get_color_from_hex("#FFFFFF")
         Window.bind(on_keyboard=self.on_keyboard)
@@ -98,11 +98,13 @@ class BookingDetails(Screen):
         return False
 
     def display_bookings(self, bookings):
-        for booking in bookings:
+        for booking in reversed(bookings):
             book_date = booking['oxi_book_date']
-            book_time = booking['oxi_date_time']
+            date_time = booking['oxi_date_time']
             service_type = booking['oxi_service_type']
-            user_id = booking['oxi_id']
+            book_id = booking['oxi_book_id']
+            service_id = booking['oxi_servicer_id']
+            time_slot = booking['oxi_book_time']
             username = booking['oxi_username']
             booking_date_str = book_date.strftime('%d %B %Y')
             day, month, year = booking_date_str.split(' ')
@@ -110,7 +112,7 @@ class BookingDetails(Screen):
             service_images = {
                 "OxiClinic": "images/1.png",
                 "OxiWheel": "images/3.png",
-                "Oxi-Gym": "images/2.png"
+                "OxiGym": "images/2.png"
             }
             image_source = service_images.get(service_type, "images/shot.png")
 
@@ -123,8 +125,9 @@ class BookingDetails(Screen):
                 spacing=10,
                 md_bg_color=get_color_from_hex("#FFFFFF"),
                 radius=[15, 15, 15, 15],
-                on_release=lambda x, service_type=service_type, book_date=str(book_date),
-                                  book_time=book_time: self.view_booking_details(service_type, book_date, book_time)
+                on_release=lambda x, service_type=service_type, book_date=str(book_date), time_slot=time_slot,
+                                  service_id=service_id, book_id=book_id, date_time=date_time
+                : self.view_booking_details(service_type, book_date, date_time, time_slot, service_id, book_id)
             )
 
             left_layout = MDBoxLayout(orientation='horizontal', padding=(5, 0, 0, 0), size_hint_x=0.3)
@@ -139,35 +142,27 @@ class BookingDetails(Screen):
             details_layout.add_widget(MDLabel(text=f"Date: {book_date}", theme_text_color="Custom",
                                               text_color=get_color_from_hex("#000000")))
             details_layout.add_widget(
-                MDLabel(text=f"Time: {book_time}", theme_text_color="Custom", text_color=get_color_from_hex("#000000")))
+                MDLabel(text=f"Time: {time_slot}", theme_text_color="Custom", text_color=get_color_from_hex("#000000")))
 
-            # right_layout = MDBoxLayout(orientation='horizontal', size_hint_x=0.1)
-            # button_layout = MDBoxLayout(orientation='vertical', size_hint=(None, None), size=("50dp", "50dp"),
-            #                             padding=(10, 0, 0, 115))
-            # button_layout.add_widget(
-            #     MDIconButton(icon="chevron-right", theme_text_color="Custom", text_color=get_color_from_hex("#000000"),
-            #                  pos_hint={"center_y": 0.5},
-            #                  on_release=lambda x, service_type=service_type, book_date=str(book_date),
-            #                                    book_time=book_time: self.view_booking_details(service_type, book_date,
-            #                                                                                   book_time)))
-            #
-            # right_layout.add_widget(button_layout)
 
             booking_card.add_widget(left_layout)
             booking_card.add_widget(details_layout)
             # booking_card.add_widget(right_layout)
             self.bookings_layout.add_widget(booking_card)
 
-    def view_booking_details(self, service_type, book_date, book_time):
+    def view_booking_details(self, service_type, book_date, date_time, time_slot, book_id, service_id):
         print(
-            f"Viewing details for: service_type={service_type}, book_date={book_date}, book_time={book_time}")  # Debugging line
+            f"Viewing details for: service_type={service_type}, book_date={book_date}, date_time={date_time}")  # Debugging line
+
         self.manager.load_screen("details")
         details_screen = self.manager.get_screen('details')
-        # details_screen.set_details(service_type, book_date, book_time)
         details_screen.set_details(
             service_type if service_type is not None else "None",
             book_date if book_date is not None else "None",
-            book_time if book_time is not None else "None"
+            date_time if date_time is not None else "None",
+            time_slot if time_slot is not None else "None",
+            book_id if book_id is not None else "None",
+            service_id if service_id is not None else "None"
         )
         self.manager.current = 'details'
 
@@ -405,7 +400,7 @@ class Client_services(MDScreen):
         self.ids.bottom_nav.switch_tab('service_screen')
 
     def activity_report(self):
-        # current_user_id="000000"
+        #current_user_id="000000"
         # Assuming your JSON file structure looks like {'user_id': 'some_user_id'}
         with open('user_data.json', 'r') as f:
             data = json.load(f)
