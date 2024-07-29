@@ -1,7 +1,6 @@
 import json
 import os
 from platform import platform
-
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivymd.app import MDApp
@@ -10,11 +9,22 @@ from fpdf import FPDF
 import anvil.server
 from anvil.tables import app_tables
 
+if platform == 'android':
+    from android.permissions import (
+        request_permissions, check_permission, Permission
+    )
+
 
 class Report(MDScreen):
     def __init__(self, **kwargs):
         super(Report, self).__init__(**kwargs)
         Window.bind(on_keyboard=self.on_keyboard)
+        # Request necessary permissions on Android
+        if platform() == 'android':
+            self.request_android_permissions()
+
+    def request_android_permissions(self):
+        request_permissions([Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE])
 
     def on_keyboard(self, instance, key, scancode, codepoint, modifier):
         if key == 27:  # Keycode for the back button on Android
@@ -42,7 +52,7 @@ class Report(MDScreen):
             if bookings:
                 # Debug: print the structure of the bookings
                 for booking in bookings:
-                # Find the booking with the latest booking date
+                    # Find the booking with the latest booking date
                     latest_booking = dict(max(bookings, key=lambda booking: booking['oxi_book_date']))
                 # Assigning fetched data to UI elements
                 self.ids.booking_id.text = latest_booking['oxi_book_id'] if 'oxi_book_id' in latest_booking else ''
@@ -56,8 +66,7 @@ class Report(MDScreen):
                 self.ids.price_label.text = f"${latest_booking['oxi_price']:.2f}" if 'oxi_price' in latest_booking else "$0.00"
                 self.ids.subtotal.text = f"${latest_booking['oxi_price']:.2f}" if 'oxi_price' in latest_booking else "$0.00"
 
-
-            # Calculate and assign tax values
+                # Calculate and assign tax values
                 price = latest_booking['oxi_price']
                 cgst_value = price * 0.08
                 sgst_value = price * 0.08
@@ -75,8 +84,6 @@ class Report(MDScreen):
 
         except Exception as e:
             print(f"An error occurred: {e}")
-
-
 
     def save_pdf(self):
         try:
@@ -124,12 +131,17 @@ class Report(MDScreen):
 
             # Billing information
             pdf.set_font('Arial', 'B', 12)
-            pdf.cell(85, 10, 'Billed To:', 0, 0, 'L')
-            pdf.cell(95, 10, 'Doctor:', 0, 1, 'R')
+            pdf.cell(0, 10, 'Billed To:', 0, 1, 'L')  # Start of Billing information
             pdf.set_font('Arial', '', 12)
-            pdf.multi_cell(95, 10, f"{patient_name}\n{address}", 0, 'L')
-            pdf.set_xy(115, pdf.get_y() - 30)
-            pdf.multi_cell(95, 10, f"{doctor_name}\n{address}", 0, 'R')
+            pdf.multi_cell(0, 10, f"{patient_name}\n{address}", 0, 'L')
+
+            # Doctor information (alignment)
+            pdf.set_x(10)  # Set x position to align doctor info on the right side
+            pdf.set_font('Arial', 'B', 12)
+            pdf.cell(0, 10, 'Doctor:', 0, 1, 'L')  # Start of Doctor information
+            pdf.set_font('Arial', '', 12)
+            pdf.set_x(10)  # Reset x position to align subsequent lines
+            pdf.multi_cell(0, 10, f"{doctor_name}\n{address}", 0, 'L')
             pdf.ln(10)
 
             # Table header
@@ -166,7 +178,6 @@ class Report(MDScreen):
 
             pdf.cell(0, 10, '', 0, 1)
 
-            # Footer
             # Footer
             footer_height = 30
             pdf.set_y(-footer_height - 0)  # Adjust the y-coordinate to position the footer correctly
