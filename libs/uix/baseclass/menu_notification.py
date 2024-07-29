@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime, timedelta
-from jnius import autoclass, cast
+
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivymd.uix.button import MDRaisedButton
@@ -11,6 +11,8 @@ from plyer import notification
 from plyer.utils import platform
 
 if platform == 'android':
+    from jnius import autoclass, cast
+
     PythonActivity = autoclass('org.kivy.android.PythonActivity')
     Context = autoclass('android.content.Context')
     Intent = autoclass('android.content.Intent')
