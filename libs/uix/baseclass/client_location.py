@@ -2,6 +2,8 @@ import logging
 import os
 import re
 import threading
+
+from kivy import app
 from kivy.clock import Clock
 import requests
 from PIL import Image
@@ -15,6 +17,7 @@ from kivy.metrics import dp
 from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.behaviors import DragBehavior
 from kivy.uix.modalview import ModalView
+from kivy.uix.screenmanager import Screen
 from kivy.utils import platform
 from kivy_garden.mapview import MapView, MapMarker, MapSource
 from kivymd.uix.boxlayout import MDBoxLayout
@@ -281,6 +284,9 @@ class Item(OneLineAvatarListItem):
 
     def set_screen(self):
         print('dismiss dialog')
+        choose_button = self.ids.get('choose')
+        if choose_button:
+            choose_button.text = ""
         screen = self.manager.get_screen("client_location")
         screen.hide_dialog()
 
@@ -288,11 +294,12 @@ class Item(OneLineAvatarListItem):
 class ItemConfirm(OneLineAvatarIconListItem):
     manager = ObjectProperty()
 
-    def set_screen(self):
-        print('next screen')
+    def contact_screen(self):
+        self.manager.load_screen("client_location")
         screen = self.manager.get_screen("client_location")
-
-
+        screen.hide_modal_view()
+        screen.hide_dialog()
+        self.manager.push_replacement("client_dashboard")
 class ClientLocation(MDScreen):
     API_KEY = "AIzaSyA8GzhJLPK0Hfryi5zHbg3RMDSMCukmQCw"
 
@@ -309,7 +316,6 @@ class ClientLocation(MDScreen):
         self.gps_active = False
         self.places_results = []  # Store the results for place details
         Window.bind(on_keyboard=self.on_keyboard)
-        self.origin = None
 
     def on_keyboard(self, instance, key, scancode, codepoint, modifier):
         if key == 27:  # Keycode for the back button on Android
@@ -426,7 +432,7 @@ class ClientLocation(MDScreen):
                 title="Someone else taking this appointment?",
                 type="confirmation",
                 items=[
-                    Item(text="Myself", source="images/profile.jpg", manager=self.manager),
+                    Item(text="Myself", manager=self.manager),
                     ItemConfirm(text="Choose another contact", manager=self.manager),
                 ],
             )
@@ -441,10 +447,6 @@ class ClientLocation(MDScreen):
         self.manager.push_replacement('client_services')
 
     def next_screen(self):
-        self.manager.load_screen('payment_page')
-        screen_payment = self.manager.get_screen('payment_page')
-        screen_payment.origin = self.ids.autocomplete.text
-
         self.manager.load_screen('available_services')
         screen = self.manager.get_screen('available_services')
         screen.location = self.ids.autocomplete.text

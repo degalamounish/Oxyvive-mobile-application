@@ -29,6 +29,16 @@
         "object": "ClientLocation()",
         "kv": "libs/uix/kv/client_location.kv"
     },
+    "client_dashboard": {
+        "import": "from libs.uix.baseclass.client_dashboard import ChooseContact",
+        "object": "ChooseContact()",
+        "kv": "libs/uix/kv/client_dashboard.kv"
+    },
+    "add_contacts": {
+        "import": "from libs.uix.baseclass.add_contacts import AddContact",
+        "object": "AddContact()",
+        "kv": "libs/uix/kv/add_contacts.kv"
+    },
     "available_services": {
         "import": "from libs.uix.baseclass.available_services import AvailableService",
         "object": "AvailableService()",
