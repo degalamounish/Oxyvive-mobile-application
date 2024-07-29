@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime, timedelta
-
+from jnius import autoclass, cast
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivymd.uix.button import MDRaisedButton
@@ -8,6 +8,16 @@ from kivymd.uix.card import MDCard
 from kivymd.uix.label import MDLabel
 from kivymd.uix.screen import MDScreen
 from plyer import notification
+from plyer.utils import platform
+
+if platform == 'android':
+    PythonActivity = autoclass('org.kivy.android.PythonActivity')
+    Context = autoclass('android.content.Context')
+    Intent = autoclass('android.content.Intent')
+    PendingIntent = autoclass('android.app.PendingIntent')
+    NotificationManager = autoclass('android.app.NotificationManager')
+    NotificationChannel = autoclass('android.app.NotificationChannel')
+    NotificationBuilder = autoclass('android.app.Notification$Builder')
 
 
 class Notification(MDScreen):
@@ -46,20 +56,65 @@ class Notification(MDScreen):
         card.parent.remove_widget(card)
 
     def push_device_notification(self, title, message):
-        logging.info(f"Pushing device notification: {title} - {message}")
+        if platform == 'android':
+            self.push_android_notification(title, message)
+        elif platform == 'win':
+            self.push_windows_notification(title, message)
 
+    # Function to send Android notification
+    def push_android_notification(self, title, message):
+        logging.info(f"Pushing Android notification: {title} - {message}")
+        try:
+            context = cast('android.content.Context', PythonActivity.mActivity)
+
+            # Create an intent to launch the app
+            intent = Intent(context, PythonActivity)
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)
+
+            # Create a pending intent to wrap the intent
+            pending_intent = PendingIntent.getActivity(
+                context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            )
+
+            # Notification channel ID and name
+            channel_id = "my_channel_id"
+            channel_name = "My Channel"
+
+            # Get the NotificationManager system service
+            notification_manager = context.getSystemService(Context.NOTIFICATION_SERVICE)
+
+            # Create the NotificationChannel (if required)
+            importance = NotificationManager.IMPORTANCE_DEFAULT
+            notification_channel = NotificationChannel(channel_id, channel_name, importance)
+            notification_channel.setDescription("Channel Description")
+            notification_manager.createNotificationChannel(notification_channel)
+
+            # Build the notification
+            builder = NotificationBuilder(context, channel_id)
+            builder.setSmallIcon(autoclass('android.R$drawable').ic_dialog_info)
+            builder.setContentTitle(title)
+            builder.setContentText(message)
+            builder.setAutoCancel(True)
+            builder.setContentIntent(pending_intent)  # Set the pending intent
+
+            # Show the notification
+            notification = builder.build()
+            notification_manager.notify(1, notification)
+        except Exception as e:
+            logging.error(f"Failed to send Android notification: {e}")
+
+    # Function to send Windows notification
+    def push_windows_notification(self, title, message):
+        logging.info(f"Pushing Windows notification: {title} - {message}")
         try:
             notification.notify(
                 title=title,
                 message=message,
                 app_name="Oxivive",
-                # app_icon="images/shot-icon.png",
-                timeout=5,
-                ticker="New Notification",
-                toast=True
+                timeout=10
             )
         except Exception as e:
-            logging.error(f"Failed to send notification: {e}")
+            logging.error(f"Failed to send Windows notification: {e}")
 
     def schedule_notifications(self, appointment_time):
         now = datetime.now()

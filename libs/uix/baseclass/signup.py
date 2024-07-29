@@ -188,15 +188,6 @@ class Signup(MDScreen):
                         self.ids.signup_pan_card_no.helper_text = "Pan Card number already registered"
                     else:
                         id = self.generate_random_code()
-                        # Additional SQLite insert (if needed)
-                        with self.server.sqlite3_users_db() as connection:
-                            cursor = connection.cursor()
-                            cursor.execute('''
-                                INSERT INTO users (id, name, email, password, phone, pincode, pan_card_no, profile)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                            ''', (id, name, email, hash_pashword, phone, pincode, pan_card_no, self.image_data))
-                            connection.commit()
-
                         app_tables.oxi_users.add_row(
                             oxi_id=str(id),
                             oxi_username=name,
