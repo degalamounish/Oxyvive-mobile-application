@@ -9,6 +9,22 @@
         icon:'account'
 
 <CustomButton@MDRelativeLayout>:
+<CustomTextField>:
+    size_hint_y: None
+    height: dp(50)
+    padding: [dp(10), 0, 0, 0]
+    canvas.before:
+        Color:
+            rgba: 0, 0, 0, 0.1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(25),]
+#        Color:
+#            rgba: 0, 0, 0, 0.2
+#        Line:
+#            width: 1.5
+#            rounded_rectangle: (self.x, self.y, self.width, self.height, dp(25))
 
 <CustomButtonMap>:
     icon:'crosshairs-gps'
@@ -100,37 +116,77 @@
                     on_release:  root.show_confirmation_dialog()
                     pos_hint: { "center_y": .5}
                     pos: choose.width + self.width -dp(90), 0
-            MDRelativeLayout:
-                orientation:'horizontal'
-                size_hint_y:None
-                height:dp(40)
+            CustomTextField:
+                MDIconButton:
+                    id: left_icon
+                    icon:'google-maps'
+                    size_hint: None, None
+                    size: dp(30), dp(30)
+                    pos_hint: {"center_y": 0.5}
+                    theme_text_color: "Custom"
+                    text_color: [0, 0, 0, 1]
+
                 MDTextField:
                     id: autocomplete
-                    mode: "round"
                     hint_text: 'Search location here'
                     on_text: root.search_location(self, self.text)
                     on_focus: if self.focus:root.on_text_field_focus(self, self.focus)
-                    line_color_focus:0,0,0,1
-                    text_color_focus:0,0,0,1
-                    #fill_color_normal:0,0,0,0.5
-                    hint_text_color_focus:0,0,0,1
-                    icon_left:'google-maps'
-                    icon_left_color_focus:0,0,0,1
-                    radius: [30, 30, 30, 30]
-                    valign:'center'
+                    size_hint_x: 1
+                    size_hint_y: None
+                    height: dp(50)
+                    font_size: "18sp"
                     halign:'left'
-                    size_hint:(1,1)
+                    line_color_focus: 0, 0, 0, 0.001
+                    mode: "round"
+                    radius: [dp(25),]
+                    pos_hint: {"center_y": 0.5}
+                    fill_color_normal:0, 0, 0, 0.001
+                    fill_color_focus:0, 0, 0, 0.001
+                    text_color_normal:0, 0, 0, 0.5
+                    text_color_focus:0, 0, 0, 1
+                    line_color_normal:0, 0, 0, 0.001
 
                 MDIconButton:
-                    id:clr
-                    icon: "close-circle"
-                    pos_hint: {"center_y": .5}
-                    pos: autocomplete.width - self.width , 0
-                    theme_text_color: "Hint"
-                    icon_color:0,0,0,1
-                    #icon_size: "15sp"
-                    on_release:
-                        autocomplete.text = ''
+                    id: right_icon
+                    icon:  "close-circle"
+                    size_hint: None, None
+                    size: dp(30), dp(30)
+                    pos_hint: {"center_y": 0.5}
+                    on_release: autocomplete.text = ''
+                    theme_text_color: "Custom"
+                    text_color: [0, 0, 0, 1]
+
+#            MDRelativeLayout:
+#                orientation:'horizontal'
+#                size_hint_y:None
+#                height:autocomplete.height
+#                MDTextField:
+#                    id: autocomplete
+#                    mode: "round"
+#                    hint_text: 'Search location here'
+#                    on_text: root.search_location(self, self.text)
+#                    on_focus: if self.focus:root.on_text_field_focus(self, self.focus)
+#                    line_color_focus:0,0,0,1
+#                    text_color_focus:0,0,0,1
+#                    #fill_color_normal:0,0,0,0.5
+#                    hint_text_color_focus:0,0,0,1
+#                    icon_left:'google-maps'
+#                    icon_left_color_focus:0,0,0,1
+#                    radius: [30, 30, 30, 30]
+#                    valign:'center'
+#                    halign:'left'
+#
+#
+#                MDIconButton:
+#                    id:clr
+#                    icon: "close-circle"
+#                    pos_hint: {"center_y": .5}
+#                    pos: autocomplete.width - self.width , 0
+#                    theme_text_color: "Hint"
+#                    icon_color:0,0,0,1
+#                    #icon_size: "15sp"
+#                    on_release:
+#                        autocomplete.text = ''
 
 
 

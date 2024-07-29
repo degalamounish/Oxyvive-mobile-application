@@ -31,63 +31,88 @@
                 MDCard:
                     orientation: 'horizontal'
                     size_hint_y:None
-                    height:dp(150)
-                    padding:dp(20),dp(20),dp(0),dp(20)
-                    radius: [10, 10, 10, 10]
+                    height:dp(130)
+                    padding: dp(10), dp(10), dp(10), dp(10)
                     elevation: 0
 
                     FitImage:
-                        id:s_image
+                        id: s_image
                         source: 'images/1.png'
                         size_hint: None, None
-                        size: '60dp', '60dp'
+                        size: '80dp', '80dp'
                         radius: [150]
-                        pos_hint: {'top': 1}
+                        pos_hint: {'center_y': 0.5}
+                    MDSeparator:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: dp(110)
                     MDBoxLayout:
                         orientation: 'vertical'
-                        padding:dp(20),dp(0),dp(20),dp(0)
-                        MDGridLayout:
-                            cols:1
+                        padding: dp(10), 0, dp(10), 0
+                        spacing: dp(5)
+
+                        MDBoxLayout:
+                            orientation: 'vertical'
                             adaptive_height: True
-                            spacing:dp(20)
+                            spacing: dp(5)
+
                             MDLabel:
-                                id:service_name
+                                id: service_name
                                 text: 'Dr. Prem.B'
                                 font_style: 'Subtitle1'
+                                adaptive_height:True
+
                             MDLabel:
-                                id:service_type
+                                id: service_type
                                 text: 'Dermatologist'
                                 font_style: 'Body2'
                                 theme_text_color: 'Secondary'
+                                adaptive_height:True
 
                         MDGridLayout:
-                            cols:4
+                            cols: 4
                             adaptive_height: True
-                            padding:dp(20),dp(0),dp(0),dp(0)
-                            spacing:dp(15)
+                            padding: dp(15), 0, dp(15), 0
+                            spacing: dp(15)
+
                             MDIcon:
                                 icon: 'thumb-up'
                                 theme_text_color: 'Custom'
                                 text_color: 'green'
-                                icon_size: '8dp'
+                                icon_size: '24dp'
+                                adaptive_height:True
+
                             MDLabel:
-                                id:likes
+                                id: likes
                                 text: '83%'
                                 font_style: 'Body2'
+                                size_hint_y: None
+                                adaptive_height:True
+
                             MDIcon:
                                 icon: 'message'
                                 theme_text_color: 'Custom'
                                 text_color: 'green'
-                                icon_size: '8dp'
+                                icon_size: '24dp'
+                                adaptive_height:True
+
+
                             MDLabel:
-                                id:message
+                                id: message
                                 text: '8 Patient Stories'
                                 font_style: 'Body2'
+                                size_hint_y: None
+                                adaptive_height:True
+
                         MDLabel:
-                            id:review
+                            id: review
                             text: 'Highly Recommended for Doctor Friendliness'
                             font_style: 'Caption'
                             theme_text_color: 'Secondary'
+                            size_hint_y: None
+                            height: self.texture_size[1]
+                            padding: 0, dp(10), 0, 0
+
                 MDSeparator:
                     size_hint_y:None
                     height:dp(10)
@@ -510,7 +535,7 @@
                 height: '60dp'
                 pos_hint: {'center_y':.5}
                 MDLabel:
-                    text: 'In-Clinic Appointment for '
+                    text: 'In-Oxivive Appointment for '
                     font_style: 'Subtitle1'
                     font_size:'12sp'
                     theme_text_color: 'Hint'
@@ -540,8 +565,7 @@
                     id:bill_fee
                     text: f'{total_fee.text}'
                     font_style: 'Subtitle1'
-#                    halign:'left'
-#                    pos_hint:{'center_x':.52,'center_y':.4}
+
                 MDTextButton:
                     text: 'View Bill'
                     theme_text_color:'Custom'
@@ -552,19 +576,3 @@
                 pos_hint: {'center_x': 0.5,'center_y':.5}
                 on_release:root.initiate_payment()
 
-#        Button:
-#            id: pay
-#            text: "Make Payment"
-#            size_hint_y: .1
-#            background_color: 0, 0, 0, 0
-#            font_name: "Roboto"
-#            bold: True
-#            on_release:
-#                root.open_payment_gateway()
-#            canvas.before:
-#                Color:
-#                    rgb: 1, 0, 0, 1
-#                RoundedRectangle:
-#                    size: self.size
-#                    pos: self.pos
-#                    radius: [0]

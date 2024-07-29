@@ -20,12 +20,12 @@ from kivy.uix.modalview import ModalView
 from kivy.uix.screenmanager import Screen
 from kivy.utils import platform
 from kivy_garden.mapview import MapView, MapMarker, MapSource
-from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.button import MDFloatingActionButton, MDRaisedButton
+from kivymd.uix.button import MDFloatingActionButton, MDIconButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.list import OneLineIconListItem, IconLeftWidget, OneLineAvatarIconListItem, OneLineAvatarListItem
 from kivymd.uix.screen import MDScreen
+from kivymd.uix.textfield import MDTextField
 from plyer import gps
 from plyer.utils import platform
 
@@ -37,6 +37,11 @@ if platform == 'android':
     )
 
 logging.basicConfig(level=logging.DEBUG)
+
+
+class CustomTextField(MDBoxLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
 
 class CustomModalView(DragBehavior, ModalView):
