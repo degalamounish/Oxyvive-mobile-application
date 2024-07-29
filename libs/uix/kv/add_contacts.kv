@@ -1,0 +1,61 @@
+<AddContact>:
+    GridLayout:
+        cols:1
+        MDTopAppBar:
+            title: "Add New Contact"
+            md_bg_color: 1, 0, 0, 1  # Red color for the background
+            left_action_items: [['arrow-left', lambda x: root.go_back()]]
+
+        MDLabel:
+            text: "This contact won't be saved in your device's address book"
+            halign: "center"
+            size_hint_y: None
+            height: self.texture_size[1] + dp(10)
+            padding_y: dp(10)
+
+        GridLayout:
+            cols: 1
+            padding: dp(20)
+            spacing: dp(20)
+            size_hint_y: None
+            height: self.minimum_height
+
+            MDTextField:
+                id: first_name
+                mode: "rectangle"
+                hint_text: "First Name"
+                pos_hint: {"center_x": 0.5}
+                size_hint_x: 0.8
+
+            MDTextField:
+                id: last_name
+                mode: "rectangle"
+                hint_text: "Last Name"
+                pos_hint: {"center_x": 0.5}
+                size_hint_x: 0.8
+
+            MDTextField:
+                id: phone_number
+                mode: "rectangle"
+                hint_text: "Phone Number"
+                input_filter: root.phone_input_filter
+                text: "+91"
+                pos_hint: {"center_x": 0.5}
+                on_text: if len(self.text) > 13: self.text = self.text[:13]
+                size_hint_x: 1
+            MDLabel:
+                text: "Oxivive won't share this number with any doctor.\n\nBy tapping add contact you confirm that we have this person's permission to send them slot details in the Oxivive app, by text or via WhatsApp."
+                halign: "center"
+                size_hint_y: None
+                height: self.texture_size[1] + dp(10)
+                padding_y: dp(10)
+                padding_x: dp(20)
+            MDRaisedButton:
+                text: "Add Contact"
+                pos_hint: {"center_x": 0.5}
+                size_hint_x: 0.8
+                size_hint_y: None
+                height: dp(48)
+                on_release: root.add_contact()
+
+

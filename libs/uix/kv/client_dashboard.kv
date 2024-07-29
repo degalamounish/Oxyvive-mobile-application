@@ -1,0 +1,25 @@
+<ChooseContact>:
+    MDBoxLayout:
+        orientation: "vertical"
+        MDTopAppBar:
+            title: "Choose a Contact"
+            md_bg_color: 1, 0, 0, 1  # Red color for the background
+            left_action_items: [['arrow-left', lambda x: root.on_back_button()]]
+            right_action_items: [['account-plus', lambda x: root.add_new_contact()]]
+        BoxLayout:
+            orientation: "vertical"
+            padding: dp(20)
+            MDTextField:
+                mode: "rectangle"
+                id: search_field
+                hint_text: "Choose a contact / Enter a number"
+                icon_left: "magnify"
+                icon_left_color: 1, 0, 0, 1  # Red color for the icon
+                pos_hint: {"center_x": 0.5}
+                on_text: root.filter_contacts(self.text)
+
+            ScrollView:
+                MDList:
+                    id: contacts_list
+
+
