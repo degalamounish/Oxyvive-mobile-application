@@ -51,7 +51,7 @@ class CustomModalView(DragBehavior, ModalView):
         self.background = 'rgba(0, 0, 0, 0)'
         self.overlay_color = (0, 0, 0, 0)
         self.size_hint = (None, None)
-        self.height = Window.height - dp(149)  # Initial height is set to 400dp
+        self.height = Window.height - dp(169)  # Initial height is set to 400dp
         self.update_width()  # Set initial width
         self.update_position()  # Set initial position
         Window.bind(on_resize=self.on_window_resize)  # Bind resize event
@@ -76,7 +76,7 @@ class CustomModalView(DragBehavior, ModalView):
         if self.collide_point(*touch.pos):
             dy = touch.y - self.drag_start_y
             new_height = self.height + dy
-            max_height = Window.height - dp(149)
+            max_height = Window.height - dp(169)
             if new_height < max_height:
                 self.height = max(dp(100), new_height)
             self.drag_start_y = touch.y
@@ -192,7 +192,7 @@ class CustomMapView(MapView):
         # Split the address by commas
         parts = address.split(',')
         filtered_parts = [part.strip() for part in parts if not re.match(r'^[A-Z0-9]+\s+\w+', part.strip())]
-        short_address = ', '.join(filtered_parts[:4])
+        short_address = ', '.join(filtered_parts[2:4])
 
         return short_address
 

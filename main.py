@@ -1,4 +1,6 @@
 import json
+import os
+
 from kivymd.app import MDApp
 from kivy.core.window import Window
 from libs.uix.root import Root
@@ -23,11 +25,10 @@ class ShotApp(MDApp):
     def on_start(self):
         with open("logged_in_data.json", "r") as json_file:
             logged_in_data = json.load(json_file)
-        if logged_in_data["logged_in"] == True:
+        if logged_in_data["logged_in"]:
             self.root.load_screen("client_services")
             self.root.current = "client_services"
-            with open('user_data.json', 'r') as file:
-                user_info = json.load(file)
+
 
         else:
             self.root.load_screen("main_sc")

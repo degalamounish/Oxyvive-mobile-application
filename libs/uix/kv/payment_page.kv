@@ -2,22 +2,14 @@
 <Payment>:
     MDBoxLayout:
         orientation: 'vertical'
-        MDBoxLayout:
-            orientation: 'horizontal'
-            padding: '10dp'
-            spacing: '10dp'
-            size_hint_y: None
-            height: self.minimum_height
-            MDIconButton:
-                icon: 'arrow-left'
-                on_release: root.manager.push_replacement('slot_booking')  # Simulates the back button
-            MDLabel:
-                text: 'Book Appointment'
-                theme_text_color: 'Primary'
-                font_style: 'H6'
-                halign: 'center'
-                size_hint_x: None
-                width: dp(250)
+        md_bg_color: 1, 1, 1, 1
+        MDTopAppBar:
+            title:'Book Appointment'
+            left_action_items:[["arrow-left", lambda x:root.on_back_button()]]
+            anchor_title:'left'
+            md_bg_color: 1, 1, 1, 1  # White background
+            specific_text_color: 0, 0, 0, 1  # Black labels
+            elevation:0
 
         MDScrollView:
             id:scroll_view
@@ -27,7 +19,9 @@
                 height: self.minimum_height
                 #padding: dp(20)
                 id: scroll_grid
-
+                MDSeparator:
+                    size_hint_y:None
+                    height:dp(10)
                 MDCard:
                     orientation: 'horizontal'
                     size_hint_y:None

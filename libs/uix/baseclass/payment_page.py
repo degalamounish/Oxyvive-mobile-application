@@ -51,19 +51,9 @@ class Payment(MDScreen):
 
     def on_back_button(self):
         self.manager.push("slot_booking", "right")
-        with open('user_data.json', 'r') as file:
-            user_info = json.load(file)
-        user_info['slot_date'] = ""
-        user_info['slot_time'] = ""
-        with open("user_data.json", "w") as json_file:
-            json.dump(user_info, json_file)
 
     def change(self):
-        try:
-            with open('user_data.json', 'r') as file:
-                user_info = json.load(file)
-        except (FileNotFoundError, json.JSONDecodeError) as e:
-            print(f"Error reading user_data.json: {e}")
+        pass
 
     def store_booked_data(self):
         if self.data_stored:

@@ -144,7 +144,6 @@ class BookingDetails(Screen):
             details_layout.add_widget(
                 MDLabel(text=f"Time: {time_slot}", theme_text_color="Custom", text_color=get_color_from_hex("#000000")))
 
-
             booking_card.add_widget(left_layout)
             booking_card.add_widget(details_layout)
             # booking_card.add_widget(right_layout)
@@ -201,8 +200,10 @@ class Profile_screen(Screen):
         print("IDs dictionary:", self.ids)  # Debugging line
 
         try:
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            json_user_file_path = os.path.join(script_dir, "user_data.json")
             # Load user information from JSON file
-            with open('user_data.json', 'r') as file:
+            with open(json_user_file_path, 'r') as file:
                 self.user_info = json.load(file)
 
             # Update username and phone if their IDs are present
@@ -283,18 +284,16 @@ class Profile_screen(Screen):
     def on_touch_down_log_out(self):
         self.manager.push_replacement("login", "right")
         try:
-            with open('user_data.json', 'r') as file:
-                user_info = json.load(file)
-            user_info.update({
-                'username': "",
-                'email': "",
-                'phone': "",
-                'pincode': "",
-                'password': ""
-            })
-            with open("user_data.json", "w") as json_file:
-                json.dump(user_info, json_file)
+            # Get the directory of the current script
+            script_dir = os.path.dirname(os.path.abspath(__file__))
 
+            # Construct the path to the JSON file within the script's directory
+            json_user_file_path = os.path.join(script_dir, "user_data.json")
+
+            # Check if the file exists
+            if os.path.exists(json_user_file_path):
+                # Remove the file
+                os.remove(json_user_file_path)
             logged_in_data = {'logged_in': False}
             with open("logged_in_data.json", "w") as json_file:
                 json.dump(logged_in_data, json_file)
@@ -332,7 +331,9 @@ class Client_services(MDScreen):
         # self.change()
 
     def change(self):
-        with open('user_data.json', 'r') as file:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        json_user_file_path = os.path.join(script_dir, "user_data.json")
+        with open(json_user_file_path, 'r') as file:
             user_info = json.load(file)
         self.ids.username.text = f"{user_info['username']}"
         self.ids.email.text = f"{user_info['email']}"
@@ -363,23 +364,6 @@ class Client_services(MDScreen):
             )
             self.ids.box3.add_widget(environment_img)
 
-    def logout(self):
-        self.manager.current_heroes = []
-        self.ids.bottom_nav.switch_tab('home screen')
-        self.manager.push_replacement("login", "right")
-        with open('user_data.json', 'r') as file:
-            user_info = json.load(file)
-        user_info['username'] = ""
-        user_info['email'] = ""
-        user_info['phone'] = ""
-        user_info['pincode'] = ""
-        user_info['password'] = ""
-        with open("user_data.json", "w") as json_file:
-            json.dump(user_info, json_file)
-        logged_in_data = {'logged_in': False}
-        with open("logged_in_data.json", "w") as json_file:
-            json.dump(logged_in_data, json_file)
-
     def home(self):
         self.ids.bottom_nav.switch_tab('home screen')
 
@@ -400,9 +384,11 @@ class Client_services(MDScreen):
         self.ids.bottom_nav.switch_tab('service_screen')
 
     def activity_report(self):
-        #current_user_id="000000"
+        # current_user_id="000000"
         # Assuming your JSON file structure looks like {'user_id': 'some_user_id'}
-        with open('user_data.json', 'r') as f:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        json_user_file_path = os.path.join(script_dir, "user_data.json")
+        with open(json_user_file_path, 'r') as f:
             data = json.load(f)
             current_user_id = data.get('id', None)
 

@@ -229,7 +229,10 @@ class Profile(Screen):
 
     def change(self):
         try:
-            with open('user_data.json', 'r') as file:
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            # Construct the path to the JSON file within the script's directory
+            json_user_file_path = os.path.join(script_dir, "user_data.json")
+            with open(json_user_file_path, 'r') as file:
                 user_info = json.load(file)
                 print(f"User Info: {user_info}")  # Print user info for debugging
 
@@ -362,9 +365,11 @@ class Profile(Screen):
             print(f"chronic_diseases: {chronic_diseases}, injuries: {injuries}, surgeries: {surgeries}")
             print(f"smoking_habits: {smoking_habits}, alcohol_consumption: {alcohol_consumption}")
             print(f"activity_level: {activity_level}, food_preference: {food_preference}, occupation: {occupation}")
-
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            # Construct the path to the JSON file within the script's directory
+            json_user_file_path = os.path.join(script_dir, "user_data.json")
             # Assuming 'oxi_users' is a data table in Anvil
-            with open('user_data.json', 'r') as file:
+            with open(json_user_file_path, 'r') as file:
                 user_info = json.load(file)
             row_to_update = app_tables.oxi_users.get(oxi_id=user_info.get('id'))
 
