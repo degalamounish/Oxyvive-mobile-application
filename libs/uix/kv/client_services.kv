@@ -246,33 +246,6 @@
                         size_hint: None, None
                         size: "365dp", "50dp"
                         radius: [10]
-                        on_release: root.on_touch_down_bookings()
-
-                        MDBoxLayout:
-                            orientation: 'horizontal'
-                            padding: dp(10)
-
-                            IconLeftWidget:
-                                icon: 'calendar-check'
-
-                            MDLabel:
-                                text: "Bookings"
-                                theme_text_color: "Primary"
-                                font_style: "Subtitle1"
-
-                            MDIconButton:
-                                icon: 'arrow-right'
-                                pos_hint: {'center_y': 0.5}
-                                on_release: root.on_touch_down_bookings()
-
-
-                    MDSeparator:
-                        height: dp(1)
-
-                    MDCard:
-                        size_hint: None, None
-                        size: "365dp", "50dp"
-                        radius: [10]
                         on_release: root.on_touch_down_reports()
 
                         MDBoxLayout:

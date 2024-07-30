@@ -187,8 +187,6 @@ class Profile_screen(Screen):
             self.on_touch_down_profile()
         elif card_id == 'notifications_box':
             self.on_touch_down_notifications()
-        elif card_id == 'bookings_box':
-            self.on_touch_down_bookings()
         elif card_id == 'reports_box':
             self.on_touch_down_reports()
         elif card_id == 'support_box':
@@ -267,11 +265,6 @@ class Profile_screen(Screen):
     def on_touch_down_profile(self):
         self.manager.load_screen("menu_profile")
         self.manager.push_replacement("menu_profile")
-
-    def on_touch_down_bookings(self):
-        self.manager.load_screen("menu_bookings")
-        self.manager.push_replacement("menu_bookings")
-
     def on_touch_down_reports(self):
         self.manager.load_screen("menu_reports")
         self.manager.push_replacement("menu_reports")
