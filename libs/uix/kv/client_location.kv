@@ -60,35 +60,19 @@
 <ClientLocation>:
     MDBoxLayout:
         orientation: "vertical"
-
+        MDTopAppBar:
+            title:"Plan your appointment"
+            left_action_items:[["arrow-left", lambda x:root.back_button()]]
+            anchor_title:'left'
+            md_bg_color: 1, 1, 1, 1  # White background
+            specific_text_color: 0, 0, 0, 1  # Black labels
+            elevation:0
         MDBoxLayout:
             orientation: "vertical"
-            size_hint_y: None
-            height: dp(150)
-            pos_hint: {'center_y': 1}
-            elevation:2
+            adaptive_height:True
             spacing:dp(10)
-            padding: dp(25),0,dp(25),dp(10)
-            MDBoxLayout:
-                orientation: "horizontal"
-                size_hint_y: None
-                height: dp(20)
-                pos_hint: {"center_x": .5, "top": 1}
-                MDIconButton:
-                    icon: "arrow-left"
-                    pos_hint: {"center_y": .94}
-                    user_font_size: "20sp"
-                    theme_text_color: "Custom"
-                    text_color: rgba(34, 34, 34, 255)
-                    pos_hint: { "center_y": .5}
-                    on_release: root.back_button()
-                MDLabel:
-                    text: "Plan your appointment"
-                    font_name: "Roboto-Bold"
-                    font_size: "20sp"
-                    pos_hint: {"center_x": .3, "center_y": .5}
-                    color: rgba(34, 34, 34, 255)
-                    #halign:'center'
+            padding: dp(20),dp(0),dp(20),dp(10)
+            md_bg_color: 1, 1, 1, 1  # White background
             CustomButton:
                 size_hint_y: None
                 size_hint_x:None
@@ -155,41 +139,6 @@
                     on_release: autocomplete.text = ''
                     theme_text_color: "Custom"
                     text_color: [0, 0, 0, 1]
-
-#            MDRelativeLayout:
-#                orientation:'horizontal'
-#                size_hint_y:None
-#                height:autocomplete.height
-#                MDTextField:
-#                    id: autocomplete
-#                    mode: "round"
-#                    hint_text: 'Search location here'
-#                    on_text: root.search_location(self, self.text)
-#                    on_focus: if self.focus:root.on_text_field_focus(self, self.focus)
-#                    line_color_focus:0,0,0,1
-#                    text_color_focus:0,0,0,1
-#                    #fill_color_normal:0,0,0,0.5
-#                    hint_text_color_focus:0,0,0,1
-#                    icon_left:'google-maps'
-#                    icon_left_color_focus:0,0,0,1
-#                    radius: [30, 30, 30, 30]
-#                    valign:'center'
-#                    halign:'left'
-#
-#
-#                MDIconButton:
-#                    id:clr
-#                    icon: "close-circle"
-#                    pos_hint: {"center_y": .5}
-#                    pos: autocomplete.width - self.width , 0
-#                    theme_text_color: "Hint"
-#                    icon_color:0,0,0,1
-#                    #icon_size: "15sp"
-#                    on_release:
-#                        autocomplete.text = ''
-
-
-
 
         FloatLayout:
             orientation: "vertical"

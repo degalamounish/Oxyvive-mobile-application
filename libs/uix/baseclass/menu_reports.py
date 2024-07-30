@@ -40,7 +40,10 @@ class Report(MDScreen):
 
     def fetch_data_from_anvil(self):
         try:
-            with open('user_data.json', 'r') as file:
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            # Construct the path to the JSON file within the script's directory
+            json_user_file_path = os.path.join(script_dir, "user_data.json")
+            with open(json_user_file_path, 'r') as file:
                 user_info = json.load(file)
             # Fetch all booking slots for the given oxi_id
             bookings_iterator = app_tables.oxi_book_slot.search(oxi_id=user_info.get('id'))

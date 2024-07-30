@@ -123,6 +123,7 @@ class SliverToolbar(MDTopAppBar):
         super().__init__(**kwargs)
         self.left_action_items = [["arrow-left", lambda x: self.back_screen(), "color", (1, 0, 0, 1)]]
 
+
     def back_screen(self):
         screen = self.manager.get_screen('available_services')
         screen.remove_all_markers()

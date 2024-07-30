@@ -1,4 +1,5 @@
 import json
+import os
 import sqlite3
 from datetime import datetime, timedelta
 
@@ -239,8 +240,10 @@ class TaskSchedulerScreen(MDScreen):
             screen.servicer_id = self.servicer_id
             screen.ids.slot_time.text = formatted_date
             screen.ids.time_left.text = time_left_str
-
-            with open('user_data.json', 'r') as file:
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            # Construct the path to the JSON file within the script's directory
+            json_user_file_path = os.path.join(script_dir, "user_data.json")
+            with open(json_user_file_path, 'r') as file:
                 user_info = json.load(file)
 
             id = user_info['id']

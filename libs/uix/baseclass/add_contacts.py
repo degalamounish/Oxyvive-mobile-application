@@ -1,4 +1,5 @@
 import json
+import os
 
 from anvil.tables import app_tables
 from kivymd.uix.screen import MDScreen
@@ -44,7 +45,9 @@ class AddContact(MDScreen):
         print(new_contact)
         # Add the new contact to the contact list
         self.add_to_contact_list(new_contact)
-        with open('user_data.json', 'r') as file:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        json_user_file_path = os.path.join(script_dir, "user_data.json")
+        with open(json_user_file_path, 'r') as file:
             user_info = json.load(file)
         row_to_update = app_tables.oxi_book_slot.get(oxi_id=user_info.get('id'))
 

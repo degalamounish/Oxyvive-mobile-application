@@ -1,13 +1,10 @@
 import os
-from kivy.lang import Builder
-from kivy.uix.label import Label
-from kivy.uix.screenmanager import Screen
-from kivymd.uix.dialog import MDDialog
-from kivymd.uix.list import OneLineListItem, TwoLineIconListItem, IconLeftWidget, OneLineAvatarListItem, \
-    TwoLineAvatarListItem, OneLineAvatarIconListItem
-from kivymd.uix.screen import MDScreen
+
 from kivy.utils import platform
-from libs.uix.baseclass.client_location  import  ItemConfirm as ic
+from kivymd.uix.list import OneLineListItem, TwoLineIconListItem
+from kivymd.uix.screen import MDScreen
+from libs.uix.baseclass.client_location import ItemConfirm as ic
+
 # Set JAVA_HOME environment variable
 os.environ['JAVA_HOME'] = r'C:\Program Files\Java\jdk-22'
 

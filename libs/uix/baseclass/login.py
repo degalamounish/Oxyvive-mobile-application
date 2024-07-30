@@ -1,5 +1,7 @@
 import base64
 import json
+import os
+
 import bcrypt
 import random
 import smtplib
@@ -99,10 +101,7 @@ class Login(MDScreen):
             print('Password : ', password_value2)
             if user_type == 'client':
                 if password_value or password_value2:
-                    self.show_popup(
-                        "Login successful!",
-                        on_ok=lambda: self.manager.push('client_services')
-                    )
+
                     if user_anvil:
                         username = str(user_anvil["oxi_username"])
                         email = str(user_anvil["oxi_email"])
@@ -121,9 +120,17 @@ class Login(MDScreen):
                                  'password': password, 'profile': profile_data,'id':id }
                     with open("logged_in_data.json", "w") as json_file:
                         json.dump(logged_in_data, json_file)
-                    with open("user_data.json", "w") as json_file:
+
+                    script_dir = os.path.dirname(os.path.abspath(__file__))
+                    # Construct the path to the JSON file within the script's directory
+                    json_user_file_path = os.path.join(script_dir, "user_data.json")
+                    with open(json_user_file_path, "w") as json_file:
                         json.dump(user_info, json_file)
-                        
+                    self.show_popup(
+                        "Login successful!",
+                        on_ok=lambda: self.manager.push('client_services')
+                    )
+
             elif user_type == 'service provider':
                 if password_value:
                     self.show_popup(
