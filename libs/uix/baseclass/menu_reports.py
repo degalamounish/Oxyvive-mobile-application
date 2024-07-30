@@ -1,18 +1,56 @@
 import json
 import os
 from platform import platform
+
 from kivy.core.window import Window
 from kivy.lang import Builder
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.screenmanager import Screen, ScreenManager
 from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
 from fpdf import FPDF
 import anvil.server
 from anvil.tables import app_tables
 
+from libs.uix import root
+
 if platform == 'android':
     from android.permissions import (
         request_permissions, check_permission, Permission
     )
+from kivy.factory import Factory
+
+class Main(MDScreen):
+    def on_enter(self):
+        self.check_data_availability()
+
+    def check_data_availability(self):
+        try:
+            with open('user_data.json', 'r') as file:
+                user_info = json.load(file)
+            bookings= app_tables.oxi_book_slot.get(oxi_id=user_info.get('id'))
+            if not bookings:
+                self.clear_widgets()
+                details = Reports(manager=self.manager)
+                self.add_widget(details)
+            else:
+                self.clear_widgets()
+                print('checking if condition')
+                details = Report(manager=self.manager)
+                details.fetch_data_from_anvil()# Pass the manager
+                self.add_widget(details)
+
+        except Exception as e:
+            print(f"Error checking data availability: {e}")
+
+class Reports(Screen):
+    def go_back(self):
+        self.manager.current = 'client_services'  # Assuming you have a main screen to go back to
+
+    def show_add_report_dialog(self):
+        # Implement the method to show a dialog to add new report
+        pass
 
 
 class Report(MDScreen):

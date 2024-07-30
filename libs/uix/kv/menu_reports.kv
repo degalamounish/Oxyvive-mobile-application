@@ -1,6 +1,6 @@
 <InvoiceLabel@Label>:
     size_hint_y: None
-    height:dp(40)
+    height: dp(40)
     padding: [10, 10]
     halign: 'left'
     valign: 'middle'
@@ -8,7 +8,7 @@
 
 <InvoiceButton@Button>:
     size_hint_y: None
-    height:dp(40)
+    height: dp(40)
     background_color: 1, 0, 0, 1
     color: 1, 1, 1, 1
     canvas.before:
@@ -17,6 +17,15 @@
         Line:
             width: 1
             rectangle: self.x, self.y, self.width, self.height
+<Main>:
+    GridLayout:
+        cols:1
+        MDTopAppBar:
+            title: "Report"
+            md_bg_color: 1, 0, 0, 1  # Red color for the background
+            anchor_title: 'center'
+            left_action_items: [['arrow-left', lambda x: root.go_back()]]
+
 
 
 <Report>:
@@ -34,15 +43,15 @@
                 orientation: 'vertical'
                 size_hint_y: None
                 height: self.minimum_height
-                padding:dp(20)
-                spacing:dp(10)
+                padding: dp(20)
+                spacing: dp(10)
 
                 # Header Section
                 BoxLayout:
                     orientation: 'horizontal'
                     size_hint_y: None
-                    height:dp(100)
-                    padding:dp(10)
+                    height: dp(100)
+                    padding: dp(10)
 
                     Image:
                         id: company_logo
@@ -52,19 +61,19 @@
 
                     BoxLayout:
                         orientation: 'vertical'
-                        padding:dp(5)
+                        padding: dp(5)
 
                         Label:
                             text: 'OXIVIVE'
                             id: company_name_label
-                            font_size:dp(30)
+                            font_size: dp(30)
                             bold: True
                             color: [0, 0, 0, 1]
 
                         Label:
                             text: 'Anti-aging Treatment'
                             id: company_description
-                            font_size:dp(20)
+                            font_size: dp(20)
                             color: [0, 0, 0, 1]
 
                 # Table Section
@@ -72,8 +81,8 @@
                     cols: 4  # Adjusted for Booking ID, Patient, Amount, and Tax columns
                     size_hint_y: None
                     height: self.minimum_height
-                    row_default_height:dp(40)
-                    spacing:dp(20)
+                    row_default_height: dp(40)
+                    spacing: dp(20)
                     canvas.before:
                         Color:
                             rgba: 0, 0, 0, 1  # Black color for borders
@@ -84,41 +93,41 @@
                     Label:
                         text: 'Booking ID:'
                         bold: True
-                        font_size:dp(12)
+                        font_size: dp(12)
                         color: [0, 0, 0, 1]
                     Label:
                         id: booking_id
-                        font_size:dp(10)
+                        font_size: dp(10)
                         color: [0, 0, 0, 1]
 
                     Label:
                         text: 'Patient Name:'
                         bold: True
-                        font_size:dp(12)
+                        font_size: dp(12)
                         color: [0, 0, 0, 1]
                     Label:
                         id: patient_name
-                        font_size:dp(10)
+                        font_size: dp(10)
                         color: [0, 0, 0, 1]
 
                     Label:
                         text: 'Doctor Name:'
                         bold: True
-                        font_size:dp(12)
+                        font_size: dp(12)
                         color: [0, 0, 0, 1]
                     Label:
                         id: doctor_name
-                        font_size:dp(10)
+                        font_size: dp(10)
                         color: [0, 0, 0, 1]
 
                     Label:
                         text: 'Address:'
                         bold: True
-                        font_size:dp(12)
+                        font_size: dp(12)
                         color: [0, 0, 0, 1]
                     Label:
                         id: address
-                        font_size:dp(12)
+                        font_size: dp(12)
                         color: [0, 0, 0, 1]
 
                 # Details Section
@@ -126,8 +135,8 @@
                     cols: 4  # Adjusted for Service Type, Session, Subtotal, and Grand Total columns
                     size_hint_y: None
                     height: self.minimum_height
-                    row_default_height:dp(40)
-                    spacing:dp(10)
+                    row_default_height: dp(40)
+                    spacing: dp(10)
                     canvas.before:
                         Color:
                             rgba: 0, 0, 0, 1  # Black color for borders
@@ -138,41 +147,41 @@
                     Label:
                         text: 'Service Type:'
                         bold: True
-                        font_size:dp(12)
+                        font_size: dp(12)
                         color: [0, 0, 0, 1]
                     Label:
                         id: service_type
-                        font_size:dp(10)
+                        font_size: dp(10)
                         color: [0, 0, 0, 1]
 
                     Label:
                         text: 'Session (out of 40):'
                         bold: True
-                        font_size:dp(12)
+                        font_size: dp(12)
                         color: [0, 0, 0, 1]
                     Label:
                         id: session
-                        font_size:dp(10)
+                        font_size: dp(10)
                         color: [0, 0, 0, 1]
 
                     Label:
                         text: 'Price:'
                         bold: True
-                        font_size:dp(12)
+                        font_size: dp(12)
                         color: [0, 0, 0, 1]
                     Label:
                         id: price_label
-                        font_size:dp(10)
+                        font_size: dp(10)
                         color: [0, 0, 0, 1]
 
                     Label:
                         text: 'Sub Total:'
                         bold: True
-                        font_size:dp(12)
+                        font_size: dp(12)
                         color: [0, 0, 0, 1]
                     Label:
                         id: subtotal
-                        font_size:dp(10)
+                        font_size: dp(10)
                         text: "$0.00"
                         color: [0, 0, 0, 1]
 
@@ -181,8 +190,8 @@
                     cols: 4  # Adjusted for CGST, SGST, and placeholders
                     size_hint_y: None
                     height: self.minimum_height
-                    row_default_height:dp(40)
-                    spacing:dp(10)
+                    row_default_height: dp(40)
+                    spacing: dp(10)
                     canvas.before:
                         Color:
                             rgba: 0, 0, 0, 1  # Black color for borders
@@ -193,23 +202,23 @@
                     Label:
                         text: 'CGST (8%):'
                         bold: True
-                        font_size:dp(12)
+                        font_size: dp(12)
                         color: [0, 0, 0, 1]
                     Label:
                         id: cgst
                         text: "$0.00"
-                        font_size:dp(10)
+                        font_size: dp(10)
                         color: [0, 0, 0, 1]
 
                     Label:
                         text: 'SGST (8%):'
-                        font_size:dp(12)
+                        font_size: dp(12)
                         bold: True
                         color: [0, 0, 0, 1]
                     Label:
                         id: sgst
                         text: "$0.00"
-                        font_size:dp(10)
+                        font_size: dp(10)
                         color: [0, 0, 0, 1]
 
                     Label:
@@ -224,8 +233,8 @@
                     cols: 4  # Adjusted for Grand Total and placeholders
                     size_hint_y: None
                     height: self.minimum_height
-                    row_default_height:dp(40)
-                    spacing:dp(10)
+                    row_default_height: dp(40)
+                    spacing: dp(10)
                     canvas.before:
                         Color:
                             rgba: 0, 0, 0, 1  # Black color for borders
@@ -236,11 +245,11 @@
                     Label:
                         text: 'Grand Total:'
                         bold: True
-                        font_size:dp(12)
+                        font_size: dp(12)
                         color: [0, 0, 0, 1]
                     Label:
                         id: grand_total
-                        font_size:dp(10)
+                        font_size: dp(10)
                         text: "$0.00"
 
                         color: [0, 0, 0, 1]
@@ -255,13 +264,57 @@
                 # Footer Section
                 BoxLayout:
                     orientation: 'horizontal'
-                    spacing:dp(10)
+                    spacing: dp(10)
                     size_hint_y: None
-                    height:dp(50)
+                    height: dp(50)
 
                     MDRoundFlatButton:
                         text: 'Download Invoice'
                         text_color: 1, 0, 0, 1  # Red color for the text
                         line_color: 1, 0, 0, 1  # Red color for the button outline
-                        halign:"center"
+                        halign: "center"
                         on_press: root.save_pdf()
+
+<Reports>:
+    BoxLayout:
+        orientation: 'vertical'
+        MDTopAppBar:
+            pos_hint: {"center_x": 0.5, "center_y": 0.97}
+            title: "Reports"
+            md_bg_color: 1, 0, 0, 1  # Red color for the background
+            left_action_items: [['arrow-left', lambda x: root.go_back()]]
+        BoxLayout:
+            orientation: 'vertical'
+            padding: dp(20)
+            spacing: dp(20)
+
+            MDLabel:
+                text: "Welcome back"
+                halign: 'center'
+                theme_text_color: "Primary"
+                font_style: "H5"
+
+            Image:
+                source: "images/Invoice.jpg"
+                size_hint: None, None
+                size: dp(200), dp(200)
+                pos_hint: {"center_x": 0.5}
+
+            MDLabel:
+                text: "No report views yet"
+                halign: 'center'
+                theme_text_color: "Primary"
+                font_style: "H6"
+
+            MDLabel:
+                text: "Get started with by adding one of the existing reports to this dashboard."
+                halign: 'center'
+                theme_text_color: "Secondary"
+                font_style: "Body1"
+
+            Widget:
+                size_hint_y: None
+                height: dp(20)
+
+
+

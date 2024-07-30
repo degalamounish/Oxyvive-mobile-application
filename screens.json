@@ -60,8 +60,8 @@
         "kv": "libs/uix/kv/menu_bookings.kv"
     },
     "menu_reports": {
-        "import": "from libs.uix.baseclass.menu_reports import Report",
-        "object": "Report()",
+        "import": "from libs.uix.baseclass.menu_reports import Main",
+        "object": "Main()",
         "kv": "libs/uix/kv/menu_reports.kv"
     },
     "menu_notification": {
