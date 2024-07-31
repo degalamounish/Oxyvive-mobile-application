@@ -1,51 +1,33 @@
 import json
 import os
 from datetime import datetime
-
 from anvil import BlobMedia
 from anvil.tables import app_tables
 from kivy.metrics import dp
-# import anvil.server
-# from anvil.tables import app_tables
-from kivy.core.window import Window
-from kivy.lang import Builder
-from kivy.properties import ObjectProperty, StringProperty, ListProperty
-from kivy.uix import label
-from kivy.uix.boxlayout import BoxLayout
+from kivy.properties import ObjectProperty, ListProperty
 from kivy.uix.button import Button
-from kivy.uix.filechooser import FileChooserListView, FileChooserIconView
 from kivy.uix.label import Label
-from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen
 from kivy.uix.textinput import TextInput
-from kivymd.app import MDApp
-from kivymd.uix.behaviors import CommonElevationBehavior
-from kivymd.uix.button import MDFlatButton, MDRaisedButton, MDFillRoundFlatButton
+from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.dialog import MDDialog
-from kivymd.uix.floatlayout import MDFloatLayout
-from kivymd.uix.label import MDLabel
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.pickers import MDDatePicker
-from kivymd.uix.screen import MDScreen
-from kivymd.uix.selectioncontrol import MDCheckbox
 from kivymd.uix.tab import MDTabsBase
 from kivymd.uix.textfield import MDTextField
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.chip import MDChip
 from kivy.app import App
-from kivy.lang import Builder
 from kivy.properties import StringProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
-from kivymd.app import MDApp
-from kivymd.uix.label import MDLabel
-from kivymd.uix.card import MDCard
-from kivymd.uix.selectioncontrol import MDCheckbox
-from kivymd.uix.list import OneLineAvatarListItem, MDList
-from kivymd.uix.scrollview import MDScrollView
 from kivymd.uix.button import MDFlatButton
 from kivy.utils import get_color_from_hex
 from plyer import filechooser
+from plyer.utils import platform
+
+if platform == 'android':
+    from android.permissions import (
+        request_permissions, check_permission, Permission
+    )
 
 
 class CustomPopup(Popup):
@@ -197,22 +179,25 @@ class Profile(Screen):
             self.close_dialog()
 
     def choose_profile_picture(self):
-        content = BoxLayout(orientation='vertical')
-        filechooser = FileChooserIconView()
-        content.add_widget(filechooser)
-        buttons = BoxLayout(size_hint_y=None, height=50, spacing=10, padding=10)
-        popup = Popup(title="Select Profile Picture", content=content, size_hint=(0.9, 0.9))  # Define popup here
-        select_button = MDRaisedButton(text="Select", on_release=lambda *args: self.on_file_selection(filechooser.selection, popup))
-        cancel_button = MDRaisedButton(text="Cancel", on_release=popup.dismiss)
-        buttons.add_widget(select_button)
-        buttons.add_widget(cancel_button)
-        content.add_widget(buttons)
-        popup.open()
+        filters = ["*.jpg", "*.jpeg", "*.png"]
+        filechooser.open_file(on_selection=self.on_file_selection, filters=filters)
 
-    def on_file_selection(self, selection, popup):
+    def on_file_selection(self, selection):
+        if not selection:
+            print("No file selected")
+            self.show_validation_dialog("No file selected. Please select a file.")
+            return
+        self.ids.profile_image.source = selection[0]
+        selected_file = selection[0]
+        print("Selected file path:", selected_file)
+
+        # Check if the selected file is a string and not None
+        if not isinstance(selected_file, str):
+            print("Invalid file path type:", type(selected_file))
+            self.show_validation_dialog("Invalid file path. Please select a different file.")
+            return
         if selection:
             self.ids.profile_image.source = selection[0]
-        popup.dismiss()
 
     def on_selection(self, *a, **k):
         App.get_running_app().root.ids.result.text = str(self.selection)
@@ -229,6 +214,9 @@ class Profile(Screen):
 
     def change(self):
         try:
+            # with open('user_data.json', 'r') as file:
+            #     user_info = json.load(file)
+            #     print(f"User Info: {user_info}")  # Print user info for debugging
             script_dir = os.path.dirname(os.path.abspath(__file__))
             # Construct the path to the JSON file within the script's directory
             json_user_file_path = os.path.join(script_dir, "user_data.json")
@@ -310,10 +298,11 @@ class Profile(Screen):
 
     def save_data(self):
         try:
-            # Fetch the values from your UI elements
+            # Fetch values from UI elements
             address = self.ids.address.text
             city = self.ids.city.text
             state = self.ids.state.text
+            pincode = self.ids.pincode.text
             date_format = "%Y-%m-%d"
             date_object = datetime.strptime(self.ids.dob.text, date_format)
             dob = date_object.date()
@@ -322,7 +311,6 @@ class Profile(Screen):
             height_f = self.ids.height.text
             weight_f = self.ids.weight.text
 
-            # Ensure height and weight are not empty before converting to int
             if not height_f:
                 raise ValueError("Height field is empty")
             height = int(height_f)
@@ -346,25 +334,17 @@ class Profile(Screen):
             blood_group = self.ids.blood_group_label.text
             image_path = self.ids.profile_image.source if 'profile_image' in self.ids else None
 
-            # Debug print to check image path
-            print(f"Image path: {image_path}")
-
             image_media = None
             if image_path and os.path.isfile(image_path):
                 with open(image_path, 'rb') as img_file:
                     image_data = img_file.read()
                     image_media = BlobMedia('image/png', image_data, name='profile_image.png')
-            else:
-                print("Image path is not valid or image does not exist.")
 
-            # Debug print statements to check values
-            print(f"address: {address}, city: {city}, state: {state}, dob: {dob}")
-            print(f"country: {country}, gender: {gender}, height: {height}, weight: {weight}")
-            print(f"blood_group_label: {blood_group_label}, allergies: {allergies}")
-            print(f"current_medications: {current_medications}, past_medications: {past_medications}")
-            print(f"chronic_diseases: {chronic_diseases}, injuries: {injuries}, surgeries: {surgeries}")
-            print(f"smoking_habits: {smoking_habits}, alcohol_consumption: {alcohol_consumption}")
-            print(f"activity_level: {activity_level}, food_preference: {food_preference}, occupation: {occupation}")
+
+            # # Assuming 'oxi_users' is a data table in Anvil
+            # with open('user_data.json', 'r') as file:
+            #     user_info = json.load(file)
+            # row_to_update = app_tables.oxi_users.get(oxi_id=user_info.get('id'))
             script_dir = os.path.dirname(os.path.abspath(__file__))
             # Construct the path to the JSON file within the script's directory
             json_user_file_path = os.path.join(script_dir, "user_data.json")
@@ -373,12 +353,12 @@ class Profile(Screen):
                 user_info = json.load(file)
             row_to_update = app_tables.oxi_users.get(oxi_id=user_info.get('id'))
 
-            if row_to_update is not None:
-                # Update the fields
+            if row_to_update:
                 row_to_update['oxi_address'] = address
                 row_to_update['oxi_city'] = city
                 row_to_update['oxi_state'] = state
                 row_to_update['oxi_dob'] = dob
+                row_to_update['oxi_pincode'] = int(pincode)
                 row_to_update['oxi_country'] = country
                 row_to_update['oxi_gender'] = gender
                 row_to_update['oxi_height'] = height
@@ -398,17 +378,10 @@ class Profile(Screen):
                 row_to_update['oxi_blood_group_label'] = blood_group
                 if image_media:
                     row_to_update['oxi_profile'] = image_media
-                else:
-                    print("Error: No image saved")
-
-                row_to_update.save()
-
-
+                row_to_update.update()
                 print("Data updated successfully in Anvil database")
             else:
-                print("Record not found for oxi_id = 1")
-
-            # Save to JSON file
+                print("Record not found for oxi_id")
 
         except ValueError as e:
             print(f"ValueError: {e}")
@@ -421,4 +394,3 @@ class Profile(Screen):
         self.manager.push_replacement("client_services", "right")
         screen = self.manager.get_screen('client_services')
         # screen.nav_drawer.set_state("close")
-

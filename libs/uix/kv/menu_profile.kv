@@ -73,14 +73,15 @@
                         title: "Personal"
                         icon: "account"
                         BoxLayout:
-                            padding: dp(20)
+                            padding: [18,0,0,0]
+                            spacing: dp(10)
                             orientation: 'vertical'
                             ScrollView:
                                 MDGridLayout:
                                     cols: 1
                                     adaptive_height: True
-                                    padding: dp(10)
-                                    spacing: dp(10)
+                                    padding: [15,19,0,15]
+                                    spacing: dp(20)
 
 
 
@@ -88,45 +89,58 @@
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height:dp(50)
+                                        padding: [0,0,100,0]
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "Email"
                                             size_hint_y: None
                                             color: 0,0,0,0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: email
-                                            text: "Enter your email"
+                                            hint_text: "Add email id"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                     MDCard:
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height: dp(50)
+                                        padding: [0,0,100,0]
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "Phone No"
                                             size_hint_y: None
                                             color: 0, 0, 0, 0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: phone
-                                            text: "Enter your phone no"
+                                            hint_text: "phone number"
                                             size_hint_y: None
-                                        MDIconButton:
-                                            icon: "pencil"
-                                            size_hint: None, None
-                                            size: dp(24), dp(24)  # Reduced size
-                                            on_release: root.show_popup(phone)
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
 
                                     # Additional Personal Fields
                                     MDCard:
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height: dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "Address"
                                             size_hint_y: None
                                             color: 0, 0, 0, 0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: address
-                                            text: "Enter your address"
+                                            hint_text: "address"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            multiline: True
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
@@ -137,14 +151,19 @@
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height: dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "City"
                                             size_hint_y: None
                                             color: 0, 0, 0, 0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: city
-                                            text: "Enter your city"
+                                            hint_text: "city"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
@@ -155,14 +174,19 @@
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height: dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "State"
                                             size_hint_y: None
                                             color: 0, 0, 0, 0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: state
-                                            text: "Enter your state"
+                                            hint_text: "state"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
@@ -173,14 +197,19 @@
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height: dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "Pin Code"
                                             size_hint_y: None
                                             color: 0, 0, 0, 0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: pincode
-                                            text: "Enter your pincode"
+                                            hint_text: "pincode"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
@@ -191,14 +220,19 @@
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height: dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "Country"
                                             size_hint_y: None
                                             color: 0, 0, 0, 0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: country
-                                            text: "Enter your country"
+                                            hint_text: "country"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
@@ -209,14 +243,19 @@
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height: dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "DOB"
                                             size_hint_y: None
                                             color: 0, 0, 0, 0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: dob
-                                            text: "Enter your dob"
+                                            hint_text: "yyyy-mm-dd"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
@@ -227,14 +266,19 @@
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height: dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "Height"
                                             size_hint_y: None
                                             color: 0, 0, 0, 0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: height
-                                            text: "Enter your height"
+                                            hint_text: "height in cm"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
@@ -245,14 +289,19 @@
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height: dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "Weight"
                                             size_hint_y: None
                                             color: 0, 0, 0, 0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: weight
-                                            text: "Enter your weight"
+                                            hint_text: "weight"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
@@ -263,14 +312,19 @@
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height: dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "Gender"
                                             size_hint_y: None
                                             color: 0, 0, 0, 0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: gender
-                                            text: "Enter your gender"
+                                            hint_text: "gender"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
@@ -281,14 +335,19 @@
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height: dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "Blood group"
                                             size_hint_y: None
                                             color: 0, 0, 0, 0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: blood_group_label
-                                            text: "Enter your blood group"
+                                            hint_text: "blood group"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
@@ -305,20 +364,25 @@
                                 MDGridLayout:
                                     cols: 1
                                     adaptive_height: True
-                                    padding: dp(10)
-                                    spacing: dp(10)
+                                    padding: [20,19,0,15]
+                                    spacing: dp(20)
                                     MDCard:
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height: dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "Allergies"
                                             size_hint_y: None
                                             color: 0, 0, 0, 0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: allergies
-                                            text: "Enter your allergies"
+                                            hint_text: "Add allergies"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
@@ -328,14 +392,19 @@
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height: dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "Current Medications"
                                             size_hint_y: None
                                             color: 0, 0, 0, 0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: current_medications
-                                            text: "Enter your current medications"
+                                            hint_text: "current medication"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
@@ -345,14 +414,19 @@
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height: dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "Past Medications"
                                             size_hint_y: None
                                             color: 0, 0, 0, 0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: past_medications
-                                            text: "Enter your past medications"
+                                            hint_text: "past medication"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
@@ -362,14 +436,19 @@
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height: dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "Chronic Diseases"
                                             size_hint_y: None
                                             color: 0, 0, 0, 0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: chronic_diseases
-                                            text: "Enter your chronic diseases"
+                                            hint_text: "chronic disease"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
@@ -379,14 +458,19 @@
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height: dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "Surgeries"
                                             size_hint_y: None
                                             color: 0, 0, 0, 0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: surgeries
-                                            text: "Enter your surgeries"
+                                            hint_text: "Add surgeries"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
@@ -396,36 +480,24 @@
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height: dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "Injuries"
                                             size_hint_y: None
                                             color: 0, 0, 0, 0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: injuries
-                                            text: "Enter your injuries"
+                                            hint_text: "Add any injuries"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
                                             size: dp(24), dp(24)  # Reduced size
                                             on_release: root.show_popup(injuries)
-                                    MDCard:
-                                        orientation: "horizontal"
-                                        size_hint_y: None
-                                        height:dp(50)
-                                        MDLabel:
-                                            text: "Surgeries"
-                                            size_hint_y: None
-                                            color: 0,0,0,0.5
-                                        MDLabel:
-                                            id: surgeries
-                                            text: "Enter your surgeries"
-                                            size_hint_y: None
-                                        MDIconButton:
-                                            icon: "pencil"
-                                            size_hint: None, None
-                                            size: dp(24), dp(24)  # Reduced size
-                                            on_release: root.show_popup(surgeries)
 
                     Tab:
                         title: "Lifestyle"
@@ -436,20 +508,25 @@
                                 MDGridLayout:
                                     cols: 1
                                     adaptive_height: True
-                                    padding: dp(10)
-                                    spacing: dp(10)
+                                    padding: [20,19,0,15]
+                                    spacing: dp(20)
                                     MDCard:
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height:dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "Smoking Habits"
                                             size_hint_y: None
                                             color: 0,0,0,0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: smoking_habits
-                                            text: "Enter your smoking habits"
+                                            hint_text: "smoking habits"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
@@ -460,14 +537,19 @@
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height:dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "Alcohol Consumption"
                                             size_hint_y: None
                                             color: 0,0,0,0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: alcohol_consumption
-                                            text: "Enter your alcohol_consumption"
+                                            hint_text: "alcohol consumption"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
@@ -478,14 +560,19 @@
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height:dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "Activity Level"
                                             size_hint_y: None
                                             color: 0,0,0,0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: activity_level
-                                            text: "Enter your activity level"
+                                            hint_text: "actvity level"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
@@ -496,14 +583,19 @@
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height:dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "Food Preference"
                                             size_hint_y: None
                                             color: 0,0,0,0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: food_preference
-                                            text: "Enter your food preference"
+                                            hint_text: "food preferences"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
@@ -514,14 +606,19 @@
                                         orientation: "horizontal"
                                         size_hint_y: None
                                         height:dp(50)
+                                        spacing: dp(5)
                                         MDLabel:
                                             text: "Occupation"
                                             size_hint_y: None
                                             color: 0,0,0,0.5
-                                        MDLabel:
+                                            padding: [0,0,0,3]
+                                        MDTextField:
                                             id: occupation
-                                            text: "Enter your occupation"
+                                            hint_text: "occupation"
                                             size_hint_y: None
+                                            #mode: "rectangle"
+                                            hint_text_size: dp(6)
+                                            on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                         MDIconButton:
                                             icon: "pencil"
                                             size_hint: None, None
@@ -545,5 +642,3 @@
                         size_hint: 1, None  # Adjust size hint for width
                         height: dp(40)  # Fixed height
                         on_release: root.save_data()
-
-
