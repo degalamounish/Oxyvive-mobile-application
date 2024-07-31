@@ -2,6 +2,7 @@ import json
 import os
 
 from anvil.tables import app_tables
+from kivymd.uix.button import MDFlatButton
 from kivymd.uix.screen import MDScreen
 
 
@@ -31,7 +32,7 @@ class AddContact(MDScreen):
         phone_number = self.ids.phone_number.text
 
         # Perform validation if needed
-        if not first_name  or not phone_number:
+        if not first_name or not phone_number:
             # Display an error message or alert the user
             print("Please fill in all fields.")
             return
@@ -43,33 +44,57 @@ class AddContact(MDScreen):
             "phone_number": phone_number
         }
         print(new_contact)
-        # Add the new contact to the contact list
-        self.add_to_contact_list(new_contact)
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        json_user_file_path = os.path.join(script_dir, "user_data.json")
-        with open(json_user_file_path, 'r') as file:
-            user_info = json.load(file)
-        row_to_update = app_tables.oxi_book_slot.get(oxi_id=user_info.get('id'))
 
-        if row_to_update is not None:
-            # Update the fields
-            row_to_update['oxi_another_person_name'] = self.ids.first_name.text + self.ids.last_name.text
-            row_to_update['oxi_another_person_number'] = int(self.ids.phone_number.text[3:])
+        try:
+            # Add the new contact to the contact list
+            self.add_to_contact_list(new_contact)
 
-        # Load the Client_dashboard screen
-        self.manager.current = "client_dashboard"
-        screen = self.manager.get_screen("client_dashboard")
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            json_user_file_path = os.path.join(script_dir, "user_data.json")
+            with open(json_user_file_path, 'r') as file:
+                user_info = json.load(file)
 
-        # Update the screen with the new contact
-        screen.add_contact(new_contact)
+            row_to_update = app_tables.oxi_book_slot.get(oxi_id=user_info.get('id'))
 
-        # Example: Clear the text fields after saving the contact
-        self.ids.first_name.text = ""
-        self.ids.last_name.text = ""
-        self.ids.phone_number.text = "+91"
+            if row_to_update is not None:
+                # Update the fields
+                row_to_update['oxi_another_person_name'] = self.ids.first_name.text + " " + self.ids.last_name.text
+                row_to_update['oxi_another_person_number'] = int(self.ids.phone_number.text[3:])
 
-        # Notify the user that the contact has been added successfully
-        # You could use a dialog or a toast notification here
-        print("Contact added successfully.")
+            # Load the Client_dashboard screen
+            self.manager.current = "client_dashboard"
+            screen = self.manager.get_screen("client_dashboard")
 
+            # Update the screen with the new contact
+            screen.add_contact(new_contact)
 
+            # Example: Clear the text fields after saving the contact
+            self.ids.first_name.text = ""
+            self.ids.last_name.text = ""
+            self.ids.phone_number.text = "+91"
+
+            # Notify the user that the contact has been added successfully
+            # You could use a dialog or a toast notification here
+            print("Contact added successfully.")
+        except Exception as e:
+            print(f"Error: {e}")
+            self.show_popup("Error: unable to update to database")
+
+    def show_popup(self, message):
+        from kivymd.uix.dialog import MDDialog
+        from kivymd.uix.button import MDFlatButton
+
+        def on_ok(instance):
+            dialog.dismiss()
+            self.manager.current = "client_location"
+
+        dialog = MDDialog(
+            text=message,
+            buttons=[
+                MDFlatButton(
+                    text="OK",
+                    on_release=on_ok
+                )
+            ]
+        )
+        dialog.open()
