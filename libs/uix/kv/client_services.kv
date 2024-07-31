@@ -1,3 +1,4 @@
+
 <Activity>:
     orientation: 'vertical'
     padding: 0
@@ -367,7 +368,7 @@
                             name: 'home screen'
                             text: 'Home'
                             icon: 'home'
-#                            badge_icon: "numeric-10"
+                            #badge_icon: "numeric-10"
                             MDBoxLayout:
                                 orientation: "vertical"
                                 md_bg_color:1,1,1,1
@@ -615,8 +616,11 @@
 
                         MDBottomNavigationItem:
                             name: 'account screen'
-
+                            on_tab_release: root.profile_func()
                             text: 'Account'
                             icon: 'account'
-                            Profile_screen:
-                                manager : root.manager
+                            #Profile_screen:
+                             #   manager : root.manager
+                            MDBoxLayout:
+                                id: profile
+                                size_hint: 1, 1

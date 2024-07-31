@@ -193,7 +193,9 @@ class Profile_screen(Screen):
         elif card_id == 'logout_box':
             self.on_touch_down_log_out()
 
-    def on_kv_post(self, base_widget):
+
+    def on_kv_post(self,base_widget):
+        print("kv post is not working")
         self.server = Server()
         print("IDs dictionary:", self.ids)  # Debugging line
 
@@ -203,6 +205,7 @@ class Profile_screen(Screen):
             # Load user information from JSON file
             with open(json_user_file_path, 'r') as file:
                 self.user_info = json.load(file)
+            print(self.user_info)
 
             # Update username and phone if their IDs are present
             if 'username' in self.ids:
@@ -347,9 +350,9 @@ class Client_services(MDScreen):
             profile_image_file.write(profile_texture)
         self.ids.image.source = profile_image_path
 
-    def on_pre_enter(self):
+    def on_pre_enter(self, *args):
+        # Ensure the Profile_screen instance is accessed correctly
 
-        # self.change()
         images = ['images/1.png', 'images/2.png', 'images/3.png', 'images/gym.png']
         for i in images:
             environment_img = CustomImageTile(
@@ -405,3 +408,7 @@ class Client_services(MDScreen):
             booking_details = BookingDetails(manager=self.manager)  # Pass the manager
             booking_details.display_bookings(bookings)
             self.ids.activity.add_widget(booking_details)
+    def profile_func(self):
+        self.ids.profile.clear_widgets()  # Clear existing widgets first
+        self.ids.profile.add_widget(Profile_screen(manager=self.manager))
+
