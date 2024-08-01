@@ -151,6 +151,7 @@ class Settings(MDScreen):
 
         # Automatically dismiss the success dialog after 2 seconds
         Clock.schedule_once(lambda dt: self.success_dialog.dismiss(), 2)
+        self.manager.push_replacement("login")
 
     def validate_password(self, password):
         # Check if the password is not empty

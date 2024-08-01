@@ -2,7 +2,6 @@ import os
 import random
 import re
 import string
-
 import bcrypt
 from anvil import media
 from anvil.tables import app_tables
@@ -39,6 +38,14 @@ class Signup(MDScreen):
         return False
 
     def on_back_button(self):
+        self.ids.signup_name.text = ""
+        self.ids.signup_email.text = ""
+        self.ids.signup_password.text = ""
+        self.ids.signup_phone.text = ""
+        self.ids.signup_pincode.text = ""
+        self.ids.signup_pan_card_no.text = ""
+        self.ids.profile_name.text = ""
+
         self.manager.push_replacement("main_sc", "right")
 
     # def google_sign_in(self):
@@ -165,14 +172,6 @@ class Signup(MDScreen):
             self.ids.signup_pan_card_no.error = False
             self.ids.signup_pan_card_no.helper_text = ""
 
-            # clear input texts
-            self.ids.signup_name.text = ""
-            self.ids.signup_email.text = ""
-            self.ids.signup_password.text = ""
-            self.ids.signup_phone.text = ""
-            self.ids.signup_pincode.text = ""
-            self.ids.signup_pan_card_no.text = ""
-
             try:
                 if self.server.is_connected():
                     print("connected")
@@ -198,6 +197,14 @@ class Signup(MDScreen):
                             oxi_pan_card_no=str(pan_card_no),
                             oxi_usertype='client',
                             oxi_profile=self.profile)
+
+                        self.ids.signup_name.text = ""
+                        self.ids.signup_email.text = ""
+                        self.ids.signup_password.text = ""
+                        self.ids.signup_phone.text = ""
+                        self.ids.signup_pincode.text = ""
+                        self.ids.signup_pan_card_no.text = ""
+                        self.ids.profile_name.text = ""
 
                         # Navigate to the success screen
                         self.manager.push("login")
