@@ -23,7 +23,8 @@
         MDTopAppBar:
             title: "Report"
             md_bg_color: 1, 0, 0, 1  # Red color for the background
-            anchor_title: 'center'
+            title_halign : 'center'
+
             left_action_items: [['arrow-left', lambda x: root.go_back()]]
 
 
@@ -35,7 +36,8 @@
         MDTopAppBar:
             title: "Report"
             md_bg_color: 1, 0, 0, 1  # Red color for the background
-            anchor_title: 'center'
+            title_halign : 'center'
+
             left_action_items: [['arrow-left', lambda x: root.go_back()]]
 
         ScrollView:
@@ -281,6 +283,7 @@
         MDTopAppBar:
             pos_hint: {"center_x": 0.5, "center_y": 0.97}
             title: "Reports"
+            title_halign : 'center'
             md_bg_color: 1, 0, 0, 1  # Red color for the background
             left_action_items: [['arrow-left', lambda x: root.go_back()]]
         BoxLayout:
