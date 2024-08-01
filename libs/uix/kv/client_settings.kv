@@ -1,6 +1,6 @@
 <Settings>:
-    MDGridLayout:
-        cols:1
+    MDBoxLayout:
+        orientation:'vertical'
         md_bg_color:1,1,1,1
         MDTopAppBar:
             title: "Reset Password"
@@ -9,17 +9,15 @@
             md_bg_color: 1, 1, 1, 1  # White background
             specific_text_color: 0, 0, 0, 1  # Black labels
             elevation: 1
-        MDBoxLayout:
-            orientation: 'vertical'
+        MDGridLayout:
+            cols:1
+            padding:dp(0),dp(40),dp(0),dp(0)
             MDBoxLayout:
                 orientation: 'vertical'
                 padding: dp(20)
                 spacing: dp(20)
-                pos_hint: {"center_x": 0.5}
-                size_hint: None, None
-                size: dp(300), dp(400)
-                valign:'top'
-
+                pos_hint: {"center_x": 0.5, "center_y":0.6}
+                adaptive_height:True
                 MDLabel:
                     text: "Reset Password"
                     font_style: "H4"
