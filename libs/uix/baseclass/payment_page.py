@@ -2,14 +2,15 @@ import json
 import math
 import os
 import random
+import smtplib
 import string
 import time
 import webbrowser
 from datetime import datetime
+from email.message import EmailMessage
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from threading import Thread
 from urllib.parse import urlparse, parse_qs
-
 import requests
 from anvil.tables import app_tables
 from kivy.clock import Clock
@@ -69,6 +70,11 @@ class Payment(MDScreen):
         self.date_time = booking_data.get('date_time', '')
         username = booking_data.get('username', '')
 
+        # Fetch email from user_data.json
+        with open('user_data.json', 'r') as file:
+            user_data = json.load(file)
+        oxi_email = user_data.get('email', '')
+
         try:
             if self.server.is_connected():
                 slot_id = self.generate_random_code()
@@ -86,6 +92,12 @@ class Payment(MDScreen):
                 )
                 self.show_validation_dialog(
                     "Your slot is successfully booked. You will receive an instant response from Oxivive.")
+
+                # Sending email after successful booking
+                email_subject = "Booking Confirmation From Oxivive"
+                email_message = (f"Dear {username},\n\nYour slot is successfully booked on {self.date_time} for "
+                                 f"{self.service_type}.\n\nThank you for choosing our service at OXIVIVE.")
+                self.send_email(oxi_email, email_subject, email_message)
             else:
                 self.show_validation_dialog("No internet connection")
         except Exception as e:
@@ -449,3 +461,22 @@ class Payment(MDScreen):
         c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
         distance = R * c
         return distance
+
+    def send_email(self, email, subject, message):
+        try:
+            from_mail = "oxivive@gmail.com"
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()
+            server.login(from_mail, "bqrt soih plhy dnix")
+
+            msg = EmailMessage()
+            msg['Subject'] = subject
+            msg['From'] = from_mail
+            msg['To'] = email
+            msg.set_content(message)
+            server.send_message(msg)
+            server.quit()
+            print(f"Email sent successfully to {email}")
+        except Exception as e:
+            print(f"Failed to send email: {e}")
+

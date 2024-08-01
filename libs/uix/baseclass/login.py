@@ -183,10 +183,10 @@ class Login(MDScreen):
 
     def send_email_otp(self, email):
         try:
-            from_mail = "@gmail.com"
+            from_mail = "oxivive@gmail.com"
             server = smtplib.SMTP('smtp.gmail.com', 587)
             server.starttls()
-            server.login(from_mail, "oxivive")
+            server.login(from_mail, "bqrt soih plhy dnix")
 
             msg = EmailMessage()
             msg['Subject'] = "OTP Verification"
@@ -289,13 +289,6 @@ class Login(MDScreen):
         else:
             self.show_popup("Please enter a phone number or email ID")
 
-    def check_otp(self):
-        entered_otp = self.ids.otp_input.text.strip()
-        if entered_otp == self.otp_value:
-            self.show_popup("OTP verified successfully")
-        else:
-            self.show_popup("Invalid OTP. Please try again.")
-
     def send_voice_otp(self, user_input):
         self.client.calls.create(
             twiml=f'<Response><Say>Your OTP is {self.otp_value}</Say></Response>',
@@ -357,3 +350,13 @@ class Login(MDScreen):
             self.send_email_otp(user_input)
         else:
             self.send_sms_otp(user_input)
+
+    def check_otp(self):
+        entered_otp = self.ids.otp_input.text.strip()
+        if entered_otp == self.otp_value:
+            self.show_popup("OTP verified successfully")
+        else:
+            self.show_popup("Invalid OTP. Please try again.")
+
+
+
