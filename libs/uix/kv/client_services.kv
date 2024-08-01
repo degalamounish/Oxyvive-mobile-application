@@ -12,6 +12,8 @@
 
     MDTopAppBar:
         title: 'My Bookings'
+        title_halign : 'center'
+
         elevation: 0
         pos_hint: {'top': 1}
         left_action_items: [["arrow-left", lambda x: root.back_btn()]]
@@ -112,8 +114,8 @@
 
         MDTopAppBar:
             title: 'Oxivive Account'
+            title_halign : 'center'
             left_action_items: [['arrow-left', lambda x: root.go_back()]]
-            elevation: 5
             md_bg_color: (1, 0, 0, 1) # Red color for the top bar
 
         ScrollView:
@@ -466,10 +468,11 @@
                                                 text: "OxiWheel"
                                                 #bold: True
                                                 font_style:'Subtitle2'
-                                                pos_hint: {"center_x": 0.0, "center_y": 0}
+                                                pos_hint: {"center_x": 0.5, "center_y": 0}
                                                 font_size:'14sp'
-                                                color: 1, 1, 1, 1
+                                                color: 0, 0, 0, 0
                                                 opposite_colors:True
+                                                halign: 'center'
                                         MDSmartTile:
                                             radius: 10
                                             box_radius: [0, 0, 10, 10]
@@ -488,6 +491,8 @@
                                                 font_size:'14sp'
                                                 #bold: True
                                                 color: 1, 1, 1, 1
+                                                halign: 'center'
+
                                     MDLabel:
                                         text: 'PROMOTION '
                                         font_style: "Subtitle2"
@@ -570,6 +575,8 @@
                                                 font_size:'14sp'
                                                 color: 1, 1, 1, 1
                                                 opposite_colors:True
+                                                halign: 'center'
+
                                         MDSmartTile:
                                             radius: 10
                                             box_radius: [0, 0, 10, 10]
@@ -586,6 +593,8 @@
                                                 font_size:'14sp'
                                                 #bold: True
                                                 color: 1, 1, 1, 1
+                                                halign: 'center'
+
                                         MDSmartTile:
                                             radius: 10
                                             box_radius: [0, 0, 10, 10]
@@ -602,6 +611,8 @@
                                                 pos_hint: {"center_x": 0.0, "center_y": 0}
                                                 #bold: True
                                                 color: 1, 1, 1, 1
+                                                halign: 'center'
+
 
                         MDBottomNavigationItem:
                             name: 'activity screen'

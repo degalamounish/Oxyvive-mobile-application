@@ -14,13 +14,13 @@
             pos_hint: {"center_x": 0.1, "center_y": .95}
             user_font_size: "30sp"
             theme_text_color: "Custom"
-            text_color: 0, 0, 0, 1
+            text_color: 1, 1, 1, 1
             on_release: root.on_back_button()
 
         # Logo and Brand
         Image:
             source: 'images/shot.png'
-            size_hint: .2, .2
+            size_hint: .4, .4
             pos_hint: {"center_x": .5, "center_y": .85}
 
         MDLabel:
@@ -119,7 +119,7 @@
 
                 MDIconButton:
                     id: show_password_button
-                    pos_hint: {"center_x": .93, "center_y": .575}
+                    pos_hint: {"center_x": .94, "center_y": .5}
                     active: False  # Initial state is password hidden
                     icon: "eye-off"
                     theme_text_color: "Custom"
@@ -150,7 +150,7 @@
                 text: "Forgot Password?"
                 pos_hint: {"center_x": .5, "center_y": .42}
                 color: 1, 0, 0, 1
-                font_size: "14sp"
+                font_size: "12sp"
                 font_name: "Roboto"
                 on_release: root.manager.push("forgot_password")
 
@@ -184,7 +184,7 @@
             MDTextButton:
                 text: "Don't have an account? Sign up"
                 font_name: "Roboto"
-                font_size: "15sp"
+                font_size: "14sp"
                 pos_hint: {"center_x": .5, "center_y": .07}
                 color: 1, 0, 0, 1
                 on_release: root.manager.push("signup")

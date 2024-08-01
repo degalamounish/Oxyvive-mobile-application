@@ -2,8 +2,10 @@
     MDTopAppBar:
         pos_hint: {"center_x": 0.5, "center_y": 0.97}
         title: "Basic Info"
+        title_halign : 'center'
         md_bg_color: 1, 0, 0, 1  # Red color for the background
         left_action_items: [['arrow-left', lambda x: root.go_back()]]
+
     BoxLayout:
         pos_hint: {"center_x": 0.5, "center_y":0.6}
         padding: dp(20)
@@ -93,14 +95,15 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "Email"
-                                            size_hint_y: None
-                                            color: 0,0,0,0.5
-                                            padding: [0,0,0,3]
+                                            size_hint_x: 0.3  # Adjust this as needed
+                                            color: 0, 0, 0, 0.5
+                                            valign: 'center'
+                                            halign: 'left'
+
                                         MDTextField:
                                             id: email
-                                            hint_text: "Add email id"
-                                            size_hint_y: None
-                                            #mode: "rectangle"
+                                            hint_text: "email id"
+                                            size_hint_x: 0.3  # Adjust this as needed
                                             hint_text_size: dp(6)
                                             on_text: self.text_color_normal = [0, 0, 0, 1] if self.text else [0.5, 0.5, 0.5, 1]  # Change color based on text input
                                     MDCard:
@@ -111,12 +114,15 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "Phone No"
-                                            size_hint_y: None
+                                            size_hint_x: 0.3  # Adjust this as needed
                                             color: 0, 0, 0, 0.5
-                                            padding: [0,0,0,3]
+                                            valign: 'center'
+                                            halign: 'left'
+
                                         MDTextField:
                                             id: phone
                                             hint_text: "phone number"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -130,12 +136,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "Address"
-                                            size_hint_y: None
+                                            size_hint_x: 0.3  # Adjust this as needed
                                             color: 0, 0, 0, 0.5
-                                            padding: [0,0,0,3]
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: address
                                             hint_text: "address"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -154,12 +162,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "City"
-                                            size_hint_y: None
+                                            size_hint_x: 0.3  # Adjust this as needed
                                             color: 0, 0, 0, 0.5
-                                            padding: [0,0,0,3]
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: city
                                             hint_text: "city"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -177,12 +187,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "State"
-                                            size_hint_y: None
+                                            size_hint_x: 0.3  # Adjust this as needed
                                             color: 0, 0, 0, 0.5
-                                            padding: [0,0,0,3]
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: state
                                             hint_text: "state"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -200,12 +212,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "Pin Code"
-                                            size_hint_y: None
+                                            size_hint_x: 0.3  # Adjust this as needed
                                             color: 0, 0, 0, 0.5
-                                            padding: [0,0,0,3]
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: pincode
                                             hint_text: "pincode"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -223,12 +237,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "Country"
-                                            size_hint_y: None
+                                            size_hint_x: 0.3  # Adjust this as needed
                                             color: 0, 0, 0, 0.5
-                                            padding: [0,0,0,3]
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: country
                                             hint_text: "country"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -246,12 +262,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "DOB"
-                                            size_hint_y: None
+                                            size_hint_x: 0.3  # Adjust this as needed
                                             color: 0, 0, 0, 0.5
-                                            padding: [0,0,0,3]
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: dob
                                             hint_text: "yyyy-mm-dd"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -269,12 +287,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "Height"
-                                            size_hint_y: None
+                                            size_hint_x: 0.3  # Adjust this as needed
                                             color: 0, 0, 0, 0.5
-                                            padding: [0,0,0,3]
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: height
                                             hint_text: "height in cm"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -292,12 +312,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "Weight"
-                                            size_hint_y: None
+                                            size_hint_x: 0.3  # Adjust this as needed
                                             color: 0, 0, 0, 0.5
-                                            padding: [0,0,0,3]
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: weight
                                             hint_text: "weight"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -315,12 +337,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "Gender"
-                                            size_hint_y: None
+                                            size_hint_x: 0.3  # Adjust this as needed
                                             color: 0, 0, 0, 0.5
-                                            padding: [0,0,0,3]
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: gender
                                             hint_text: "gender"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -338,12 +362,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "Blood group"
-                                            size_hint_y: None
+                                            size_hint_x: 0.3  # Adjust this as needed
                                             color: 0, 0, 0, 0.5
-                                            padding: [0,0,0,3]
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: blood_group_label
                                             hint_text: "blood group"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -373,12 +399,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "Allergies"
-                                            size_hint_y: None
+                                            size_hint_x: 0.3  # Adjust this as needed
                                             color: 0, 0, 0, 0.5
-                                            padding: [0,0,0,3]
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: allergies
                                             hint_text: "Add allergies"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -395,12 +423,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "Current Medications"
-                                            size_hint_y: None
+                                            size_hint_x: 0.3  # Adjust this as needed
                                             color: 0, 0, 0, 0.5
-                                            padding: [0,0,0,3]
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: current_medications
                                             hint_text: "current medication"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -417,12 +447,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "Past Medications"
-                                            size_hint_y: None
+                                            size_hint_x: 0.3  # Adjust this as needed
                                             color: 0, 0, 0, 0.5
-                                            padding: [0,0,0,3]
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: past_medications
                                             hint_text: "past medication"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -439,12 +471,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "Chronic Diseases"
-                                            size_hint_y: None
+                                            size_hint_x: 0.3  # Adjust this as needed
                                             color: 0, 0, 0, 0.5
-                                            padding: [0,0,0,3]
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: chronic_diseases
                                             hint_text: "chronic disease"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -461,12 +495,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "Surgeries"
-                                            size_hint_y: None
+                                            size_hint_x: 0.3  # Adjust this as needed
                                             color: 0, 0, 0, 0.5
-                                            padding: [0,0,0,3]
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: surgeries
                                             hint_text: "Add surgeries"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -483,12 +519,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "Injuries"
-                                            size_hint_y: None
+                                            size_hint_x: 0.3  # Adjust this as needed
                                             color: 0, 0, 0, 0.5
-                                            padding: [0,0,0,3]
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: injuries
                                             hint_text: "Add any injuries"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -517,12 +555,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "Smoking Habits"
-                                            size_hint_y: None
-                                            color: 0,0,0,0.5
-                                            padding: [0,0,0,3]
+                                            size_hint_x: 0.3  # Adjust this as needed
+                                            color: 0, 0, 0, 0.5
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: smoking_habits
                                             hint_text: "smoking habits"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -540,12 +580,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "Alcohol Consumption"
-                                            size_hint_y: None
-                                            color: 0,0,0,0.5
-                                            padding: [0,0,0,3]
+                                            size_hint_x: 0.3  # Adjust this as needed
+                                            color: 0, 0, 0, 0.5
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: alcohol_consumption
                                             hint_text: "alcohol consumption"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -563,12 +605,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "Activity Level"
-                                            size_hint_y: None
-                                            color: 0,0,0,0.5
-                                            padding: [0,0,0,3]
+                                            size_hint_x: 0.3  # Adjust this as needed
+                                            color: 0, 0, 0, 0.5
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: activity_level
                                             hint_text: "actvity level"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -586,12 +630,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "Food Preference"
-                                            size_hint_y: None
-                                            color: 0,0,0,0.5
-                                            padding: [0,0,0,3]
+                                            size_hint_x: 0.3  # Adjust this as needed
+                                            color: 0, 0, 0, 0.5
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: food_preference
                                             hint_text: "food preferences"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
@@ -609,12 +655,14 @@
                                         spacing: dp(5)
                                         MDLabel:
                                             text: "Occupation"
-                                            size_hint_y: None
-                                            color: 0,0,0,0.5
-                                            padding: [0,0,0,3]
+                                            size_hint_x: 0.3  # Adjust this as needed
+                                            color: 0, 0, 0, 0.5
+                                            valign: 'center'
+                                            halign: 'left'
                                         MDTextField:
                                             id: occupation
                                             hint_text: "occupation"
+                                            size_hint_x: 0.3
                                             size_hint_y: None
                                             #mode: "rectangle"
                                             hint_text_size: dp(6)
