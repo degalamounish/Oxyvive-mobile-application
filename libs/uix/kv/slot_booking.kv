@@ -1,14 +1,10 @@
-
 <CButton>:
     size_hint: None, None
-    size: dp(90), dp(40) # Adjusted size
-    halign: "left"
-    pos_hint: {'x': 0, 'top': 1}
-#    pos_hint: {'right': 1, 'y': 0}
+    adaptive_size: True
     md_bg_color: 1, 1, 1, 1
     elevation: 0
     color_mode: "custom"
-    line_color: 0,0,0,0.1
+    line_color: 0, 0, 0, 0.1
     on_release: root.Slot_Timing(slot_timing.text)
     MDLabel:
         id: slot_timing
@@ -20,67 +16,64 @@
         theme_text_color: "Custom"
 
 <TaskSchedulerScreen>:
-
     MDGridLayout:
-        cols:1
+        cols: 1
         md_bg_color: 1, 1, 1, 1
         MDTopAppBar:
-            title:"Schedule Appointment"
-            left_action_items:[["arrow-left", lambda x:root.back_screen()]]
-            anchor_title:'left'
+            title: "Schedule Appointment"
+            left_action_items: [["arrow-left", lambda x: root.back_screen()]]
+            anchor_title: 'left'
             md_bg_color: 1, 1, 1, 1  # White background
             specific_text_color: 0, 0, 0, 1  # Black labels
-            elevation:0
+            elevation: 0
         MDBoxLayout:
             orientation: 'vertical'
             size_hint_y: None
             height: dp(60)
-            padding: dp(20),dp(20),dp(20),dp(0)
-            spacing:dp(10)
+            padding: dp(20), dp(20), dp(20), dp(0)
+            spacing: dp(10)
 
             MDLabel:
                 id: day_label
                 text: ""
                 font_style: "H4"
-                # halign: "center"
-                color:1,0,0,1
+                color: 1, 0, 0, 1
 
             MDLabel:
                 id: date_label
                 text: ""
                 font_style: "Subtitle1"
-                # halign: "center"
-                color:1,0,0,1
+                color: 1, 0, 0, 1
 
         MDBoxLayout:
             size_hint_y: None
             height: dp(80)
             ScrollView:
-                adaptive_width:True
+                adaptive_width: True
                 MDBoxLayout:
                     id: date_box
-                    adaptive_width:True
+                    adaptive_width: True
                     orientation: 'horizontal'
                     size_hint_y: None
                     height: dp(80)
                     spacing: dp(10)
                     padding: dp(20)
-                    pos_hint_y:{'center_y':1}
+                    pos_hint: {'center_y': 1}
 
         MDBoxLayout:
             spacing: dp(10)
             padding: dp(20)
-            adaptive_height:True
+            adaptive_height: True
             MDCard:
-                pos_hint:{'center_x':.5,'center_y':.5}
-                radius:[20]
-                elevation:2
-                adaptive_height:True
+                pos_hint: {'center_x': .5, 'center_y': .5}
+                radius: [20]
+                elevation: 2
+                adaptive_height: True
                 MDGridLayout:
-                    cols:1
+                    cols: 1
                     md_bg_color: 1, 1, 1, 1
-                    pos_hint:{'center_x':.5,'center_y':.5}
-                    adaptive_height:True
+                    pos_hint: {'center_x': .5, 'center_y': .5}
+                    adaptive_height: True
                     MDBoxLayout:
                         size_hint: 1, None
                         height: dp(40)
@@ -88,29 +81,34 @@
                             text: 'Available Slots'
                             halign: 'center'
                             valign: 'center'
-                            font_style:'Subtitle2'
-                            font_size:'18sp'
-                    MDGridLayout:
-                        cols: 3
-                        id: time_slot_box2
-                        padding:dp(25)
-                        spacing:dp(20)
-                        pos_hint:{'center_x':.5,'center_y':.5}
-                        adaptive_height:True
-                        halign:'center'
+                            font_style: 'Subtitle2'
+                            font_size: '18sp'
+                    MDBoxLayout:
+                        orientation: 'vertical'
+                        pos_hint: {'center_x': .5, 'center_y': .5}
+                        adaptive_height: True
+                        MDGridLayout:
+                            cols: 3
+                            id: time_slot_box2
+                            padding: dp(10)
+                            spacing: dp(10)
+                            adaptive_height: True
+                            adaptive_width: True
+                            pos_hint: {'center_x': .5, 'center_y': .5}
+
     MDBoxLayout:
         orientation: "vertical"
         padding: dp(20)
         MDBoxLayout:
             orientation: "vertical"
             size_hint: (1, None)
-            height:dp(50)
+            height: dp(50)
             MDRaisedButton:
-                text:'Book Now'
+                text: 'Book Now'
                 text_color: 1, 1, 1, 1
                 font_style: 'Subtitle2'
-                font_size:'16sp'
+                font_size: '16sp'
                 md_bg_color: 1, 0, 0, 1
                 pos_hint: {'center_x': .5, 'center_y': .1}
                 size_hint: (1, 1)
-                on_release:root.payment_screen()
+                on_release: root.payment_screen()

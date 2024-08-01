@@ -1,0 +1,83 @@
+<Settings>:
+    MDGridLayout:
+        cols:1
+        md_bg_color:1,1,1,1
+        MDTopAppBar:
+            title: "Reset Password"
+            left_action_items: [["arrow-left", lambda x: root.back_screen()]]
+            anchor_title: 'left'
+            md_bg_color: 1, 1, 1, 1  # White background
+            specific_text_color: 0, 0, 0, 1  # Black labels
+            elevation: 1
+        MDBoxLayout:
+            orientation: 'vertical'
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: dp(20)
+                spacing: dp(20)
+                pos_hint: {"center_x": 0.5}
+                size_hint: None, None
+                size: dp(300), dp(400)
+                valign:'top'
+
+                MDLabel:
+                    text: "Reset Password"
+                    font_style: "H4"
+                    halign: "center"
+                MDRelativeLayout:
+                    size_hint_y: None
+                    height: old_password.height
+                    MDTextField:
+                        id: old_password
+                        hint_text: " Old Password"
+                        password: True
+                        mode:'rectangle'
+                        pos_hint:{'center_x':.5}
+                        password: True
+
+
+                    MDIconButton:
+                        icon: "eye-off"
+                        pos_hint: {"center_y": .5}
+                        pos: old_password.width - self.width + dp(8), 0
+                        theme_text_color: "Hint"
+                        on_release:
+                            self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+                            old_password.password = False if old_password.password is True else True
+
+                MDRelativeLayout:
+                    size_hint_y: None
+                    height: new_password.height
+                    MDTextField:
+                        id: new_password
+                        hint_text: " New Password"
+                        password: True
+                        mode:'rectangle'
+                        pos_hint:{'center_x':.5}
+                        on_text:root.on_password_change(*args)
+                    MDIconButton:
+                        icon: "eye-off"
+                        pos_hint: {"center_y": .5}
+                        pos: new_password.width - self.width + dp(8), 0
+                        theme_text_color: "Hint"
+                        on_release:
+                            self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+                            new_password.password = False if new_password.password is True else True
+
+
+                MDTextField:
+                    id: confirm_password
+                    hint_text: " Confirm Password"
+                    password: True
+                    mode:'rectangle'
+                    pos_hint:{'center_x':.5}
+        MDBoxLayout:
+            orientation: 'vertical'
+            adaptive_height:True
+            pos_hint:{'center_x':.5}
+            padding:dp(20)
+            MDRaisedButton:
+                text: "Submit"
+                pos_hint: {"center_x": 0.5}
+                on_release: root.validate_and_reset_password()
+                size_hint:(1,1)

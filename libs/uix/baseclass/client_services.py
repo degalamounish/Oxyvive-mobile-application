@@ -269,6 +269,7 @@ class Profile_screen(Screen):
     def on_touch_down_profile(self):
         self.manager.load_screen("menu_profile")
         self.manager.push_replacement("menu_profile")
+
     def on_touch_down_reports(self):
         self.manager.load_screen("menu_reports")
         self.manager.push_replacement("menu_reports")
@@ -276,6 +277,10 @@ class Profile_screen(Screen):
     def on_touch_down_support(self):
         self.manager.load_screen("menu_support")
         self.manager.push_replacement("menu_support")
+
+    def on_touch_down_settings(self):
+        self.manager.load_screen("client_settings")
+        self.manager.push_replacement("client_settings")
 
     def on_touch_down_log_out(self):
         self.manager.push_replacement("login", "right")
