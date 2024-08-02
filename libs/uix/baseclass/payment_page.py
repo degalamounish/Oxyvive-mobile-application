@@ -43,6 +43,7 @@ class Payment(MDScreen):
     def on_pre_enter(self):
         self.change()
         self.servicer_details()
+        self.user_details()
 
     def on_keyboard(self, instance, key, scancode, codepoint, modifier):
         if key == 27:  # Keycode for the back button on Android
@@ -70,10 +71,13 @@ class Payment(MDScreen):
         self.date_time = booking_data.get('date_time', '')
         username = booking_data.get('username', '')
 
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        json_user_file_path = os.path.join(script_dir, "user_data.json")
         # Fetch email from user_data.json
-        with open('user_data.json', 'r') as file:
+        with open(json_user_file_path, 'r') as file:
             user_data = json.load(file)
         oxi_email = user_data.get('email', '')
+        print(oxi_email)
 
         try:
             if self.server.is_connected():
@@ -98,6 +102,8 @@ class Payment(MDScreen):
                 email_message = (f"Dear {username},\n\nYour slot is successfully booked on {self.date_time} for "
                                  f"{self.service_type}.\n\nThank you for choosing our service at OXIVIVE.")
                 self.send_email(oxi_email, email_subject, email_message)
+                Clock.schedule_once(self.sending_notification)
+                self.manager.push_replacement('client_services')
             else:
                 self.show_validation_dialog("No internet connection")
         except Exception as e:
@@ -370,8 +376,7 @@ class Payment(MDScreen):
 
     def switch_to_success_screen(self):
         self.store_booked_data()
-        self.manager.push_replacement('client_services')
-        Clock.schedule_once(self.sending_notification)
+
 
     def sending_notification(self, *args):
         self.appointment_time = self.convert_datetime(self.date_time)
@@ -479,4 +484,12 @@ class Payment(MDScreen):
             print(f"Email sent successfully to {email}")
         except Exception as e:
             print(f"Failed to send email: {e}")
+
+    def user_details(self):
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        json_user_file_path = os.path.join(script_dir, "user_data.json")
+        with open(json_user_file_path, 'r') as file:
+            user_info = json.load(file)
+
+            self.ids.username.text = f"{user_info.get('username')}"
 

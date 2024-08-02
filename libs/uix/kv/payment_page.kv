@@ -19,13 +19,11 @@
                 height: self.minimum_height
                 #padding: dp(20)
                 id: scroll_grid
-                MDSeparator:
-                    size_hint_y:None
-                    height:dp(10)
+
                 MDCard:
                     orientation: 'horizontal'
                     size_hint_y:None
-                    height:dp(130)
+                    height:dp(150)
                     padding: dp(10), dp(10), dp(10), dp(10)
                     elevation: 0
 
@@ -517,7 +515,7 @@
             radius:[0]
             md_bg_color:1,0,0,.2
             FitImage:
-                source: 'images/profile.jpg'
+                source: 'profile_image.png'
                 size_hint: None, None
                 size: '40dp', '40dp'
                 radius: [150]
@@ -538,11 +536,11 @@
                     text: 'Praveen Kumar'
                     font_style: 'Body1'
                     text_color:0,0,0,1
-            MDTextButton:
-                text: 'CHANGE'
-                theme_text_color:'Custom'
-                text_color:1,0,0,1
-                on_release:pass
+#            MDTextButton:
+#                text: 'CHANGE'
+#                theme_text_color:'Custom'
+#                text_color:1,0,0,1
+#                on_release:pass
 
         MDCard:
             orientation: 'horizontal'
