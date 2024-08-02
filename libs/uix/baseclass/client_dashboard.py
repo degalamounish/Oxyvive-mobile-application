@@ -1,7 +1,7 @@
 import os
 
 from kivy.utils import platform
-from kivymd.uix.list import OneLineListItem, TwoLineIconListItem
+from kivymd.uix.list import OneLineListItem, TwoLineIconListItem, OneLineAvatarListItem, OneLineIconListItem
 from kivymd.uix.screen import MDScreen
 from libs.uix.baseclass.client_location import ItemConfirm as ic
 
@@ -13,7 +13,9 @@ print(f"JAVA_HOME is set to: {os.environ.get('JAVA_HOME')}")
 
 # Import jnius and Android classes if on Android platform
 if platform == 'android':
+    from android.permissions import request_permissions, Permission
     from jnius import autoclass
+
     PythonActivity = autoclass('org.kivy.android.PythonActivity')
     Context = autoclass('android.content.Context')
     ContentResolver = autoclass('android.content.ContentResolver')
@@ -23,11 +25,11 @@ if platform == 'android':
     ActivityCompat = autoclass('androidx.core.app.ActivityCompat')
     Permission = autoclass('android.Manifest$permission')
 
-
 from kivymd.uix.list import TwoLineAvatarListItem, IconLeftWidget
 from kivymd.uix.dialog import MDDialog
 
-class Item(TwoLineAvatarListItem):
+
+class Item(OneLineAvatarListItem):
     def __init__(self, text, source=None, manager=None, callback=None, **kwargs):
         super().__init__(text=text, **kwargs)
         self.source = source
@@ -38,9 +40,10 @@ class Item(TwoLineAvatarListItem):
         if self.callback:
             self.callback(self.text)
 
-class ItemConfirm(TwoLineAvatarListItem):
+
+class ItemConfirm(OneLineAvatarListItem):
     def __init__(self, manager=None, **kwargs):
-        super().__init__( **kwargs)
+        super().__init__(**kwargs)
         self.manager = manager
 
     def contact_screen(self):
@@ -60,6 +63,20 @@ class ChooseContact(MDScreen):
     def on_enter(self):
         if platform == 'android':
             self.check_permissions_and_fetch_contacts()
+            self.request_contact_permission()
+
+    def request_contact_permission(self):
+        if platform == 'android':
+            def callback(permissions, grants):
+                if Permission.READ_CONTACTS in permissions:
+                    if grants[permissions.index(Permission.READ_CONTACTS)]:
+                        print('Contact permission granted')
+                    else:
+                        print('Contact permission denied')
+
+            request_permissions([Permission.READ_CONTACTS], callback)
+        else:
+            print('This function is only available on Android.')
 
     def check_permissions_and_fetch_contacts(self):
         if platform == 'android':
@@ -160,33 +177,34 @@ class ChooseContact(MDScreen):
 
         # Ensure the dialog is initialized
         if not hasattr(screen, 'dialog'):
+            items = [Item(text="Myself", source="images/profile.jpg", manager=self.manager)]
+            items += [self.create_item(contact) for contact in self.dialog_contacts]
+            items.append(ItemConfirm(text="Choose another contact", manager=self.manager))
+
             screen.dialog = MDDialog(
                 title="Someone else taking this appointment?",
                 type="confirmation",
-                items=[
-                    Item(text="Myself", source="images/profile.jpg", manager=self.manager),
-                    ItemConfirm(text="Choose another contact", manager=self.manager),
-                ] +[self.create_item(contact) for contact in self.dialog_contacts]
+                items=items
             )
             screen.dialog.open()
         else:
             # Update the dialog items to include the contact details
-            screen.dialog.items =  [
-                Item(text="Myself", source="images/profile.jpg", manager=self.manager),
-                ItemConfirm(text="Choose another contact", manager=self.manager),
-            ] + [self.create_item(contact) for contact in self.dialog_contacts]
+            items = [Item(text="Myself", source="images/profile.jpg", manager=self.manager)]
+            items += [self.create_item(contact) for contact in self.dialog_contacts]
+            items.append(ItemConfirm(text="Choose another contact", manager=self.manager))
+
             # Recreate and open the dialog to reflect the updated items
             screen.dialog = MDDialog(
                 title="Someone else taking this appointment?",
                 type="confirmation",
-                items=screen.dialog.items,
+                items=items,
             )
 
         screen.ids.choose.text = f"{contact['first_name']} {contact['last_name']}      "
         self.manager.push_replacement("client_location")
 
     def create_item(self, contact):
-        contact_item = TwoLineIconListItem()
+        contact_item = OneLineIconListItem()
 
         # Set the icon for the contact item
         icon = IconLeftWidget(icon="account")
@@ -194,11 +212,7 @@ class ChooseContact(MDScreen):
 
         # Set the primary and secondary text
         contact_item.text = f"{contact['first_name']} {contact['last_name']}"
-        contact_item.secondary_text = contact['phone_number']
+        # contact_item.secondary_text = contact['phone_number']
         contact_item.bind(on_release=lambda x, c=contact: self.on_contact_click(c))
 
         return contact_item
-
-
-
-
