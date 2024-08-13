@@ -47,8 +47,9 @@ class Activity(MDBoxLayout):
         else:
             print("Manager is not set.")
 
+from datetime import datetime
 
-class BookingDetails(Screen):
+class BookingDetails(MDScreen):
     manager = ObjectProperty(None)
 
     def __init__(self, **kwargs):
@@ -66,14 +67,56 @@ class BookingDetails(Screen):
         toolbar.md_bg_color = get_color_from_hex("#FF0000")
         self.add_widget(toolbar)
 
-        self.bookings_layout = MDBoxLayout(
+        # Container for the entire screen
+        main_layout = MDBoxLayout(
             orientation='vertical',
-            padding=(40, 30, 40, 10),
-            spacing=15,
+            padding=(20, 0, 20, 0),
+            spacing=0,
             size_hint_y=None
         )
-        self.bookings_layout.bind(minimum_height=self.bookings_layout.setter('height'))
+        main_layout.bind(minimum_height=main_layout.setter('height'))
 
+        # Subheading for Upcoming
+        self.upcoming_label = MDLabel(
+            text="Upcoming",
+            font_style="H5",
+            size_hint_y=None,
+            height=self.height,
+            halign='left'
+        )
+        main_layout.add_widget(self.upcoming_label)
+
+        # Layout for upcoming bookings
+        self.upcoming_layout = MDBoxLayout(
+            orientation='vertical',
+            padding=(0, 5, 0, 0),
+            spacing=10,
+            size_hint_y=None
+        )
+        self.upcoming_layout.bind(minimum_height=self.upcoming_layout.setter('height'))
+        main_layout.add_widget(self.upcoming_layout)
+
+        # Subheading for Past
+        self.past_label = MDLabel(
+            text="Past",
+            font_style="H5",
+            size_hint_y=None,
+            height=self.height,
+            halign='left'
+        )
+        main_layout.add_widget(self.past_label)
+
+        # Layout for past bookings
+        self.past_layout = MDBoxLayout(
+            orientation='vertical',
+            padding=(0, 5, 0, 0),
+            spacing=10,
+            size_hint_y=None
+        )
+        self.past_layout.bind(minimum_height=self.past_layout.setter('height'))
+        main_layout.add_widget(self.past_layout)
+
+        # ScrollView setup
         scroll_view = ScrollView(size_hint=(1, None))
         toolbar_height = toolbar.height
         top_margin = 0.875
@@ -83,7 +126,7 @@ class BookingDetails(Screen):
         scroll_view.size = (Window.width, scroll_view_height)
         scroll_view.pos_hint = {'top': top_margin}
         scroll_view.pos = (0, (bottom_margin * window_height) - scroll_view_height)
-        scroll_view.add_widget(self.bookings_layout)
+        scroll_view.add_widget(main_layout)
         self.add_widget(scroll_view)
         Window.bind(on_keyboard=self.on_keyboard)
 
@@ -97,17 +140,69 @@ class BookingDetails(Screen):
             return True
         return False
 
+    def fetch_service_details(self):
+        try:
+            result = None
+            fees_column = ""
+            address_column = ""
+
+            if self.service_type == "OxiClinic":
+                result = app_tables.oxiclinics.get(oxiclinics_id=self.service_id)
+                fees_column = "oxiclinics_fees"
+                address_column = "oxiclinics_address"
+            elif self.service_type == "OxiWheel":
+                result = app_tables.oxiwheels.get(oxiwheels_id=self.service_id)
+                fees_column = "oxiwheels_fees"
+                address_column = "oxiwheels_address"
+            elif self.service_type == "OxiGym":
+                result = app_tables.oxigyms.get(oxigyms_id=self.service_id)
+                fees_column = "oxigyms_fees"
+                address_column = "oxigyms_address"
+
+            if result:
+                self.fees = result[fees_column]
+                self.address = result[address_column]
+                self.service_details_fetched = True
+            else:
+                self.fees = 0
+                self.address = "N/A"
+        except Exception as e:
+            print(f"Error fetching service details: {e}")
+            self.fees = 0
+            self.address = "N/A"
+
     def display_bookings(self, bookings):
+        current_time = datetime.now()
+        current_year = current_time.year
+        has_upcoming = False
+
+        # Clear existing widgets in upcoming and past layouts
+        self.upcoming_layout.clear_widgets()
+        self.past_layout.clear_widgets()
+
         for booking in reversed(bookings):
             book_date = booking['oxi_book_date']
-            date_time = booking['oxi_date_time']
+            date_time_str = booking['oxi_date_time']
             service_type = booking['oxi_service_type']
             book_id = booking['oxi_book_id']
             service_id = booking['oxi_servicer_id']
             time_slot = booking['oxi_book_time']
             username = booking['oxi_username']
-            booking_date_str = book_date.strftime('%d %B %Y')
-            day, month, year = booking_date_str.split(' ')
+
+            # Append the current year to the date_time_str
+            date_time_str_with_year = f"{date_time_str} {current_year}"
+
+            # Convert date_time_str to datetime object
+            try:
+                date_time = datetime.strptime(date_time_str_with_year, "%a, %d %b %I:%M %p %Y")
+            except ValueError as e:
+                print(f"Error parsing date: {e} for booking {booking}")
+                continue
+
+            # Fetch service details to display fees and address
+            self.service_type = service_type
+            self.service_id = service_id
+            self.fetch_service_details()
 
             service_images = {
                 "OxiClinic": "images/1.png",
@@ -116,38 +211,68 @@ class BookingDetails(Screen):
             }
             image_source = service_images.get(service_type, "images/shot.png")
 
+            # MDCard layout
             booking_card = MDCard(
-                orientation='horizontal',
+                orientation='vertical',
                 size_hint=(1, None),
-                height='130dp',
+                height='300dp',  # Adjusted height to accommodate image and details
                 elevation=2,
-                padding=10,
-                spacing=10,
+                padding=0,
+                spacing=0,
                 md_bg_color=get_color_from_hex("#FFFFFF"),
                 radius=[15, 15, 15, 15],
                 on_release=lambda x, service_type=service_type, book_date=str(book_date), time_slot=time_slot,
-                                  service_id=service_id, book_id=book_id, date_time=date_time
-                : self.view_booking_details(service_type, book_date, date_time, time_slot, service_id, book_id)
+                                  service_id=service_id, book_id=book_id, date_time=date_time_str:
+                self.view_booking_details(service_type, book_date, date_time_str, time_slot, service_id, book_id)
             )
 
-            left_layout = MDBoxLayout(orientation='horizontal', padding=(5, 0, 0, 0), size_hint_x=0.3)
-            if image_source:
-                left_layout.add_widget(KivyImage(source=image_source, size_hint=(None, None), size=("100dp", "100dp")))
+            # Image aligned with the location image from the reference
+            image_widget = KivyImage(source=image_source, size_hint=(None, None), size=("300dp", "200dp"),
+                                     pos_hint={"center_x": 0.5, "center_y": 0.5})
+            booking_card.add_widget(image_widget)
 
-            details_layout = MDBoxLayout(orientation='vertical', padding=(15, 0, 0, 0), size_hint_x=0.6)
-            details_layout.add_widget(MDLabel(text=f"Service Type: {service_type}", theme_text_color="Custom",
+            # Details below the image
+            details_layout = MDBoxLayout(orientation='vertical', padding=(10, 0, 0, 0))
+            details_layout.add_widget(MDLabel(text=f"{service_type}", theme_text_color="Custom",
                                               text_color=get_color_from_hex("#000000")))
-            details_layout.add_widget(MDLabel(text=f"User Name: {username}", theme_text_color="Custom",
+            details_layout.add_widget(MDLabel(text=f"{date_time_str}", theme_text_color="Custom",
                                               text_color=get_color_from_hex("#000000")))
-            details_layout.add_widget(MDLabel(text=f"Date: {book_date}", theme_text_color="Custom",
+            details_layout.add_widget(MDLabel(text=f"₹ {self.fees}", theme_text_color="Custom",
                                               text_color=get_color_from_hex("#000000")))
-            details_layout.add_widget(
-                MDLabel(text=f"Time: {time_slot}", theme_text_color="Custom", text_color=get_color_from_hex("#000000")))
 
-            booking_card.add_widget(left_layout)
             booking_card.add_widget(details_layout)
-            # booking_card.add_widget(right_layout)
-            self.bookings_layout.add_widget(booking_card)
+
+            # Determine if the booking is upcoming or past
+            if date_time > current_time:
+                self.upcoming_layout.add_widget(booking_card)
+                has_upcoming = True
+            else:
+                self.past_layout.add_widget(booking_card)
+
+        # Display "No Upcoming Trips" card if no upcoming bookings exist
+        if not has_upcoming:
+            no_upcoming_card = MDCard(
+                orientation='vertical',
+                padding=15,
+                size_hint=(1, None),
+                height='120dp',
+                radius=[15, 15, 15, 15],
+                elevation=1,
+                on_release=lambda x: self.manager.push_replacement('client_location')
+            )
+            no_upcoming_card.add_widget(MDLabel(
+                text="You have no upcoming trips",
+                theme_text_color="Primary",
+                font_style="Body1",
+                halign="left"
+            ))
+            no_upcoming_card.add_widget(MDLabel(
+                text="Book your appointment now ->",
+                theme_text_color="Hint",
+                font_style="Body2",
+                halign="left"
+            ))
+            self.upcoming_layout.add_widget(no_upcoming_card)
 
     def view_booking_details(self, service_type, book_date, date_time, time_slot, book_id, service_id):
         print(
@@ -167,6 +292,7 @@ class BookingDetails(Screen):
 
     def go_back(self):
         self.root.current = 'booking_details'
+
 
 
 class BoxLayoutExample(BoxLayout):
@@ -416,4 +542,3 @@ class Client_services(MDScreen):
     def profile_func(self):
         self.ids.profile.clear_widgets()  # Clear existing widgets first
         self.ids.profile.add_widget(Profile_screen(manager=self.manager))
-

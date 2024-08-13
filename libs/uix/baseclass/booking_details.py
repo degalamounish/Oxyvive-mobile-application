@@ -43,11 +43,24 @@ class DetailsScreen(MDScreen):
             radius=[15, 15, 15, 15],
             elevation=2
         )
+
         top_card.add_widget(MDLabel(text=self.service_type, font_style='H6', halign='left'))
-        top_card.add_widget(MDLabel(text=f"Date:     {self.date}", font_style='Caption', halign='left'))
-        top_card.add_widget(MDLabel(text=f"Time-Slot:     {self.time_slot}", font_style='Caption', halign='left'))
-        top_card.add_widget(MDLabel(text=f"Treatment Charges:     ₹{self.fees}", font_style='Caption', halign='left'))
-        #top_card.add_widget(MDLabel(text="Completed", font_style='Caption', halign='left'))
+
+        date_layout = MDBoxLayout(orientation='horizontal')
+        date_layout.add_widget(MDLabel(text="Date:", font_style='Caption', halign='left'))
+        date_layout.add_widget(MDLabel(text=self.date, font_style='Caption', halign='right'))
+        top_card.add_widget(date_layout)
+
+        time_slot_layout = MDBoxLayout(orientation='horizontal')
+        time_slot_layout.add_widget(MDLabel(text="Time-Slot:", font_style='Caption', halign='left'))
+        time_slot_layout.add_widget(MDLabel(text=self.time_slot, font_style='Caption', halign='right'))
+        top_card.add_widget(time_slot_layout)
+
+        charges_layout = MDBoxLayout(orientation='horizontal')
+        charges_layout.add_widget(MDLabel(text="Treatment Charges:", font_style='Caption', halign='left'))
+        charges_layout.add_widget(MDLabel(text=f"₹{self.fees}", font_style='Caption', halign='right'))
+        top_card.add_widget(charges_layout)
+
         details_box.add_widget(top_card)
 
         # Ride details card
@@ -65,7 +78,8 @@ class DetailsScreen(MDScreen):
 
         # From location
         from_layout = MDBoxLayout(orientation='horizontal', spacing=25, padding=[0, 5, 0, 20])
-        from_icon = IconLeftWidget(icon="map-marker", theme_text_color="Custom", text_color=get_color_from_hex("#4CAF50"))
+        from_icon = IconLeftWidget(icon="map-marker", theme_text_color="Custom",
+                                   text_color=get_color_from_hex("#4CAF50"))
         from_label = MDLabel(text=self.address, font_style='Caption', halign='left')
         from_layout.add_widget(from_icon)
         from_layout.add_widget(from_label)
@@ -74,7 +88,9 @@ class DetailsScreen(MDScreen):
         # To location
         to_layout = MDBoxLayout(orientation='horizontal', spacing=25)
         to_icon = IconLeftWidget(icon="map-marker", theme_text_color="Custom", text_color=get_color_from_hex("#F44336"))
-        to_label = MDLabel(text="Sri Parijatha Enterprises Sri Parijatha\n4th Cross Corner, Maruthi Nagar, Yelahanka...", font_style='Caption', halign='left')
+        to_label = MDLabel(
+            text="Sri Parijatha Enterprises Sri Parijatha\n4th Cross Corner, Maruthi Nagar, Yelahanka...",
+            font_style='Caption', halign='left')
         to_layout.add_widget(to_icon)
         to_layout.add_widget(to_label)
         treatment_details_card.add_widget(to_layout)
@@ -85,12 +101,6 @@ class DetailsScreen(MDScreen):
         duration_layout.add_widget(MDLabel(text="Duration", font_style='Caption', halign='left'))
         duration_layout.add_widget(MDLabel(text="2 hour", font_style='Caption', halign='right'))
         treatment_details_card.add_widget(duration_layout)
-
-        # distance_layout = MDBoxLayout(orientation='horizontal')
-        # distance_layout.add_widget(MDLabel(text="Booking Time", font_style='Caption', halign='left'))
-        # #op_card.add_widget(MDLabel(text=f"Time-Slot:     {self.time}", font_style='Caption', halign='left'))
-        # distance_layout.add_widget(MDLabel(text="10:37 am", font_style='Caption', halign='right'))
-        # treatment_details_card.add_widget(distance_layout)
 
         distance_layout = MDBoxLayout(orientation='horizontal')
         distance_layout.add_widget(MDLabel(text="Booking Date and time", font_style='Caption', halign='left'))
@@ -122,8 +132,10 @@ class DetailsScreen(MDScreen):
         treatment_charge_layout.add_widget(MDLabel(text=f"₹{(self.fees)}", font_style='Caption', halign='right'))
         invoice_card.add_widget(treatment_charge_layout)
 
-        fees_layout = MDBoxLayout(orientation='horizontal')
-        fees_layout.add_widget(MDLabel(text="Booking Fees & Convenience Charges (inclusive in treatment charges)", font_style='Caption', halign='left'))
+        fees_layout = MDBoxLayout(orientation='horizontal', padding=[0, 0, 0, 10])  # Added padding to increase space
+        fees_layout.add_widget(
+            MDLabel(text="Booking Fees & Convenience Charges (inclusive in treatment charges)", font_style='Caption',
+                    halign='left'))
         fees_layout.add_widget(MDLabel(text="₹19.27", font_style='Caption', halign='right'))
         invoice_card.add_widget(fees_layout)
 
@@ -131,15 +143,12 @@ class DetailsScreen(MDScreen):
 
         total_fare_layout = MDBoxLayout(orientation='horizontal')
         total_fare_layout.add_widget(MDLabel(text="Total Fare", font_style='Subtitle1', halign='left'))
-        #total_fare_layout.add_widget(MDLabel(text=f"₹{int(self.fees) + 19.27}", font_style='Subtitle1', halign='right'))
         total_fare_layout.add_widget(MDLabel(text=f"₹{int(self.fees)}", font_style='Subtitle1', halign='right'))
         invoice_card.add_widget(total_fare_layout)
 
         paid_layout = MDBoxLayout(orientation='horizontal')
         paid_layout.add_widget(MDLabel(text="Paid via QR Pay", font_style='Caption', halign='right'))
         invoice_card.add_widget(paid_layout)
-
-
 
         details_box.add_widget(invoice_card)
 
